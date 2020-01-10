@@ -5,7 +5,7 @@
 <mapper namespace="ssafy.image">
 	<select id="selectList" parameterType="int" resultType="string">
 		select image_url
-		from image
+		from content_image
 		where content_id = #{content_id}
 	</select>
 </mapper>

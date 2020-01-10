@@ -56,4 +56,16 @@ public class ContentController {
 		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
 		return resEntity;
 	}
+	
+	@GetMapping("/urls/{content_id}")
+	@ApiOperation(value = "게시물 이미지 url", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> urls(@PathVariable("content_id") int content_id) throws ServletException, IOException {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		List<String> urls = ser.detailUrls(content_id);
+		msg.put("resmsg", "게시물 출력 성공");
+		msg.put("urls", urls);
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
 }

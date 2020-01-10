@@ -16,4 +16,5 @@ public class ImageController {
 	@Autowired
 	@Qualifier("ImageService")
 	IImageService ser;
+	
 }
