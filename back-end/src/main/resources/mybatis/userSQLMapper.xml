@@ -38,4 +38,12 @@
 		delete from users
 		where user_id = #{user_id}
 	</delete>
+
+	<update id="updateTempPw" parameterType="map">
+		update users
+		set
+			password = #{password}
+		where
+			email = #{email}
+	</update>
 </mapper>

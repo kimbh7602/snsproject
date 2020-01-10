@@ -9,4 +9,12 @@
 		on (c.user_id = f.follow_id)
 		where f.follower_id = #{user_id}
 	</select>
+
+	<insert id="insertFollow" parameterType="FollowVo">
+		insert into follow
+			(follower_id, follow_id)
+		values
+			(#{follower_id}, #{follow_id})
+	</insert>
+
 </mapper>

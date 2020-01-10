@@ -1,5 +1,7 @@
 package edu.ssafy.boot.service;
 
-public interface IFollowService {
+import edu.ssafy.boot.dto.FollowVo;
 
+public interface IFollowService {
+    public boolean insertFollow(FollowVo follow);
 }

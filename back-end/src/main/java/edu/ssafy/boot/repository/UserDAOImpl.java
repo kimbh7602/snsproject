@@ -1,5 +1,8 @@
 package edu.ssafy.boot.repository;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -55,5 +58,19 @@ public class UserDAOImpl implements IUserDAO {
 	@Override
 	public UserVo info(String user_id) {
 		return session.selectOne("ssafy.user.info", user_id);
+	}
+
+	@Override
+	public boolean updateTempPassword(String email, String password) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("password", password);
+		map.put("email", email);
+		int update = session.update("ssafy.user.updateTempPw", map);
+		
+		if(update > 0) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 }

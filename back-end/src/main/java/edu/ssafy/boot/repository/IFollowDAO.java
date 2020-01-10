@@ -1,5 +1,7 @@
 package edu.ssafy.boot.repository;
 
-public interface IFollowDAO {
+import edu.ssafy.boot.dto.FollowVo;
 
+public interface IFollowDAO {
+    public boolean insertFollow(FollowVo follow);
 }

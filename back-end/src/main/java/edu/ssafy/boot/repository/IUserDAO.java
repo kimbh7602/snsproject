@@ -8,4 +8,5 @@ public interface IUserDAO {
 	public boolean updateUserInfo(UserVo user);
 	public boolean deleteUserInfo(String user_id);
 	public UserVo info(String user_id);
+	public boolean updateTempPassword(String email, String tempPw);
 }
