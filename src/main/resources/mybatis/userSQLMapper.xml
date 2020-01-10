@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssafy.user">
+	<select id="login" parameterType="UserVo" resultType="UserVo">
+		select * from users
+		where
+			user_id = #{user_id} and
+			password = #{password}
+	</select>
+	
+	<select id="info" parameterType="string" resultType="Uservo">
+		select * from users
+		where
+			user_id = #{user_id}
+	</select>
+	
+	<insert id="signup" parameterType="UserVo">
+		insert into users
+			(user_id, password, tel, email, interest)
+		values
+			(#{user_id}, #{password}, #{tel}, #{email}, #{interest})
+	</insert>
+	
+	<update id="updateUserInfo" parameterType="UserVo">
+		update users
+		set
+			password = #{password},
+			tel = #{tel},
+			email = #{email},
+			interest = #{interest}
+		where
+			user_id = #{user_id}
+	</update>
+	
+	<delete id="deleteUserInfo" parameterType="string">
+		delete from users
+		where user_id = #{user_id}
+	</delete>
+</mapper>
