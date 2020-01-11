@@ -51,6 +51,7 @@ public class UserController {
 			boolean res = ser.login(user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (res) {
+				//run configurations 에서 arguments-> vm arguments ->"-Djava.net.preferIPv4Stack=true" 입력
 				LogVo log = new LogVo(user.getUser_id(), request.getRemoteAddr(), "로그인");
 				BlockVo block = new BlockVo(log, new java.util.Date());
 				serbc.addBlock(block);
