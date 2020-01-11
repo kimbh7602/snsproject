@@ -1,7 +1,10 @@
 package edu.ssafy.boot.controller;
 
 import java.util.HashMap;
+
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,9 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.ssafy.boot.dto.BlockVo;
+import edu.ssafy.boot.dto.LogVo;
 import edu.ssafy.boot.dto.UserVo;
+import edu.ssafy.boot.service.IBlockchainService;
 import edu.ssafy.boot.service.IUserService;
 import io.swagger.annotations.ApiOperation;
+
 
 @CrossOrigin(origins = "*")
 @RestController()
@@ -30,15 +37,24 @@ public class UserController {
 	@Autowired
 	@Qualifier("UserService")
 	IUserService ser;
+	
+	@Autowired
+	@Qualifier("BlockchainService")
+	IBlockchainService serbc;
+	
 
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인서비스")
-	private @ResponseBody ResponseEntity<Map<String, Object>> login(@RequestBody UserVo user) {
+	private @ResponseBody ResponseEntity<Map<String, Object>> login(@RequestBody UserVo user, HttpServletRequest request) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			boolean res = ser.login(user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (res) {
+				LogVo log = new LogVo(user.getUser_id(), request.getRemoteAddr(), "로그인");
+				BlockVo block = new BlockVo(log, new java.util.Date());
+				serbc.addBlock(block);
+				serbc.displayChain();
 				map.put("resmsg", "로그인");
 			} else {
 				map.put("resmsg", "아이디와 비밀번호가 일치하지 않음");
