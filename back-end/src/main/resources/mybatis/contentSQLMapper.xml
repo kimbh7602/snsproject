@@ -14,4 +14,11 @@
 		select * from contents
 		where content_id = #{content_id}
 	</select>
+
+	<insert id="insert" parameterType="ContentVo">
+		insert into contents
+			(content_id, content_title, content_val, user_id, timestamp, hashtag)
+		values
+			(#{content_id}, #{content_title}, #{content_val}, #{user_id}, #{timestamp}, #{hashtag})
+	</insert>
 </mapper>

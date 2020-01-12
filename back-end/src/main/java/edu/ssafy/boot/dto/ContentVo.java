@@ -1,5 +1,7 @@
 package edu.ssafy.boot.dto;
 
+import java.util.List;
+
 public class ContentVo {
 	private int content_id;
 	private int share_cid;
@@ -10,6 +12,7 @@ public class ContentVo {
 	private int content_like;
 	private String hashtag;
 	private boolean user_like;
+	private List<ImageVo> imageList;
 
 	public ContentVo() {
 		super();
@@ -38,6 +41,18 @@ public class ContentVo {
 		this.user_id = user_id;
 		this.timestamp = timestamp;
 		this.hashtag = hashtag;
+	}
+	
+	public ContentVo(int content_id, String content_title, String content_val, String user_id, String timestamp,
+			String hashtag, List<ImageVo> imageList) {
+		super();
+		this.content_id = content_id;
+		this.content_title = content_title;
+		this.content_val = content_val;
+		this.user_id = user_id;
+		this.timestamp = timestamp;
+		this.hashtag = hashtag;
+		this.imageList = imageList;
 	}
 
 	public int getContent_id() {
@@ -112,11 +127,18 @@ public class ContentVo {
 		this.user_like = user_like;
 	}
 
+	public List<ImageVo> getImageList() {
+		return imageList;
+	}
+
+	public void setImageList(List<ImageVo> imageList) {
+		this.imageList = imageList;
+	}
+
 	@Override
 	public String toString() {
 		return "ContentVo [content_id=" + content_id + ", share_cid=" + share_cid + ", content_title=" + content_title
 				+ ", content_val=" + content_val + ", user_id=" + user_id + ", timestamp=" + timestamp
 				+ ", content_like=" + content_like + ", hashtag=" + hashtag + ", user_like=" + user_like + "]";
 	}
-
 }

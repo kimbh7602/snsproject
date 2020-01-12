@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,6 +67,21 @@ public class ContentController {
 		List<String> urls = ser.detailUrls(content_id);
 		msg.put("resmsg", "게시물 출력 성공");
 		msg.put("urls", urls);
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
+	
+	@PostMapping("/insertContent")
+	@ApiOperation(value = "게시물 추가")
+	private @ResponseBody ResponseEntity<Map<String, Object>> insertContent(@RequestBody ContentVo content){
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		boolean resContent = ser.insertContent(content);
+		if(resContent){
+			msg.put("resmsg", "게시물 추가 성공");
+		}else{
+			msg.put("resmsg", "게시물 추가 실패");
+		}
 		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
 		return resEntity;
 	}

@@ -18,7 +18,6 @@ public class ContentService implements IContentService {
 
 	@Override
 	public List<ContentVo> contentMyList(String user_id) {
-		// TODO Auto-generated method stub
 		return dao.contentMyList(user_id);
 	}
 
@@ -30,6 +29,11 @@ public class ContentService implements IContentService {
 	@Override
 	public List<String> detailUrls(int content_id) {
 		return dao.detailUrls(content_id);
+	}
+
+	@Override
+	public boolean insertContent(ContentVo content) {
+		return dao.insertContent(content);
 	}
 	
 }

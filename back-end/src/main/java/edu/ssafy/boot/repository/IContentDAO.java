@@ -8,4 +8,5 @@ public interface IContentDAO {
 	public List<ContentVo> contentMyList(String user_id);
 	public ContentVo detail(int content_id);
 	public List<String> detailUrls(int content_id);
+	public boolean insertContent(ContentVo content);
 }

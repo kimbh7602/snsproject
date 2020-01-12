@@ -8,4 +8,11 @@
 		from content_image
 		where content_id = #{content_id}
 	</select>
+
+	<insert id="insert" parameterType="ImageVo">
+		insert into content_image
+			(content_id, image_name, image_url)
+		values
+			(#{content_id}, #{image_name}, #{image_url})
+	</insert>
 </mapper>
