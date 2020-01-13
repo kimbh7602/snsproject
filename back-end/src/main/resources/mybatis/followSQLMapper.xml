@@ -10,11 +10,27 @@
 		where f.follower_id = #{user_id}
 	</select>
 
+<<<<<<< HEAD
+	<insert id="insert" parameterType="FollowVo">
+		insert into follow
+			(follower_id, follow_id)
+		values 
+			(#{follower_id}, #{follow_id})
+	</insert>
+	
+	<delete id="delete" parameterType="FollowVo">
+		delete from follow
+		where
+			follower_id = #{follower_id} and
+			follow_id = #{follow_id}
+	</delete>
+=======
 	<insert id="insertFollow" parameterType="FollowVo">
 		insert into follow
 			(follower_id, follow_id)
 		values
 			(#{follower_id}, #{follow_id})
 	</insert>
+>>>>>>> dev
 
 </mapper>

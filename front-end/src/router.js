@@ -5,6 +5,8 @@ import Category from "./components/Category.vue"
 import Bio from "./components/Bio.vue"
 import Blog from "./components/Blog.vue"
 import Single from "./components/Single.vue"
+import Register from "./components/Register.vue"
+import Vfor from "./components/Vfor.vue"
 
 Vue.use(Router);
 
@@ -45,7 +47,21 @@ export const router = new Router({
             alias: "/Single",
             component: Single,
             props: true,
-        }
+        },
+        {
+            path: "/register",
+            name: "register",
+            alias: "/Register",
+            component: Register,
+            props: true,
+        },
+        {
+            path: "/vfor",
+            name: "vfor",
+            alias: "/Vfor",
+            component: Vfor,
+            props: true,
+        },
     ]
 });
 

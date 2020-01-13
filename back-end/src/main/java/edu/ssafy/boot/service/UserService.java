@@ -1,5 +1,7 @@
 package edu.ssafy.boot.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,51 @@ public class UserService implements IUserService {
 
 	@Override
 	public boolean signup(UserVo user) {
+		List<String> interestList = user.getInterestList();
+		List<String> dislikeList = user.getDislikeList();
+
+		String interest = "";
+		String dislike = "";
+		
+		if(interestList != null){
+			for (String in : interestList) {
+				interest += in+" ";
+			}
+		}
+		if(dislikeList != null){
+			for (String dis : dislikeList) {
+				dislike += dis+" ";
+			}
+		}
+
+		user.setInterest(interest.trim());
+		user.setDislike(dislike.trim());
+
 		return dao.signup(user);
 	}
 
 	@Override
 	public boolean updateUserInfo(UserVo user) {
+		List<String> interestList = user.getInterestList();
+		List<String> dislikeList = user.getDislikeList();
+
+		String interest = "";
+		String dislike = "";
+		
+		if(interestList != null){
+			for (String in : interestList) {
+				interest += in+" ";
+			}
+		}
+		if(dislikeList != null){
+			for (String dis : dislikeList) {
+				dislike += dis+" ";
+			}
+		}
+
+		user.setInterest(interest.trim());
+		user.setDislike(dislike.trim());
+
 		return dao.updateUserInfo(user);
 	}
 

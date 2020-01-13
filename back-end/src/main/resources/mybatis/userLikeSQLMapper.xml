@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssafy.userLike">
+
+	<insert id="insert" parameterType="UserLikeVo">
+		insert into user_like
+			(content_id, user_id, timestamp)
+		values
+			(#{content_id}, #{user_id}, #{timestamp})
+	</insert>
+
+	<delete id="delete" parameterType="UserLikeVo">
+		delete from user_like
+		where
+			user_id = #{user_id} and
+			content_id = #{content_id}
+	</delete>
+
+</mapper>

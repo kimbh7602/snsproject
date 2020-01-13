@@ -18,9 +18,9 @@
 	
 	<insert id="signup" parameterType="UserVo">
 		insert into users
-			(user_id, password, tel, email, interest)
+			(user_id, password, tel, email, interest, dislike, description)
 		values
-			(#{user_id}, #{password}, #{tel}, #{email}, #{interest})
+			(#{user_id}, #{password}, #{tel}, #{email}, #{interest}, #{dislike}, #{description})
 	</insert>
 	
 	<update id="updateUserInfo" parameterType="UserVo">
@@ -29,7 +29,9 @@
 			password = #{password},
 			tel = #{tel},
 			email = #{email},
-			interest = #{interest}
+			interest = #{interest},
+			dislike = #{dislike},
+			description = #{description}
 		where
 			user_id = #{user_id}
 	</update>

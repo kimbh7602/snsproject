@@ -30,20 +30,41 @@ public class FollowController {
 
 	@PostMapping("/insertFollow")
 	@ApiOperation(value = "팔로우")
-	private @ResponseBody ResponseEntity<Map<String, Object>> insertFollow(@RequestBody FollowVo follow) {
+	private @ResponseBody ResponseEntity<Map<String, Object>> follow(@RequestBody FollowVo follow) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
-			boolean followres = ser.insertFollow(follow);
+			boolean followres = ser.follow(follow);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (followres)
 				map.put("resmsg", "팔로우성공");
 			else
-				map.put("resmsg", "팔로우실패");
+				map.put("resmsg", "1팔로우실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 
 		} catch (RuntimeException e) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("resmsg", "팔로우실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	@PostMapping("/deleteFollow")
+	@ApiOperation(value = "팔로우취소")
+	private @ResponseBody ResponseEntity<Map<String, Object>> unfollow(@RequestBody FollowVo follow) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		try {
+			boolean followres = ser.unfollow(follow);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if (followres)
+				map.put("resmsg", "팔로우취소성공");
+			else
+				map.put("resmsg", "1팔로우취소실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "팔로우취소실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		return resEntity;

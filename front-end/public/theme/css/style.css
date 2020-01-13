@@ -759,3 +759,18 @@ h1, h2, h3, h4, h5,
     .custom-pagination a:hover {
       background: #ef6c57;
       color: #fff; }
+
+
+
+/* 추가 */
+
+/* 자동완성시에 크롬에서 자동으로 input 배경색 등 정해지는 것 수정 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+transition: background-color 5000s ease-in-out 0s;
+-webkit-transition: background-color 9999s ease-out;
+ -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+ -webkit-text-fill-color: #fff !important;
+}

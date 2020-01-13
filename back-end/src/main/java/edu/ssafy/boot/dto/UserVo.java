@@ -1,23 +1,42 @@
 package edu.ssafy.boot.dto;
 
+import java.util.List;
+
 public class UserVo {
 	private String user_id;
 	private String password;
 	private String tel;
 	private String email;
 	private String interest;
+	private String dislike;
+	private List<String> interestList;
+	private List<String> dislikeList;
+	private String description;
 
 	public UserVo() {
 		super();
 	}
 
-	public UserVo(String user_id, String password, String tel, String email, String interest) {
+	public UserVo(String user_id, String password, String tel, String email, List<String> interestList,
+			List<String> dislikeList, String description) {
+		this.user_id = user_id;
+		this.password = password;
+		this.tel = tel;
+		this.email = email;
+		this.setInterestList(interestList);
+		this.setDislikeList(dislikeList);
+		this.description = description;
+	}
+
+	public UserVo(String user_id, String password, String tel, String email, String interest, String dislike, String description) {
 		super();
 		this.user_id = user_id;
 		this.password = password;
 		this.tel = tel;
 		this.email = email;
 		this.interest = interest;
+		this.setDislike(dislike);
+		this.description = description;
 	}
 
 	public UserVo(String user_id, String password) {
@@ -25,6 +44,8 @@ public class UserVo {
 		this.user_id = user_id;
 		this.password = password;
 	}
+
+	
 
 	public String getUser_id() {
 		return user_id;
@@ -65,11 +86,34 @@ public class UserVo {
 	public void setInterest(String interest) {
 		this.interest = interest;
 	}
+	
+	public String getDislike() {
+		return dislike;
+	}
+
+	public void setDislike(String dislike) {
+		this.dislike = dislike;
+	}
+
+	public List<String> getDislikeList() {
+		return dislikeList;
+	}
+
+	public void setDislikeList(List<String> dislikeList) {
+		this.dislikeList = dislikeList;
+	}
+
+	public List<String> getInterestList() {
+		return interestList;
+	}
+
+	public void setInterestList(List<String> interestList) {
+		this.interestList = interestList;
+	}
 
 	@Override
 	public String toString() {
 		return "UserVo [user_id=" + user_id + ", password=" + password + ", tel=" + tel + ", email=" + email
 				+ ", interest=" + interest + "]";
 	}
-
 }

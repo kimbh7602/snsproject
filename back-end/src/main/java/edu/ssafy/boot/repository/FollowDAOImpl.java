@@ -13,9 +13,19 @@ public class FollowDAOImpl implements IFollowDAO {
 	SqlSession session;
 
 	@Override
-	public boolean insertFollow(FollowVo follow){
-		int insert = session.insert("ssafy.follow.insertFollow", follow);
+	public boolean follow(FollowVo follow){
+		int insert = session.insert("ssafy.follow.insert", follow);
 		if (insert > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean unfollow(FollowVo follow){
+		int delete = session.delete("ssafy.follow.delete", follow);
+		if (delete > 0) {
 			return true;
 		} else {
 			return false;

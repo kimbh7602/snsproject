@@ -25,6 +25,7 @@ import edu.ssafy.boot.dto.BlockVo;
 import edu.ssafy.boot.dto.LogVo;
 import edu.ssafy.boot.dto.UserVo;
 import edu.ssafy.boot.service.IBlockchainService;
+import edu.ssafy.boot.service.ISecurityService;
 import edu.ssafy.boot.service.IUserService;
 import io.swagger.annotations.ApiOperation;
 
@@ -42,12 +43,17 @@ public class UserController {
 	@Qualifier("BlockchainService")
 	IBlockchainService serbc;
 	
+	@Autowired
+	@Qualifier("SecurityService")
+	ISecurityService sersc;
+	
 
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인서비스")
 	private @ResponseBody ResponseEntity<Map<String, Object>> login(@RequestBody UserVo user, HttpServletRequest request) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
+			user.setPassword(sersc.computePw(user.getPassword()));
 			boolean res = ser.login(user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (res) {
@@ -76,8 +82,12 @@ public class UserController {
 		try {
 			boolean res = ser.updateUserInfo(user);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("resmsg", "수정성공");
-			map.put("resvalue", res);
+			if(res){
+				map.put("resmsg", "수정성공");
+				map.put("resvalue", res);
+			}else{
+				map.put("resmsg", "수정실패");
+			}
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (RuntimeException e) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -95,8 +105,12 @@ public class UserController {
 		try {
 			boolean res = ser.deleteUserInfo(user_id);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("resmsg", "삭제성공");
-			map.put("resvalue", res);
+			if(res){
+				map.put("resmsg", "삭제성공");
+				map.put("resvalue", res);
+			}else{
+				map.put("resmsg", "삭제실패");
+			}
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (RuntimeException e) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -115,8 +129,12 @@ public class UserController {
 		try {
 			user = ser.info(user_id);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("resmsg", "조회성공");
-			map.put("resvalue", user);
+			if(user != null){
+				map.put("resmsg", "조회성공");
+				map.put("resvalue", user);
+			}else{
+				map.put("resmsg", "조회실패");
+			}
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (RuntimeException e) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -131,9 +149,10 @@ public class UserController {
 	private @ResponseBody ResponseEntity<Map<String, Object>> signUpMem(@RequestBody UserVo user) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
+			user.setPassword(sersc.computePw(user.getPassword()));
 			boolean signup = ser.signup(user);
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (signup)
+			if (signup) 
 				map.put("resmsg", "등록성공");
 			else
 				map.put("resmsg", "1등록실패");

@@ -1,10 +1,26 @@
 package edu.ssafy.boot.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import edu.ssafy.boot.service.IImageService;
 
@@ -17,4 +33,58 @@ public class ImageController {
 	@Qualifier("ImageService")
 	IImageService ser;
 	
+	@PostMapping("/image/fileupload")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> handleFileUpload(HttpServletResponse res, HttpServletRequest req) {
+    	System.out.println("!!");
+    	String path = "/upload";
+    	String realPath = req.getServletContext().getRealPath(path);
+    	System.out.println(realPath);
+		File f = new File(realPath);
+		if (!f.exists()) {// 경로가 없다면 폴더를 만든다.
+			f.mkdir();
+		}
+		ResponseEntity<Map<String,Object>> resEntity = null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		MultipartHttpServletRequest mhsr = (MultipartHttpServletRequest) req;
+		Iterator<String> fileNames = mhsr.getFileNames();
+		if (!f.isDirectory()) {
+			f.mkdir();
+		}
+		
+		Map<String, Object> outData = new HashMap<String, Object>();
+		try {
+			while (fileNames.hasNext()) {
+				String fileName = fileNames.next();
+				System.out.println(fileName);
+				MultipartFile file = mhsr.getFile(fileName);
+				String oriName = new String(file.getOriginalFilename().getBytes("UTF-8"));
+				String ext = oriName.substring(oriName.lastIndexOf(".")); //확장자 끊어서.
+				String saveFileName = oriName; //저장할 파일이름을 만드는데 뒤에 확장자도 붙임?
+				File serverFile = new File(realPath+File.separator+saveFileName);
+				file.transferTo(serverFile);
+//				map.put("resmsg", "succ");
+				map.put("uploaded", 1);
+				map.put("url", req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/" + saveFileName);
+				map.put("fileName", saveFileName);
+//				JSONObject outData = new JSONObject();
+				outData.put("uploaded", 1);
+				outData.put("url", req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/" + saveFileName);
+				outData.put("fileName", saveFileName);
+				System.out.println(outData);
+				System.out.println("!!!");
+			}
+			resEntity = new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return resEntity;
+    }
 }

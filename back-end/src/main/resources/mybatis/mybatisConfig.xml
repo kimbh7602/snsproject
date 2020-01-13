@@ -10,6 +10,7 @@
 		<typeAlias type="edu.ssafy.boot.dto.ScrapVo" alias="ScrapVo" />
 		<typeAlias type="edu.ssafy.boot.dto.FollowVo" alias="FollowVo" />
 		<typeAlias type="edu.ssafy.boot.dto.ImageVo" alias="ImageVo" />
+		<typeAlias type="edu.ssafy.boot.dto.UserLikeVo" alias="UserLikeVo" />
 	</typeAliases>
 
 	<mappers>
@@ -19,5 +20,6 @@
 		<mapper resource="mybatis/scrapSQLMapper.xml" />
 		<mapper resource="mybatis/followSQLMapper.xml" />
 		<mapper resource="mybatis/imageSQLMapper.xml" />
+		<mapper resource="mybatis/userLikeSQLMapper.xml" />
 	</mappers>
 </configuration>

@@ -4,7 +4,7 @@
         
         <div class="col-6 col-md-6 col-lg-8" data-aos="fade-up">
           <router-link to="/single" class="d-block photo-item">
-            <img src="../../public/theme/../../public/theme/images/img_4.jpg" alt="Image" class="img-fluid">
+          <img src="../../public/theme/images/img_4.jpg" alt="Image" class="img-fluid">
             <div class="photo-text-more">
               <div class="photo-text-more">
               <h3 class="heading">Photos Title Here</h3>
@@ -226,7 +226,15 @@
 </template>
 
 <script>
+// import axios from 'axios'
 export default {
+  data() {
+    // data() {}도 가능!
+    return {
+      translations:[]
+    }
+  },
+
   mounted() {
     let recaptchaScript = document.createElement('script')
     recaptchaScript.setAttribute('src', "./theme/js/jquery.fancybox.min.js")
@@ -234,6 +242,21 @@ export default {
     // let recaptchaScripta = document.createElement('script')
     // recaptchaScripta.setAttribute('src', "./theme/common/scripts.js")
     // document.head.appendChild(recaptchaScripta)
+
+
+    // Google Translator Api
+
+    // axios.post("https://translation.googleapis.com/language/translate/v2?key=AIzaSyAcnkt6IBUt-bGIMw4u-VEIYpesgw4-2Lk",{
+    //   "q": ["안녕", "여행"],
+    //   "target": "en"
+    // })
+    //     .then((response)=>{
+    //       alert(response.data.data.translations[0].translatedText);
+    //       this.translations = response.data.data.translations;
+    //     })
+    //     .catch((error)=>{
+    //       alert(error)
+    //     })
   },
 }
 </script>
