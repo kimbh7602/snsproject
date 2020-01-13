@@ -1,5 +1,10 @@
 package edu.ssafy.boot.dto;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
 public class UserVo {
 	private String user_id;
 	private String password;
@@ -25,6 +30,8 @@ public class UserVo {
 		this.user_id = user_id;
 		this.password = password;
 	}
+
+	
 
 	public String getUser_id() {
 		return user_id;

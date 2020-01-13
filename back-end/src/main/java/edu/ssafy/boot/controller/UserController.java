@@ -25,6 +25,7 @@ import edu.ssafy.boot.dto.BlockVo;
 import edu.ssafy.boot.dto.LogVo;
 import edu.ssafy.boot.dto.UserVo;
 import edu.ssafy.boot.service.IBlockchainService;
+import edu.ssafy.boot.service.ISecurityService;
 import edu.ssafy.boot.service.IUserService;
 import io.swagger.annotations.ApiOperation;
 
@@ -42,12 +43,17 @@ public class UserController {
 	@Qualifier("BlockchainService")
 	IBlockchainService serbc;
 	
+	@Autowired
+	@Qualifier("SecurityService")
+	ISecurityService sersc;
+	
 
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인서비스")
 	private @ResponseBody ResponseEntity<Map<String, Object>> login(@RequestBody UserVo user, HttpServletRequest request) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
+			user.setPassword(sersc.computePw(user.getPassword()));
 			boolean res = ser.login(user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (res) {
@@ -131,9 +137,10 @@ public class UserController {
 	private @ResponseBody ResponseEntity<Map<String, Object>> signUpMem(@RequestBody UserVo user) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
+			user.setPassword(sersc.computePw(user.getPassword()));
 			boolean signup = ser.signup(user);
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (signup)
+			if (signup) 
 				map.put("resmsg", "등록성공");
 			else
 				map.put("resmsg", "1등록실패");

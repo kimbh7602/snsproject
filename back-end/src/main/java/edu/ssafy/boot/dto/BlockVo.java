@@ -31,7 +31,7 @@ public class BlockVo {
 			digest = MessageDigest.getInstance("SHA-256");
 			byte[] hash = digest.digest(dataToHash.getBytes(StandardCharsets.UTF_8));
 			encoded = Base64.getEncoder().encodeToString(hash);
-		} catch (NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException e) { 	
 			e.printStackTrace();
 		}
 
