@@ -43,7 +43,6 @@ public class CommentDAOImpl implements ICommentDAO {
 	@Override
 	public boolean updateComment(CommentVo comment) {
 		int update = session.update("ssafy.comment.updateComment", comment);
-		System.out.println(update);
 		if (update > 0) {
 			return true;
 		} else {
@@ -54,7 +53,6 @@ public class CommentDAOImpl implements ICommentDAO {
 	@Override
 	public boolean deleteComment(CommentVo comment) {
 		int delete = session.delete("ssafy.comment.deleteComment", comment);
-		System.out.println("delete" + comment.toString());
 		if (delete > 0) {
 			return true;
 		} else {
