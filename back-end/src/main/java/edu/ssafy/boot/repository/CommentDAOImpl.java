@@ -22,12 +22,21 @@ public class CommentDAOImpl implements ICommentDAO {
 	@Override
 	public boolean insertComment(CommentVo comment) {
 		int insert = session.insert("ssafy.comment.insertComment", comment);
-		
+
 		if (insert > 0) {
 			session.update("ssafy.comment.updateReComment", comment);
 			return true;
-		}
-		else
+		} else
+			return false;
+	}
+
+	@Override
+	public boolean insertReComment(CommentVo comment) {
+		int insert = session.insert("ssafy.comment.insertReComment", comment);
+
+		if (insert > 0) {
+			return true;
+		} else
 			return false;
 	}
 
@@ -49,7 +58,8 @@ public class CommentDAOImpl implements ICommentDAO {
 		if (delete > 0) {
 			return true;
 		} else {
-			return false;	
+			return false;
 		}
 	}
+
 }

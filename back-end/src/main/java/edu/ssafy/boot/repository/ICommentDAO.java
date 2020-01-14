@@ -14,4 +14,6 @@ public interface ICommentDAO {
 
 	public boolean deleteComment(CommentVo comment);
 
+	public boolean insertReComment(CommentVo comment);
+
 }

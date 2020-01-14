@@ -49,7 +49,7 @@ public class CommentController {
 
 	@PostMapping("/insertComment")
 	@ApiOperation(value = "댓글 작성", response = List.class)
-	private @ResponseBody ResponseEntity<Map<String, Object>> comementList(@RequestBody CommentVo comment) {
+	private @ResponseBody ResponseEntity<Map<String, Object>> insertComment(@RequestBody CommentVo comment) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		Map<String, Object> msg = new HashMap<String, Object>();
 		boolean resComment = ser.insertContent(comment);
@@ -57,6 +57,21 @@ public class CommentController {
 			msg.put("resmsg", "댓글 추가 성공");
 		} else {
 			msg.put("resmsg", "댓글 추가 실패");
+		}
+		resEntity = new ResponseEntity<Map<String, Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
+	
+	@PostMapping("/insertReComment")
+	@ApiOperation(value = "대댓글 작성", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> insertReComment(@RequestBody CommentVo comment) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		boolean resComment = ser.insertReComment(comment);
+		if (resComment) {
+			msg.put("resmsg", "대댓글 추가 성공");
+		} else {
+			msg.put("resmsg", "대댓글 추가 실패");
 		}
 		resEntity = new ResponseEntity<Map<String, Object>>(msg, HttpStatus.OK);
 		return resEntity;

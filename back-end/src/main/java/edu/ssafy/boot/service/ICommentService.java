@@ -15,4 +15,6 @@ public interface ICommentService {
 
 	public boolean deleteComments(CommentVo comment);
 
+	public boolean insertReComment(CommentVo comment);
+
 }
