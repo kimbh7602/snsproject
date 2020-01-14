@@ -17,8 +17,13 @@
 
 	<insert id="insert" parameterType="ContentVo">
 		insert into contents
-			(content_id, content_title, content_val, user_id, timestamp, hashtag)
+			(content_val, user_id, timestamp, hashtag)
 		values
-			(#{content_id}, #{content_title}, #{content_val}, #{user_id}, #{timestamp}, #{hashtag})
+			(#{content_val}, #{user_id}, now(), #{hashtag})
 	</insert>
+
+	<select id="selectContentId" parameterType="string" resultType="int">
+		select max(content_id) as content_id from contents
+		where user_id = #{user_id}
+	</select>
 </mapper>

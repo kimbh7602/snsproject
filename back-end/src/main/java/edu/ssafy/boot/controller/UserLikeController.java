@@ -1,6 +1,7 @@
 package edu.ssafy.boot.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.ssafy.boot.dto.ContentVo;
 import edu.ssafy.boot.dto.UserLikeVo;
 import edu.ssafy.boot.service.IUserLikeService;
 import io.swagger.annotations.ApiOperation;
@@ -48,7 +53,7 @@ public class UserLikeController {
         return resEntity;
     }
 
-    @PostMapping("/dislike")
+    @DeleteMapping("/dislike")
     @ApiOperation(value = "좋아요취소")
     private @ResponseBody ResponseEntity<Map<String, Object>> userDislike(@RequestBody UserLikeVo userLike) {
         ResponseEntity<Map<String, Object>> resEntity = null;
@@ -68,5 +73,25 @@ public class UserLikeController {
         }
         return resEntity;
     }
+
+    @GetMapping("/userLikeList/{user_id}")
+    @ApiOperation(value = "좋아요목록", response = List.class)
+    public @ResponseBody ResponseEntity<Map<String, Object>> userLikeList(@PathVariable("user_id") String user_id) {
+        ResponseEntity<Map<String, Object>> resEntity = null;
+        try {
+            List<ContentVo> userLikeList = ser.userLikeList(user_id);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("resmsg", "좋아요목록성공");
+            map.put("resvalue", userLikeList);
+            resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+            
+        } catch (RuntimeException e) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("resmsg", "좋아요목록실패");
+            resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        }
+        return resEntity;
+    }
+    
 }
     

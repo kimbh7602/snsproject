@@ -11,6 +11,7 @@ public class ContentVo {
 	private String timestamp;
 	private int content_like;
 	private String hashtag;
+	private List<String> hashtagList;
 	private boolean user_like;
 	private List<ImageVo> imageList;
 
@@ -18,17 +19,17 @@ public class ContentVo {
 		super();
 	}
 
-	public ContentVo(int content_id, int share_cid, String content_title, String content_val, String user_id,
-			String timestamp, int content_like, String hashtag, boolean user_like) {
+	public ContentVo(int content_id, int share_cid, String content_val, String user_id,
+			String timestamp, int content_like, List<String> hashtagList, List<ImageVo> imageList, boolean user_like) {
 		super();
 		this.content_id = content_id;
 		this.share_cid = share_cid;
-		this.content_title = content_title;
 		this.content_val = content_val;
 		this.user_id = user_id;
 		this.timestamp = timestamp;
 		this.content_like = content_like;
-		this.hashtag = hashtag;
+		this.hashtagList = hashtagList;
+		this.imageList = imageList;
 		this.user_like = user_like;
 	}
 
@@ -43,16 +44,34 @@ public class ContentVo {
 		this.hashtag = hashtag;
 	}
 	
-	public ContentVo(int content_id, String content_title, String content_val, String user_id, String timestamp,
-			String hashtag, List<ImageVo> imageList) {
+	public ContentVo(int content_id, String content_val, String user_id, String timestamp,
+			List<String> hashtagList, List<ImageVo> imageList) {
 		super();
 		this.content_id = content_id;
-		this.content_title = content_title;
 		this.content_val = content_val;
 		this.user_id = user_id;
 		this.timestamp = timestamp;
-		this.hashtag = hashtag;
+		this.hashtagList = hashtagList;
 		this.imageList = imageList;
+	}
+
+	public ContentVo(String content_val, String user_id, List<String> hashtagList, List<ImageVo> imageList) {
+		super();
+		this.content_val = content_val;
+		this.user_id = user_id;
+		this.hashtagList = hashtagList;
+		this.imageList = imageList;
+	}
+
+	public ContentVo(int content_id, int share_cid, String content_val, String user_id, String timestamp,
+			int content_like, String hashtag) {
+		this.content_id = content_id;
+		this.share_cid = share_cid;
+		this.content_val = content_val;
+		this.user_id = user_id;
+		this.timestamp = timestamp;
+		this.content_like = content_like;
+		this.hashtag = hashtag;
 	}
 
 	public int getContent_id() {
@@ -135,10 +154,19 @@ public class ContentVo {
 		this.imageList = imageList;
 	}
 
+	public List<String> getHashtagList() {
+		return hashtagList;
+	}
+
+	public void setHashtagList(List<String> hashtagList) {
+		this.hashtagList = hashtagList;
+	}
+
 	@Override
 	public String toString() {
 		return "ContentVo [content_id=" + content_id + ", share_cid=" + share_cid + ", content_title=" + content_title
 				+ ", content_val=" + content_val + ", user_id=" + user_id + ", timestamp=" + timestamp
 				+ ", content_like=" + content_like + ", hashtag=" + hashtag + ", user_like=" + user_like + "]";
 	}
+
 }

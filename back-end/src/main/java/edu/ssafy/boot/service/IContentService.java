@@ -9,4 +9,5 @@ public interface IContentService {
 	public ContentVo detail(int content_id);
 	public List<String> detailUrls(int content_id);
 	public boolean insertContent(ContentVo content);
+	public int selectContentId(String user_id);
 }

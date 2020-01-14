@@ -11,8 +11,20 @@
 
 	<insert id="insert" parameterType="ImageVo">
 		insert into content_image
-			(content_id, image_name, image_url)
+			(content_id, image_name, image_url, filter)
 		values
-			(#{content_id}, #{image_name}, #{image_url})
+			(#{content_id}, #{image_name}, #{image_url}, #{filter})
 	</insert>
+
+	<insert id="tmpInsert" parameterType="ImageVo">
+		insert into content_image
+			(image_name, image_url)
+		values
+			(#{image_name}, #{image_url})
+	</insert>
+
+	<delete id="cancel" parameterType="string">
+		delete from content_image
+		where contains(image_name, #{user_id});
+	</delete>
 </mapper>

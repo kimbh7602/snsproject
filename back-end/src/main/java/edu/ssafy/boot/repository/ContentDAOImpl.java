@@ -35,22 +35,28 @@ public class ContentDAOImpl implements IContentDAO {
 
 	@Override
 	public boolean insertContent(ContentVo content) {
-		List<ImageVo> imageList = content.getImageList();
+		// List<ImageVo> imageList = content.getImageList();
 		int contentInsert = session.insert("ssafy.content.insert", content);
 
-		boolean imageFlag = true;
-		for (ImageVo imageVo : imageList) {
-			int imageInsert = session.insert("ssafy.image.insert", imageVo);
-			if(imageInsert <= 0){
-				imageFlag = false;
-				break;
-			}
-		}
-		if(contentInsert > 0 && imageFlag){
+		// boolean imageFlag = true;
+		// for (ImageVo imageVo : imageList) {
+		// 	int imageInsert = session.insert("ssafy.image.insert", imageVo);
+		// 	if(imageInsert <= 0){
+		// 		imageFlag = false;
+		// 		break;
+		// 	}
+		// }
+		if(contentInsert > 0){
 			return true;
 		}else{
 			return false;
 		}
+	}
+
+	@Override
+	public int selectContentId(String user_id) {
+		int content_id = session.selectOne("ssafy.content.selectContentId", user_id);
+		return content_id;
 	}
 
 }

@@ -10,7 +10,6 @@
 		where f.follower_id = #{user_id}
 	</select>
 
-<<<<<<< HEAD
 	<insert id="insert" parameterType="FollowVo">
 		insert into follow
 			(follower_id, follow_id)
@@ -24,13 +23,23 @@
 			follower_id = #{follower_id} and
 			follow_id = #{follow_id}
 	</delete>
-=======
-	<insert id="insertFollow" parameterType="FollowVo">
-		insert into follow
-			(follower_id, follow_id)
-		values
-			(#{follower_id}, #{follow_id})
-	</insert>
->>>>>>> dev
+
+	<select id="followList" parameterType="string" resultType="string">
+		select follow_id from follow
+		where
+			follower_id = #{follower_id}
+	</select>
+	
+	<select id="followerList" parameterType="string" resultType="string">
+		select follower_id from follow
+		where
+			follow_id = #{follow_id}
+	</select>
+
+	<select id="followfollowerList" parameterType="string" resultType="string">
+		select follow_id from follow
+		where follow_id in (select follower_id from follow where follow_id = #{user_id})
+		and follower_id = #{user_id};
+	</select>
 
 </mapper>

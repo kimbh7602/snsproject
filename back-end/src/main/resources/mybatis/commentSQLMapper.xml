@@ -3,10 +3,49 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ssafy.comment">
-	<select id="selectMyList" parameterType="string" resultType="ContentVo">
-		select c.* from contents as c
-		join follow as f
-		on (c.user_id = f.follow_id)
-		where f.follower_id = #{user_id}
+	<select id="selectList" parameterType="string"
+		resultType="CommentVo">
+		select *
+		from 
+			comments
+		where
+			content_id = #{content_id}
+		order by 
+			re_comment_id asc, comment_id asc
 	</select>
+
+
+	<insert id="insertComment" parameterType="CommentVo">
+		insert into comments
+			(content_id, user_id, target_id, comment_val)
+		values
+			(#{content_id},#{user_id}, #{target_id}, #{comment_val})
+	</insert>
+	<update id="updateReComment" parameterType="CommentVo">
+		update comments set
+			re_comment_id = LAST_INSERT_ID() 
+		where
+			user_id = #{user_id} and
+			comment_id= LAST_INSERT_ID()
+	</update>
+
+
+	<update id="updateComment" parameterType="CommentVo">
+		update comments
+		set
+			target_id = #{target_id},
+			comment_val = #{comment_val}
+		where
+			re_comment_id = #{re_comment_id} and
+			content_id= #{content_id} and
+			user_id = #{user_id} and
+			comment_id = #{comment_id}
+	</update>
+	<delete id="deleteComment" parameterType="CommentVo">
+		delete from comments 
+		where 
+			comment_id = #{comment_id} or
+			re_comment_id = #{comment_id}
+	</delete>
+
 </mapper>

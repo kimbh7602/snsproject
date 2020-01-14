@@ -1,13 +1,6 @@
 package edu.ssafy.boot.dto;
 
-<<<<<<< HEAD
 import java.util.List;
-=======
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
->>>>>>> 0e0dafb0a13956178a923a5a9b516350b1732c01
 
 public class UserVo {
 	private String user_id;

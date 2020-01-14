@@ -9,4 +9,24 @@
 		on (c.user_id = f.follow_id)
 		where f.follower_id = #{user_id}
 	</select>
+
+	<insert id="insert" parameterType="ScrapVo">
+		insert into scraps
+			(content_id, user_id)
+		values
+			(#{content_id}, #{user_id})
+	</insert>
+
+	<delete id="delete" parameterType="ScrapVo">
+		delete from scraps
+		where
+			content_id = #{content_id} and
+			user_id = #{user_id}
+	</delete>
+
+	<select id="scrapList" parameterType="string" resultType="ContentVo">
+		select * from contents
+		where 
+			content_id in (select content_id from scraps where user_id = #{user_id})
+	</select>
 </mapper>

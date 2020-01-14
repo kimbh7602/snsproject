@@ -1,9 +1,12 @@
 package edu.ssafy.boot.repository;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import edu.ssafy.boot.dto.ContentVo;
 import edu.ssafy.boot.dto.UserLikeVo;
 
 @Repository("UserLikeDAOImpl")
@@ -30,5 +33,10 @@ public class UserLikeDAOImpl implements IUserLikeDAO {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public List<ContentVo> userLikeList(String user_id) {
+        return session.selectList("ssafy.userLike.userLikeList", user_id);
     }
 }

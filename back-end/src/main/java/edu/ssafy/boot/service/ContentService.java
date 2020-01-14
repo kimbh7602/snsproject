@@ -33,7 +33,18 @@ public class ContentService implements IContentService {
 
 	@Override
 	public boolean insertContent(ContentVo content) {
+		List<String> hashtagList = content.getHashtagList();
+		String hashtag = "";
+		for (String str : hashtagList) {
+			hashtag += str + " ";
+		}
+		content.setHashtag(hashtag.trim());
 		return dao.insertContent(content);
+	}
+
+	@Override
+	public int selectContentId(String user_id) {
+		return dao.selectContentId(user_id);
 	}
 	
 }

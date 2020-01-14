@@ -4,16 +4,25 @@ public class ImageVo {
 	private int content_id;
 	private String image_name;
 	private String image_url;
+	private String base64;
+	private String filter;
 
 	public ImageVo() {
 		super();
 	}
 
-	public ImageVo(int content_id, String image_name, String image_url) {
+	public ImageVo(int content_id, String image_name, String image_url, String filter) {
 		super();
 		this.content_id = content_id;
 		this.image_name = image_name;
 		this.image_url = image_url;
+		this.filter = filter;
+	}
+	
+	public ImageVo(String base64, String filter) {
+		super();
+		this.base64 = base64;
+		this.filter = filter;
 	}
 
 	public int getContent_id() {
@@ -43,6 +52,22 @@ public class ImageVo {
 	@Override
 	public String toString() {
 		return "ImageVo [content_id=" + content_id + ", image_name=" + image_name + ", image_url=" + image_url + "]";
+	}
+
+	public String getBase64() {
+		return base64;
+	}
+
+	public void setBase64(String base64) {
+		this.base64 = base64;
+	}
+
+	public String getFilter() {
+		return filter;
+	}
+
+	public void setFilter(String filter) {
+		this.filter = filter;
 	}
 
 }

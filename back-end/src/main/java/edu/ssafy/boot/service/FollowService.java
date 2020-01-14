@@ -1,5 +1,7 @@
 package edu.ssafy.boot.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -23,5 +25,20 @@ public class FollowService implements IFollowService {
 	public boolean unfollow(FollowVo follow) {
 		return dao.unfollow(follow);
 
+	}
+
+	@Override
+	public List<String> followList(String follower_id) {
+		return dao.followList(follower_id);
+	}
+
+	@Override
+	public List<String> followerList(String follow_id) {
+		return dao.followerList(follow_id);
+	}
+
+	@Override
+	public List<String> followfollowerList(String user_id) {
+		return dao.followfollowerList(user_id);
 	}
 }
