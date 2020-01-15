@@ -8,4 +8,6 @@ public interface IUserService {
 	public boolean updateUserInfo(UserVo user);
 	public boolean deleteUserInfo(String user_id);
 	public UserVo info(String user_id);
+	public void updateUserStatus();
+	public boolean emailDuplicateCheck(String email);
 }

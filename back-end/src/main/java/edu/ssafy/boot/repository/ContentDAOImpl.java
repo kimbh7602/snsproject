@@ -59,4 +59,24 @@ public class ContentDAOImpl implements IContentDAO {
 		return content_id;
 	}
 
+	@Override
+	public boolean deleteContent(int content_id) {
+		int delete = session.delete("ssafy.content.delete", content_id);
+		if(delete > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updateContent(ContentVo content) {
+		int update = session.update("ssafy.content.update", content);
+		if(update > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 }

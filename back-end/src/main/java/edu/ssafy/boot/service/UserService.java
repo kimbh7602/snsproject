@@ -80,4 +80,14 @@ public class UserService implements IUserService {
 	public UserVo info(String user_id) {
 		return dao.info(user_id);
 	}
+
+	@Override
+	public void updateUserStatus() {
+		dao.updateUserStatus();
+	}
+
+	@Override
+	public boolean emailDuplicateCheck(String email) {
+		return dao.emailDuplicateCheck(email);
+	}
 }

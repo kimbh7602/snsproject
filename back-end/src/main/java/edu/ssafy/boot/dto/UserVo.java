@@ -12,6 +12,8 @@ public class UserVo {
 	private List<String> interestList;
 	private List<String> dislikeList;
 	private String description;
+	private String timestamp;
+	private boolean status;
 
 	public UserVo() {
 		super();
@@ -28,7 +30,7 @@ public class UserVo {
 		this.description = description;
 	}
 
-	public UserVo(String user_id, String password, String tel, String email, String interest, String dislike, String description) {
+	public UserVo(String user_id, String password, String tel, String email, String interest, String dislike, String description, boolean status) {
 		super();
 		this.user_id = user_id;
 		this.password = password;
@@ -37,6 +39,7 @@ public class UserVo {
 		this.interest = interest;
 		this.setDislike(dislike);
 		this.description = description;
+		this.status = status;
 	}
 
 	public UserVo(String user_id, String password) {
@@ -115,5 +118,29 @@ public class UserVo {
 	public String toString() {
 		return "UserVo [user_id=" + user_id + ", password=" + password + ", tel=" + tel + ", email=" + email
 				+ ", interest=" + interest + "]";
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 }

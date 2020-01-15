@@ -165,4 +165,26 @@ public class UserController {
 		}
 		return resEntity;
 	}
+
+	@GetMapping("/emailCheck/{email}")
+	@ApiOperation(value = "이메일 중복체크")
+	private @ResponseBody ResponseEntity<Map<String, Object>> emailCheck(@PathVariable("email") String email) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		try {
+			boolean res = ser.emailDuplicateCheck(email);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if (res) 
+				map.put("resmsg", "사용가능");
+			else
+				map.put("resmsg", "이메일 중복");
+			map.put("resValue", res);
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "이메일 확인 실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
 }

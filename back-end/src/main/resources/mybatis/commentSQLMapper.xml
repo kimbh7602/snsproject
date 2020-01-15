@@ -3,6 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ssafy.comment">
+	<!-- 댓글, 대댓글 전체조회 시작 -->
 	<select id="selectList" parameterType="string"
 		resultType="CommentVo">
 		select *
@@ -13,8 +14,9 @@
 		order by
 		re_comment_id asc, comment_id asc
 	</select>
+	<!-- 댓글, 대댓글 전체조회 끝 -->
 
-
+	<!-- 댓글입력시작 -->
 	<insert id="insertComment" parameterType="CommentVo">
 		insert into comments
 		(content_id, user_id, target_id, comment_val)
@@ -23,19 +25,24 @@
 	</insert>
 	<update id="updateReComment" parameterType="CommentVo">
 		update comments set
-		re_comment_id = LAST_INSERT_ID()
-		where
-		user_id = #{user_id} and
-		comment_id= LAST_INSERT_ID()
+		re_comment_id = (select * from (select max(comment_id) from comments
+		where user_id = #{user_id}) as t) where comment_id = (select * from
+		(select max(comment_id) from comments where user_id = #{user_id}) as
+		x);
 	</update>
+	<!-- 댓글입력끝 -->
 
+	<!-- 대댓글입력시작 -->
 	<insert id="insertReComment" parameterType="CommentVo">
 		insert into comments
 		(re_comment_id, content_id, user_id, target_id, comment_val)
 		values
-		(#{comment_id}, #{content_id},#{user_id}, #{target_id}, #{comment_val})
+		(#{comment_id}, #{content_id}, #{user_id}, #{target_id},
+		#{comment_val})
 	</insert>
+	<!-- 대댓글 입력 끝 -->
 
+	<!-- 댓글,대댓글 공통삭제 시작 -->
 	<update id="updateComment" parameterType="CommentVo">
 		update comments
 		set
@@ -47,11 +54,14 @@
 		user_id = #{user_id} and
 		comment_id = #{comment_id}
 	</update>
+	<!-- 댓글, 대댓글 공통 끝 -->
+
+	<!-- 댓글, 대댓글 공통 삭제 시작 -->
 	<delete id="deleteComment" parameterType="CommentVo">
 		delete from comments
 		where
 		comment_id = #{comment_id} or
 		re_comment_id = #{comment_id}
 	</delete>
-
+	<!-- 댓글, 대댓글 공통 삭제 끝 -->
 </mapper>

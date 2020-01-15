@@ -46,5 +46,21 @@ public class ContentService implements IContentService {
 	public int selectContentId(String user_id) {
 		return dao.selectContentId(user_id);
 	}
+
+	@Override
+	public boolean deleteContent(int content_id) {
+		return dao.deleteContent(content_id);
+	}
+
+	@Override
+	public boolean updateContent(ContentVo content) {
+		List<String> hashtagList = content.getHashtagList();
+		String hashtag = "";
+		for (String str : hashtagList) {
+			hashtag += str + " ";
+		}
+		content.setHashtag(hashtag.trim());
+		return dao.updateContent(content);
+	}
 	
 }

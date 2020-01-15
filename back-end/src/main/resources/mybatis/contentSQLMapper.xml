@@ -26,4 +26,17 @@
 		select max(content_id) as content_id from contents
 		where user_id = #{user_id}
 	</select>
+
+	<delete id="delete" parameterType="int">
+		delete from contents
+		where content_id = #{content_id}
+	</delete>
+
+	<update id="update" parameterType="ContentVo">
+		update contents
+		set
+			content_val = #{content_val},
+			hashtag = #{hashtag}
+		where content_id = #{content_id}
+	</update>
 </mapper>

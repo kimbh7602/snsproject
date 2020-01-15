@@ -1,5 +1,7 @@
 package edu.ssafy.boot.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,7 @@ public class ImageService implements IImageService {
 
 	@Override
 	public boolean insertImage(ImageVo image) {
-		// TODO Auto-generated method stub
-		return false;
+		return dao.insertImage(image);
 	}
 
 	@Override
@@ -30,5 +31,15 @@ public class ImageService implements IImageService {
 	public boolean cancelImage(String user_id) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean deleteImage(int content_id) {
+		return dao.deleteImage(content_id);
+	}
+
+	@Override
+	public List<ImageVo> imageList(int content_id) {
+		return dao.imageList(content_id);
 	}
 }

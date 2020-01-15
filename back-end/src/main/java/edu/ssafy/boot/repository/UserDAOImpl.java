@@ -73,4 +73,15 @@ public class UserDAOImpl implements IUserDAO {
 			return false;
 		}
 	}
+
+	@Override
+	public void updateUserStatus() {
+		session.update("ssafy.user.updateUserStatus");
+	}
+
+	@Override
+	public boolean emailDuplicateCheck(String email) {
+		boolean isOk = session.selectOne("ssafy.user.emailDuplicateCheck", email);
+		return isOk;
+	}
 }

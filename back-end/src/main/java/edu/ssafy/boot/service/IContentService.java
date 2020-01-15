@@ -10,4 +10,6 @@ public interface IContentService {
 	public List<String> detailUrls(int content_id);
 	public boolean insertContent(ContentVo content);
 	public int selectContentId(String user_id);
+	public boolean deleteContent(int content_id);
+	public boolean updateContent(ContentVo content);
 }

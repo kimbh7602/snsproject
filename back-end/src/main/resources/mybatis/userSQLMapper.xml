@@ -48,4 +48,16 @@
 		where
 			email = #{email}
 	</update>
+
+	<update id="updateUserStatus">
+		update users
+		set
+			status = false
+		where
+			datediff(now(), timestamp) > 30
+	</update>
+
+	<select id="emailDuplicateCheck" parameterType="string" resultType="boolean">
+		select exists ( select * from users where email = #{email}) as exist
+	</select>
 </mapper>

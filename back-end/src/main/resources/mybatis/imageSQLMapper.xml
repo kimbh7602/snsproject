@@ -27,4 +27,14 @@
 		delete from content_image
 		where contains(image_name, #{user_id});
 	</delete>
+
+	<delete id="delete" parameterType="int">
+		delete from content_image
+		where content_id = #{content_id}
+	</delete>
+
+	<select id="imageList" parameterType="int" resultType="ImageVo">
+		select * from content_image
+		where content_id = #{content_id}
+	</select>
 </mapper>

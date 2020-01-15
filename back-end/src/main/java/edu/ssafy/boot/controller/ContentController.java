@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -109,10 +111,11 @@ public class ContentController {
 		boolean isDone = true;
 		for (ImageVo image : content.getImageList()) {
 			byte[] decode = Base64.decodeBase64(image.getBase64());
-			String image_name = content.getContent_id()+"-"+num+"jpg";
-			String image_url = realPath+File.separator+image_name;
+			String image_name = content.getContent_id()+"-"+num+".jpg";
+			String savePath = realPath+File.separator+image_name;
+			String image_url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/" +image_name;
 
-			File f = new File(image_url);
+			File f = new File(savePath);
 			
 			try {
 				f.createNewFile();
@@ -125,6 +128,7 @@ public class ContentController {
 				image.setImage_url(image_url);
 
 				iSer.insertImage(image);
+				System.out.println(image.toString());
 				num++;
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -132,8 +136,65 @@ public class ContentController {
 				isDone = false;
 			}
 		};
-
-
 		return isDone;
+	}
+
+	@DeleteMapping("/deleteContent/{content_id}")
+	@ApiOperation(value = "게시물 삭제")
+	private @ResponseBody ResponseEntity<Map<String, Object>> updateContent(@PathVariable("content_id") int content_id,  HttpServletResponse res, HttpServletRequest req){
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		boolean resContent = ser.deleteContent(content_id);
+		boolean resImage = imageDelete(content_id, res, req);
+		if(resContent && resImage){
+			msg.put("resmsg", "게시물 삭제 성공");
+		}else{
+			msg.put("resmsg", "게시물 삭제 실패");
+		}
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
+
+	private boolean imageDelete(int content_id, HttpServletResponse res, HttpServletRequest req){
+    	String path = "/upload";
+		String realPath = req.getServletContext().getRealPath(path);
+		
+		List<ImageVo> imageList = iSer.imageList(content_id);
+
+		boolean isDelete = true;
+		for (ImageVo imageVo : imageList) {
+			String savePath = realPath+File.separator+imageVo.getImage_name();
+			File file = new File(savePath);
+			if(file.exists()){
+				if(file.delete()){
+					System.out.println(imageVo.getImage_name() + " 삭제 성공");
+				}else{
+					System.out.println(imageVo.getImage_name() + " 삭제 실패");
+					isDelete = false;
+				}
+			}
+		}
+
+		boolean isDbDelete = iSer.deleteImage(content_id);
+
+
+		return isDelete&&isDbDelete;
+	}
+
+	@PutMapping("/updateContent")
+	@ApiOperation(value = "게시물 수정")
+	private @ResponseBody ResponseEntity<Map<String, Object>> updateContent(@RequestBody ContentVo content,  HttpServletResponse res, HttpServletRequest req){
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		boolean resContent = ser.updateContent(content);
+		boolean resDeleteImage = imageDelete(content.getContent_id(), res, req);
+		boolean resInsertImage = imageUpload(content, res, req);
+		if(resContent && resDeleteImage && resInsertImage){
+			msg.put("resmsg", "게시물 수정 성공");
+		}else{
+			msg.put("resmsg", "게시물 수정	 실패");
+		}
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
 	}
 }
