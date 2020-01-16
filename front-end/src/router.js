@@ -7,6 +7,12 @@ import Blog from "./components/Blog.vue"
 import Single from "./components/Single.vue"
 import Register from "./components/Register.vue"
 import Vfor from "./components/Vfor.vue"
+import Chating from "./components/Chating.vue"
+
+import Filter from "./components/Filter.vue"
+import sliderex from "./components/sliderex.vue"
+import AddImage from "./components/AddImage.vue"
+import ImageFilter from "./components/ImageFilter.vue"
 
 Vue.use(Router);
 
@@ -60,6 +66,40 @@ export const router = new Router({
             name: "vfor",
             alias: "/Vfor",
             component: Vfor,
+            props: true,
+        },
+        {
+            path: "/chating",
+            name: "chating",
+            alias: "/Chating",
+            component: Chating,
+        },
+        {
+            path: "/filter",
+            name: "filter",
+            alias: "/Filter",
+            component: Filter,
+            props: true,
+        },
+        {
+            path: "/slider",
+            name: "slider",
+            alias: "/slider",
+            component: sliderex,
+            props: true,
+        },
+        {
+            path: "/addimage",
+            name: "addimage",
+            alias: "/AddImage",
+            component: AddImage,
+            props: true,
+        },
+        {
+            path: "/imagefilter",
+            name: "imagefilter",
+            alias: "/ImageFilter",
+            component: ImageFilter,
             props: true,
         },
     ]

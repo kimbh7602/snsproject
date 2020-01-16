@@ -32,6 +32,7 @@ export default {
     // data() {}도 가능!
     return {
      getImages: [],
+     errored:false,
     }
   },
   methods: {
@@ -42,12 +43,9 @@ export default {
           this.getImages = response.data.urls;
           // console.log(this.getImages)
         })
-        .catch((error)=>{
-<<<<<<< HEAD
-          console.log(error)
-=======
-          alert(error)
->>>>>>> dev
+        .catch(()=>{
+          this.errored = true;
+          // console.log(error)
         })
     }
   },
