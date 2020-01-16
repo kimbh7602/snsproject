@@ -7,6 +7,7 @@ import Blog from "./components/Blog.vue"
 import Single from "./components/Single.vue"
 import Register from "./components/Register.vue"
 import Vfor from "./components/Vfor.vue"
+import Calendar from "./components/Calendar.vue"
 
 Vue.use(Router);
 
@@ -61,6 +62,13 @@ export const router = new Router({
             alias: "/Vfor",
             component: Vfor,
             props: true,
+        },
+        {
+            path: "/calendar",
+            name: "calendar",
+            alias: "/Calendar",
+            component: Calendar,
+            // props: true,
         },
     ]
 });

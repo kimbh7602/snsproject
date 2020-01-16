@@ -87,6 +87,7 @@ public class ContentController {
 	@PostMapping("/insertContent")
 	@ApiOperation(value = "게시물 추가")
 	private @ResponseBody ResponseEntity<Map<String, Object>> insertContent(@RequestBody ContentVo content,  HttpServletResponse res, HttpServletRequest req){
+		System.out.println("asdfasdfasdfasfafasfdasfsdfasdfasdasfsd");
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		Map<String, Object> msg = new HashMap<String, Object>();
 		boolean resContent = ser.insertContent(content);
@@ -110,7 +111,7 @@ public class ContentController {
 		int num = 1;
 		boolean isDone = true;
 		for (ImageVo image : content.getImageList()) {
-			byte[] decode = Base64.decodeBase64(image.getBase64());
+			byte[] decode = Base64.decodeBase64(image.getBase64().substring(image.getBase64().lastIndexOf(",")));
 			String image_name = content.getContent_id()+"-"+num+".jpg";
 			String savePath = realPath+File.separator+image_name;
 			String image_url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/" +image_name;

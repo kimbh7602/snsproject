@@ -24,6 +24,7 @@
             <li><router-link to="/single">Single</router-link></li>
             <li><router-link to="/register">Register</router-link></li>
             <li><router-link to="/vfor">Practice</router-link></li>
+            <li><router-link to="/calendar">Calendar</router-link></li>
         </ul>
         <ul class="social js-clone-nav">
             <li><a href="#"><span class="icon-facebook"></span></a></li>

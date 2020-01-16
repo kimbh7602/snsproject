@@ -43,11 +43,7 @@ export default {
           // console.log(this.getImages)
         })
         .catch((error)=>{
-<<<<<<< HEAD
-          console.log(error)
-=======
           alert(error)
->>>>>>> dev
         })
     }
   },
