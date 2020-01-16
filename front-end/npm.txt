@@ -3,8 +3,5 @@ npm
 axios
 vuex
 vue-router
-filepond
-vue-filepond
-filepond-plugin-file-validate-type
 
-
+vue-virtual-scroll-list

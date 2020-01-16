@@ -226,15 +226,7 @@
 </template>
 
 <script>
-// import axios from 'axios'
 export default {
-  data() {
-    // data() {}도 가능!
-    return {
-      translations:[]
-    }
-  },
-
   mounted() {
     let recaptchaScript = document.createElement('script')
     recaptchaScript.setAttribute('src', "./theme/js/jquery.fancybox.min.js")
@@ -242,21 +234,6 @@ export default {
     // let recaptchaScripta = document.createElement('script')
     // recaptchaScripta.setAttribute('src', "./theme/common/scripts.js")
     // document.head.appendChild(recaptchaScripta)
-
-
-    // Google Translator Api
-
-    // axios.post("https://translation.googleapis.com/language/translate/v2?key=AIzaSyAcnkt6IBUt-bGIMw4u-VEIYpesgw4-2Lk",{
-    //   "q": ["안녕", "여행"],
-    //   "target": "en"
-    // })
-    //     .then((response)=>{
-    //       alert(response.data.data.translations[0].translatedText);
-    //       this.translations = response.data.data.translations;
-    //     })
-    //     .catch((error)=>{
-    //       alert(error)
-    //     })
   },
 }
 </script>
