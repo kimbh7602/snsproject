@@ -24,9 +24,17 @@
             <li><router-link to="/single">Single</router-link></li>
             <li><router-link to="/register">Register</router-link></li>
             <li><router-link to="/vfor">Practice</router-link></li>
+<<<<<<< HEAD
             <li><router-link to="/password">Password</router-link></li>
             <li><router-link to="/chating">Chating</router-link></li>
             <li><router-link to="/addimage">Write</router-link></li>
+=======
+<<<<<<< HEAD
+            <li><router-link to="/calendar">Calendar</router-link></li>
+=======
+            <li><router-link to="/chating">Chating</router-link></li>
+>>>>>>> 3d39533856459d5d910c3fd720b658a64e945fcb
+>>>>>>> d63b044d45e42f036273065155d0b27682f9b11b
         </ul>
         <ul class="social js-clone-nav">
             <li><a href="#"><span class="icon-facebook"></span></a></li>
