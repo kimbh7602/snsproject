@@ -19,12 +19,14 @@
         <ul class="js-clone-nav">
             <li class="active"><router-link to="/">Home</router-link></li>
             <li><router-link to="/category">Category</router-link></li>
-            <li><router-link to="/bio">Bio</router-link></li>
+            <!-- <li><router-link to="/bio">Bio</router-link></li> -->
             <li><router-link to="/blog">Blog</router-link></li>
             <li><router-link to="/single">Single</router-link></li>
             <li><router-link to="/register">Register</router-link></li>
             <li><router-link to="/vfor">Practice</router-link></li>
+            <li><router-link to="/password">Password</router-link></li>
             <li><router-link to="/chating">Chating</router-link></li>
+            <li><router-link to="/addimage">Write</router-link></li>
         </ul>
         <ul class="social js-clone-nav">
             <li><a href="#"><span class="icon-facebook"></span></a></li>

@@ -2,7 +2,7 @@
     <div class="container-fluid photos">
       <div class="row justify-content-center">
         
-        <div class="col-md-6 pt-4"  data-aos="fade-up">
+        <div class="col-md-6 pt-4" data-aos="fade-up">
           <h2 class="text-white mb-4">Register</h2>
 
           <div class="row">
@@ -15,7 +15,7 @@
                         <input type="submit" onclick="return false;" />
                         <input type="text"/>
                     </div>      
-
+                    <!-- id -->
                     <div class="row form-group">
                       <div class="col-md-12">
                         <label class="text-white" for="uid">ID</label>
@@ -29,44 +29,81 @@
                         </div>
                       </div>
                     </div>
-
+                    <!-- password -->
                     <div class="row form-group">
                       <div class="col-md-12">
                         <label class="text-white" for="upw">PW</label>
                         <input type="password" v-model="upw" id="upw" class="form-control">
                       </div>
                     </div>
-
+                    <!-- phonenumber -->
                     <div class="row form-group">
-                      
                       <div class="col-md-12">
                         <label class="text-white" for="utel">Tel</label> 
                         <input type="tel" id="tel" v-model="utel" class="form-control" pattern="(010)-\d{3,4}-\d{4}" placeholder="010-XXXX-XXXX">
                       </div>
                     </div>
-
+                    <!-- email -->
                     <div class="row form-group">
                       <div class="col-md-12">
                         <label class="text-white" for="uemail">Email</label> 
                         <div class="d-flex bd-highlight">
                           <div class="w-100 bd-highlight">
-                        <input type="email" id="email" v-model="uemail" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="XXXXX@XXXX.XXX">
+                            <input type="email" id="email" v-model="uemail" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="XXXXX@XXXX.XXX">
                           </div>
                           <div class="flex-shrink-1 bd-highlight">
                             <input type="button" value="중복체크" class="btn btn-link" v-on:click="duplicateEmail()">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 중복이 아닌 이메일인 경우 이메일 인증할 수 있게 화면에 띄우기 -->
+                    <div v-show="errored">
+                      <div class="row form-group">
+                        <div class="col-md-12 ml-5">
+                          <div class="d-flex bd-highlight">
+                            <div class="w-100 bd-highlight">
+                              <label class="text-white">인증번호입력</label>
+                            </div>
+                            <div class="flex bd-highlight">
+                              <!-- 인증번호 입력 가능한 3분의 시간 화면에 나타내기 -->
 
-                              <div style="display:none">
-                                  <input type="submit" onclick="return false;" />
-                                  <input type="text"/>
-                              </div>
 
+                              <section id="app" class="hero is-info is-fullheight is-bold">
+                                <div class="hero-body">
+                                  <div class="container has-text-centered">
+
+                                    <div id="timer" class="text-white">
+                                      <span id="minutes">{{ minutes }}</span>
+                                      <span id="middle">:</span>
+                                      <span id="seconds">{{ seconds }}</span>
+                                    </div>
+
+                                  </div>
+                                </div>
+                              </section>
+
+
+                            </div>
+                          </div>
+                          <!-- 인증번호  -->
+                          <div class="d-flex bd-highlight">
+                            <div class="w-100 bd-highlight">
+                              <input type="email" v-model="uniqnum" class="form-control">
+                            </div>
+                            <div class="flex-shrink-1 bd-highlight">
+                              <input type="button" value="인증번호 받기" class="btn btn-link" v-on:click="uniqueNum(), startTimer()">
+                            </div>
+                            <div class="flex-shrink-1 bd-highlight">
+                              <input type="button" value="인증번호 확인" class="btn btn-link" v-on:click="uniqueNumCheck(), resetTimer()">
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
+                    <!-- interest -->
                     <div class="row form-group">
-                      
                       <div class="col-md-12" id="parentItrl">
                         <label class="text-white" for="itrlist">Interest</label>
                         <div id="" style="display:inline-block"></div>
@@ -74,9 +111,8 @@
                         <div id="itrl"></div>
                       </div>
                     </div>
-
+                    <!-- uninterest -->
                     <div class="row form-group">
-                      
                       <div class="col-md-12" id="parentUitrl">
                         <label class="text-white" for="uitrlist">Uninterest</label>
                         <div id="" style="display:inline-block"></div>
@@ -84,14 +120,14 @@
                         <div id="uitrl"></div>
                       </div>
                     </div>
-
+                    <!-- introduce -->
                     <div class="row form-group mb-5">
                       <div class="col-md-12">
                         <label class="text-white" for="uintr">Introduce</label> 
                         <textarea name="message" id="message" v-model="intro" cols="30" rows="7" class="form-control" style="resize:none;" placeholder="Please introduce yourself"></textarea>
                       </div>
                     </div>
-
+                    <!-- register/reset button -->
                     <div class="row form-group">
                       <div class="col-md-12">
                         <input type="submit" value="Register" class="btn btn-primary btn-md text-white">
@@ -132,15 +168,39 @@ export default {
             upw:"",
             utel:"",
             uemail:"",
+            uniqnum: "",
             uintr:"",
             itrlist:[],
             uitrlist:[],
             intro:"",
             loading:true,
             errored:false,
+            timer: null,
+            totalTime: (3 * 60),
         }
     },
     methods:{
+        startTimer: function() {
+          this.timer = setInterval(() => this.countdown(), 1000);
+          this.resetButton = true;
+          this.title = "Greatness is within sight!!"
+        },
+        resetTimer: function() {
+          this.totalTime = (3 * 60);
+          clearInterval(this.timer);
+          this.timer = null;
+        },
+        padTime: function(time) {
+          return (time < 10 ? '0' : '') + time;
+        },
+        countdown: function() {
+          if(this.totalTime >= 1){
+            this.totalTime--;
+          } else{
+            this.totalTime = 0;
+            this.resetTimer()
+          }
+        },
         duplicateId() {
           if (this.uid === "") {
             alert('아이디를 입력해주십시오.')
@@ -148,7 +208,6 @@ export default {
             http
               .get('content/urls/1', {
                 user_id: this.uid,
-                email: this.uemail,
               })
                 .then((response)=>{
                   if (response.data['resmsg'] == "true") { // id가 중복일 때,
@@ -174,7 +233,6 @@ export default {
           } else {
             http
               .get("content/urls/' + 1 ", {
-                user_id: this.uid,
                 email: this.uemail,
               })
                 .then((response)=>{
@@ -189,8 +247,40 @@ export default {
                     alert("error");
                 })
                 .finally(() => (this.loading = false));
-
           }
+        },
+        uniqueNum() {
+          http
+              .get('/url/ddd')
+                .then((response)=>{
+                  this.uniqnum = response.data
+                })
+                .catch(() => {
+                  this.errored = true;
+                })
+                .finally(() => (this.loading = false));
+        },
+        uniqueNumCheck() {
+          http
+              .get('/url/ddd', {
+                uniquenumber: this.uniqnum,
+              })
+                .then((response)=>{
+                  if (response.data['resmsg'] == "true") {
+                    alert('인증되었습니다.')
+                  } else {
+                    alert('인증번호가 일치하지 않습니다.')
+                  }
+                })
+                .catch(() => {
+                  this.errored = true;
+                  if (this.errored == true) {
+                    alert('인증번호가 일치하지 않습니다.');
+                  } else {
+                    alert('인증되었습니다.');
+                  }
+                })
+                .finally(() => (this.loading = false));
         },
         appendDiv() {
             var colorCode  = "#" + Math.round(Math.random() * 0xffffff).toString(16);
@@ -284,5 +374,15 @@ export default {
               .finally(() => (this.loading = false));
         },
     },
+    computed: {
+        minutes: function() {
+          const minutes = Math.floor(this.totalTime / 60);
+          return this.padTime(minutes);
+        },
+        seconds: function() {
+          const seconds = this.totalTime - (this.minutes * 60);
+          return this.padTime(seconds);
+        }
+    }
 }
 </script>

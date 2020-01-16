@@ -8,11 +8,10 @@ import Single from "./components/Single.vue"
 import Register from "./components/Register.vue"
 import Vfor from "./components/Vfor.vue"
 import Chating from "./components/Chating.vue"
-
-import Filter from "./components/Filter.vue"
-import sliderex from "./components/sliderex.vue"
 import AddImage from "./components/AddImage.vue"
 import ImageFilter from "./components/ImageFilter.vue"
+import WriteContent from "./components/WriteContent.vue"
+import Password from "./components/Password.vue"
 
 Vue.use(Router);
 
@@ -75,20 +74,6 @@ export const router = new Router({
             component: Chating,
         },
         {
-            path: "/filter",
-            name: "filter",
-            alias: "/Filter",
-            component: Filter,
-            props: true,
-        },
-        {
-            path: "/slider",
-            name: "slider",
-            alias: "/slider",
-            component: sliderex,
-            props: true,
-        },
-        {
             path: "/addimage",
             name: "addimage",
             alias: "/AddImage",
@@ -100,6 +85,20 @@ export const router = new Router({
             name: "imagefilter",
             alias: "/ImageFilter",
             component: ImageFilter,
+            props: true,
+        },
+        {
+            path: "/writecontent",
+            name: "writecontent",
+            alias: "/WriteContent",
+            component: WriteContent,
+            props: true,
+        },
+        {
+            path: "/password",
+            name: "password",
+            alias: "/Password",
+            component: Password,
             props: true,
         },
     ]
