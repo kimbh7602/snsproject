@@ -96,10 +96,10 @@
                               <input type="email" v-model="uniqnum" class="form-control">
                             </div>
                             <div class="flex-shrink-1 bd-highlight">
-                              <input type="button" value="인증번호 받기" class="btn btn-link" v-on:click="uniqueNum(), startTimer()">
+                              <input type="button" value="인증번호 받기" class="btn btn-link" v-on:click="uniqueNum()">
                             </div>
                             <div class="flex-shrink-1 bd-highlight">
-                              <input type="button" value="인증번호 확인" class="btn btn-link" v-on:click="uniqueNumCheck(), resetTimer()">
+                              <input type="button" value="인증번호 확인" class="btn btn-link" v-on:click="uniqueNumCheck()">
                             </div>
                           </div>
                         </div>
@@ -244,13 +244,13 @@ export default {
           if (!regExp.test(this.uemail)) {
               alert('이메일 형식으로 입력해주십시오.')
           } else {
+            // this.emailCheck = true;
             http
               .get("/user/emailCheck/"+this.uemail)
                 .then((response)=>{
                   this.emailDupl = response.data['resValue'];
                   if (this.emailDupl) { // 중복일 때,
                     this.emailCheck = true;
-                    this.startTimer();
                     alert("사용 가능한 이메일입니다.");
                   } else {
                     alert("이미 사용 중인 이메일입니다.");
@@ -264,6 +264,9 @@ export default {
           }
         },
         uniqueNum() {
+          if(this.minutes=='03' && this.seconds=='00'){
+            this.startTimer();
+          }
           http
               .post('/email/checkEmail/'+this.uemail)
                 .then((response)=>{
@@ -276,8 +279,9 @@ export default {
                 .finally(() => (this.loading = false));
         },
         uniqueNumCheck() {
-          if(this.emailKey == this.uniqnum){
+          if(this.emailKey == this.uniqnum+"ss"){
             alert("인증완료");
+            this.resetTimer()
             this.emailKeysucc = true;
           }
           else{
