@@ -43,14 +43,9 @@ export default {
           this.getImages = response.data.urls;
           // console.log(this.getImages)
         })
-<<<<<<< HEAD
-        .catch((error)=>{
-          alert(error)
-=======
         .catch(()=>{
           this.errored = true;
           // console.log(error)
->>>>>>> 3d39533856459d5d910c3fd720b658a64e945fcb
         })
     }
   },

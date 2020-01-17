@@ -1,30 +1,46 @@
 <template>
-<div>
-    <div style="height:10px;"></div>
-    <div :class="filterType" id="img-select" class="img-fluid"
-          :style="{ backgroundImage: 'url(' + imgs[imgs.length-1].base64 + ')' }"></div>
-    <div class="row form-group">                    
-        <div class="col-md-12" id="parentItrl">
-        <label class="text-white" for="itrlist">Hashtag</label>
-        <div id="" style="display:inline-block"></div>
-        <input type="subject" autocomplete='off' @keyup.enter.prevent='appendDiv' @keydown.space.prevent='appendDiv' id="interest" class="form-control">
-        <div id="itrl"></div>
+<div class="col-md-12">
+    <div class="offset-md-1 col-md-10">
+        <div style="height:10px;"></div>
+        <div class="all-scroll pos-relative mt-50">
+            <h5 class="mb-50"><b>Image</b></h5>                                            
+            <div class="swiper-scrollbar"></div>
+            <div class="swiper-container oflow-visible" data-slide-effect="flip" data-autoheight="false" 
+                                    data-swiper-speed="200" data-swiper-margin="25" data-swiper-slides-per-view="1"
+                                    data-swiper-breakpoints="true" data-scrollbar="true" data-swiper-loop="false"
+                                    data-swpr-responsive="[1, 2, 1, 2]">
+                <div class="swiper-wrapper">
+                        <div :class="img.filter" id="img-select" class="img-fluid swiper-slide" v-for="img in imgs" :key="img.filter"
+            :style="{ backgroundImage: 'url(' + img.base64 + ')' }"></div>
+                </div>
+                <div v-if="exist" class="swiper-pagination"  slot="pagination"></div>
+                <div v-if="exist" class="swiper-button-prev" slot="button-prev"></div>
+                <div v-if="exist" class="swiper-button-next" slot="button-next"></div>
+            </div>
+        </div>
+        <div class="row form-group">                    
+            <div class="col-md-12" id="parentItrl">
+            <label class="text-white" for="itrlist">Hashtag</label>
+            <div id="" style="display:inline-block"></div>
+            <input type="subject" autocomplete='off' @keyup.enter.prevent='appendDiv' @keydown.space.prevent='appendDiv' id="interest" class="form-control">
+            <div id="itrl"></div>
+            </div>
+        </div>
+        <div class="row form-group mb-5">
+            <div class="col-md-12">
+            <label class="text-white" for="uintr">Story</label> 
+            <textarea name="message" id="message" v-model="intro" cols="30" rows="7" class="form-control" style="resize:none;" placeholder="Write your story"></textarea>
+            </div>
+        </div>
+        <div style="margin-top:1%; margin-left:5%;margin-right:5%; height:50px;">
+            <div style="display:inline-block; float :left">
+            <input type="button" value="처음으로" @click="goPrev" class="btn btn-primary btn-md text-white">
+            </div>
+            <div style="display:inline-block; float:right">
+            <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
+            </div>
         </div>
     </div>
-    <div class="row form-group mb-5">
-        <div class="col-md-12">
-        <label class="text-white" for="uintr">Story</label> 
-        <textarea name="message" id="message" v-model="intro" cols="30" rows="7" class="form-control" style="resize:none;" placeholder="Write your story"></textarea>
-        </div>
-    </div>
-    <div style="margin-top:1%; margin-left:5%;margin-right:5%;">
-        <div style="display:inline-block; float :left">
-        <input type="button" value="이전" @click="goPrev" class="btn btn-primary btn-md text-white">
-        </div>
-        <div style="display:inline-block; float:right">
-        <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
-        </div>
-    </div> 
 </div>
 </template>
 
@@ -41,6 +57,7 @@ export default {
             defaultImag:{base64:"",filter:"normal"},
             errored:false,
             loading:true,
+            exist:false,
         }
     },
     methods:{
@@ -81,7 +98,7 @@ export default {
             this.itrlist.splice(0);
         },
         goPrev() {
-            this.$router.go(-1);
+            this.$router.push("/addimage");
         },
         goNext() {
             // this.imgs[this.imgs.length-1].filter = this.filterType;
@@ -116,8 +133,17 @@ export default {
         }
         else{
             this.filterType = this.imgs[this.imgs.length-1].filter;
+            this.exist=true;
             console.log(this.imgs);
         }
+        let recaptchaScripta = document.createElement('script')
+        recaptchaScripta.setAttribute('type',"text/javascript")
+        recaptchaScripta.setAttribute('src', "./theme/js/script.js")
+        document.body.appendChild(recaptchaScripta)
+        let recaptchaScript = document.createElement('script')
+        recaptchaScript.setAttribute('type',"text/javascript")
+        recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
+        document.body.appendChild(recaptchaScript)
     }
 }
 </script>

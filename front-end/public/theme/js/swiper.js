@@ -52,7 +52,7 @@ $(document).ready(function(){
             // Virtual Translate
             virtualTranslate: false,
             // Effects
-            effect: 'flip', // 'slide' or 'fade' or 'cube' or 'coverflow' or 'flip'
+            effect: 'slide', // 'slide' or 'fade' or 'cube' or 'coverflow' or 'flip'
             coverflow: {
                 rotate: 50,
                 stretch: 0,

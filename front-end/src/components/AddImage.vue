@@ -1,12 +1,13 @@
 <template>
-  <div class="container-fluid photo">
+  <div class="col-md-12">
+    <div class="offset-md-1 col-md-10">
     <div style="height:10px;"></div>
     <div class="selected-image" style="margin-bottom:0px; border:5px solid white;">
       <div style="height:35%"></div>
       <div @click="$refs.fileInput.click()" style="margin:auto; width:20%; height:35%; background-size:contain; background-repeat:no-repeat; background-image:url('./theme/images/plus.png')">
       </div>
     </div>
-    <div style="margin-top:1%;margin-left:5%;margin-right:5%;">
+    <div style="margin-top:1%;margin-left:5%;margin-right:5%; height:50px;">
       <div style="display:inline-block; float :left">
         <input type="button" value="취소" @click="goPrev" class="btn btn-primary btn-md text-white">
       </div>
@@ -15,13 +16,14 @@
       </div>
     </div>
     <input ref="fileInput" type="file" style="display:none;" name="file" id="file" class="inputfile" @drop.prevent="dragupload" @dragover.prevent @dragenter.prevent v-on:change="fileUpload"/>
-	</div>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
   name: "App",
-  // props:["imgs"],
+  props:["fimgs"],
   data() {
     return {
       step: 1,
@@ -32,7 +34,8 @@ export default {
         filter:""
       },
       imgs:[],
-      caption: ""
+      caption: "",
+      first:true,
     };
   },
   created() {
@@ -90,6 +93,14 @@ export default {
         })
     },
   },
+  mounted(){
+    // console.log(this.fimgs);
+    if(this.fimgs!=undefined){
+      this.imgs = this.fimgs;
+      this.first = false;
+    }
+
+  }
 };
 </script>
 

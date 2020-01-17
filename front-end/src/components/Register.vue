@@ -4,6 +4,7 @@
         
         <div class="col-md-6 pt-4" data-aos="fade-up">
           <h2 class="text-white mb-4">Register</h2>
+          
 
           <div class="row">
             <div class="col-md-12">
@@ -58,7 +59,10 @@
                       </div>
                     </div>
                     <!-- 중복이 아닌 이메일인 경우 이메일 인증할 수 있게 화면에 띄우기 -->
-                    <div v-show="errored">
+                    <div v-show="emailKeysucc">
+                      이메일 인증 완료
+                    </div>
+                    <div v-show="emailCheck">
                       <div class="row form-group">
                         <div class="col-md-12 ml-5">
                           <div class="d-flex bd-highlight">
@@ -177,9 +181,17 @@ export default {
             errored:false,
             timer: null,
             totalTime: (3 * 60),
+            modal : false,
+            emailKey:"",
+            emailDupl:false,
+            emailCheck:false,
+            emailKeysucc:false,
         }
     },
     methods:{
+      // modal(){
+      //   this.modal = !this.modal;
+      // },
         startTimer: function() {
           this.timer = setInterval(() => this.countdown(), 1000);
           this.resetButton = true;
@@ -224,22 +236,24 @@ export default {
           }
         },
         duplicateEmail() {
+          var regExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
+          // var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
           if (this.uemail === "") {
             alert('이메일을 입력해주십시오.')
-          } else if (!this.uemail.includes("@")) {
-            alert('이메일 형식으로 입력해주십시오.')
-          } else if (this.uemail.length < 8) {
-            alert('제대로 된 이메일 좀')
+          }
+          if (!regExp.test(this.uemail)) {
+              alert('이메일 형식으로 입력해주십시오.')
           } else {
             http
-              .get("content/urls/' + 1 ", {
-                email: this.uemail,
-              })
+              .get("/user/emailCheck/"+this.uemail)
                 .then((response)=>{
-                  if (response.data['resmsg'] == "true") { // 중복일 때,
-                      alert("이미 사용 중인 이메일입니다.");
+                  this.emailDupl = response.data['resValue'];
+                  if (this.emailDupl) { // 중복일 때,
+                    this.emailCheck = true;
+                    this.startTimer();
+                    alert("사용 가능한 이메일입니다.");
                   } else {
-                      alert("사용 가능한 이메일입니다.");
+                    alert("이미 사용 중인 이메일입니다.");
                   }
                 })
                 .catch(() => {
@@ -251,9 +265,10 @@ export default {
         },
         uniqueNum() {
           http
-              .get('/url/ddd')
+              .post('/email/checkEmail/'+this.uemail)
                 .then((response)=>{
-                  this.uniqnum = response.data
+                  this.emailKey = response.data['resValue'];
+                  alert("인증 이메일이 발송되었습니다.");
                 })
                 .catch(() => {
                   this.errored = true;
@@ -261,26 +276,13 @@ export default {
                 .finally(() => (this.loading = false));
         },
         uniqueNumCheck() {
-          http
-              .get('/url/ddd', {
-                uniquenumber: this.uniqnum,
-              })
-                .then((response)=>{
-                  if (response.data['resmsg'] == "true") {
-                    alert('인증되었습니다.')
-                  } else {
-                    alert('인증번호가 일치하지 않습니다.')
-                  }
-                })
-                .catch(() => {
-                  this.errored = true;
-                  if (this.errored == true) {
-                    alert('인증번호가 일치하지 않습니다.');
-                  } else {
-                    alert('인증되었습니다.');
-                  }
-                })
-                .finally(() => (this.loading = false));
+          if(this.emailKey == this.uniqnum){
+            alert("인증완료");
+            this.emailKeysucc = true;
+          }
+          else{
+            alert("인증실패");
+          }
         },
         appendDiv() {
             var colorCode  = "#" + Math.round(Math.random() * 0xffffff).toString(16);
