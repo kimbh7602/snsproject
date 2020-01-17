@@ -186,6 +186,7 @@ export default {
             emailDupl:false,
             emailCheck:false,
             emailKeysucc:false,
+            timeout:false,
         }
     },
     methods:{
@@ -210,6 +211,7 @@ export default {
             this.totalTime--;
           } else{
             this.totalTime = 0;
+            this.timeout = true;
             this.resetTimer()
           }
         },
@@ -279,7 +281,7 @@ export default {
                 .finally(() => (this.loading = false));
         },
         uniqueNumCheck() {
-          if(this.emailKey == this.uniqnum+"ss"){
+          if(this.emailKey == this.uniqnum && !this.timeout){
             alert("인증완료");
             this.resetTimer()
             this.emailKeysucc = true;
