@@ -7,16 +7,12 @@ import Blog from "./components/Blog.vue"
 import Single from "./components/Single.vue"
 import Register from "./components/Register.vue"
 import Vfor from "./components/Vfor.vue"
-<<<<<<< HEAD
-import Calendar from "./components/Calendar.vue"
-=======
 import Chating from "./components/Chating.vue"
-
-import Filter from "./components/Filter.vue"
-import sliderex from "./components/sliderex.vue"
 import AddImage from "./components/AddImage.vue"
 import ImageFilter from "./components/ImageFilter.vue"
->>>>>>> 3d39533856459d5d910c3fd720b658a64e945fcb
+import WriteContent from "./components/WriteContent.vue"
+import Password from "./components/Password.vue"
+import FindFriend from "./components/FindFriend.vue"
 
 Vue.use(Router);
 
@@ -73,31 +69,10 @@ export const router = new Router({
             props: true,
         },
         {
-<<<<<<< HEAD
-            path: "/calendar",
-            name: "calendar",
-            alias: "/Calendar",
-            component: Calendar,
-            // props: true,
-=======
             path: "/chating",
             name: "chating",
             alias: "/Chating",
             component: Chating,
-        },
-        {
-            path: "/filter",
-            name: "filter",
-            alias: "/Filter",
-            component: Filter,
-            props: true,
-        },
-        {
-            path: "/slider",
-            name: "slider",
-            alias: "/slider",
-            component: sliderex,
-            props: true,
         },
         {
             path: "/addimage",
@@ -112,8 +87,28 @@ export const router = new Router({
             alias: "/ImageFilter",
             component: ImageFilter,
             props: true,
->>>>>>> 3d39533856459d5d910c3fd720b658a64e945fcb
         },
+        {
+            path: "/writecontent",
+            name: "writecontent",
+            alias: "/WriteContent",
+            component: WriteContent,
+            props: true,
+        },
+        {
+            path: "/password",
+            name: "password",
+            alias: "/Password",
+            component: Password,
+            props: true,
+        },
+        {
+            path: "/findfriend",
+            name: "findfriend",
+            alias: "/Findfriend",
+            component: FindFriend,
+            props: true,
+        }
     ]
 });
 

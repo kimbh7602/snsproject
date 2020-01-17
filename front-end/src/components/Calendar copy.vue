@@ -15,14 +15,11 @@
         :useCreationPopup="useCreationPopup"
         :useDetailPopup="useDetailPopup"
         @beforeCreateSchedule="onBeforeCreateSchedule"
-        @beforeDeleteSchedule="onBeforeDeleteSchedule"
-        @beforeUpdateSchedule="onBeforeUpdateSchedule"
     />
 </template>
 <script>
 import 'tui-calendar/dist/tui-calendar.css'
 import { Calendar } from '@toast-ui/vue-calendar';
-import axios from 'axios'
  
 export default {
     name: 'myCalendar',
@@ -48,8 +45,8 @@ export default {
                     title: 'my schedule',
                     category: 'time',
                     dueDateClass: '',
-                    start: '2020-01-16T22:30:00+09:00',
-                    end: '2020-01-19T02:30:00+09:00'
+                    start: '2018-10-18T22:30:00+09:00',
+                    end: '2018-10-19T02:30:00+09:00'
                 },
                 {
                     id: '2',
@@ -118,48 +115,11 @@ export default {
                 location: scheduleData.location             // 장소 정보도 입력할 수 있네요!
             };
 
-            this.scheduleList.push(schedule);
             // calendar.createSchedules([schedule]);
-            GetImageUrl: function() {
-            const IMG_URL = "http://192.168.100.41:8080/api/content/urls/1"
-            axios.get(IMG_URL)
-                .then((response)=>{
-                this.getImages = response.data.urls;
-                // console.log(this.getImages)
-                })
-                .catch((error)=>{
-                alert(error)
-                })
-            }
+            alert(schedule.id);
 
             alert('일정 생성 완료');
-        },
-        onBeforeDeleteSchedule(scheduleData) {
-            this.scheduleList.pop(scheduleData);
-            alert("일정 삭제 완료");
-        },
-        onBeforeUpdateSchedule(event) {
-            this.scheduleList.forEach(element => {
-                if(element.id === event.schedule.id){
-                    this.scheduleList.pop(element);
-                    if(event.changes.title !== undefined){
-                        element.title = event.changes.title;
-                    }
-                    if(event.changes.start !== undefined){
-                        element.start = event.changes.start;
-                    }
-                    if(event.changes.end !== undefined){
-                        element.end = event.changes.end;
-                    }
-                    if(event.changes.location !== undefined){
-                        element.location = event.changes.location;
-                    }
-                    this.scheduleList.push(element);
-                }
-            });
-
         }
-
     },
     mounted() {
         

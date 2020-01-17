@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssafy.notice">
+    <insert id="insert" parameterType="NoticeVo">
+        insert into notice
+            (calendarId, category, id, title, location, isAllDay, start, end)
+        values
+            (#{calendarId}, #{category}, #{id}, #{title}, #{location}, #{isAllDay}, #{start}, #{end})
+    </insert>
+
+    <update id="update" parameterType="NoticeVo">
+        update notice
+        set
+            title = #{title},
+            location = #{location},
+            isAllDay = #{isAllDay},
+            start = #{start},
+            end = #{end}
+        where
+            id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="string">
+        delete from notice
+        where id = #{id}
+    </delete>
+
+    <select id="selectList" resultType="NoticeVo">
+        select * from notice
+    </select>
+
+    <select id="selectNow" resultType="NoticeVo">
+        <![CDATA[ 
+        select * from notice
+        where
+            date(start) <= date(now()) and date(end) >= date(now())
+        ]]>
+    </select>
+</mapper>

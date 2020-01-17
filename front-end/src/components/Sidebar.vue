@@ -10,7 +10,11 @@
     </div>
     <header class="header-bar d-flex d-lg-block align-items-center" data-aos="fade-left">
         <div class="site-logo">
-        <router-link to="/">Shutter</router-link>
+            <router-link to="/">Shutter</router-link>
+        </div>
+        <div class="site-logo">
+        <input type="button" class="site-logo btn btn-danger btn-md text-white" @click="goWrite" value="Write" />
+            <!-- <router-link to="/addimage">Write</router-link> -->
         </div>
         
         <div class="d-inline-block d-xl-none ml-md-0 ml-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
@@ -19,16 +23,15 @@
         <ul class="js-clone-nav">
             <li class="active"><router-link to="/">Home</router-link></li>
             <li><router-link to="/category">Category</router-link></li>
-            <li><router-link to="/bio">Bio</router-link></li>
+            <!-- <li><router-link to="/bio">Bio</router-link></li> -->
             <li><router-link to="/blog">Blog</router-link></li>
             <li><router-link to="/single">Single</router-link></li>
             <li><router-link to="/register">Register</router-link></li>
             <li><router-link to="/vfor">Practice</router-link></li>
-<<<<<<< HEAD
-            <li><router-link to="/calendar">Calendar</router-link></li>
-=======
+            <li><router-link to="/password">Password</router-link></li>
             <li><router-link to="/chating">Chating</router-link></li>
->>>>>>> 3d39533856459d5d910c3fd720b658a64e945fcb
+            <li><router-link to="/addimage">Write</router-link></li>
+            <li><router-link to="/findfriend">Find a Friend</router-link></li>
         </ul>
         <ul class="social js-clone-nav">
             <li><a href="#"><span class="icon-facebook"></span></a></li>
@@ -39,3 +42,14 @@
     </header>
 </div>
 </template>
+
+<script>
+export default {
+    name:"sidebar",
+    methods: {
+        goWrite(){
+            this.$router.push("/addimage");
+        }
+    }
+}
+</script>

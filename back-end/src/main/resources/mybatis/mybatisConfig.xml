@@ -11,6 +11,7 @@
 		<typeAlias type="edu.ssafy.boot.dto.FollowVo" alias="FollowVo" />
 		<typeAlias type="edu.ssafy.boot.dto.ImageVo" alias="ImageVo" />
 		<typeAlias type="edu.ssafy.boot.dto.UserLikeVo" alias="UserLikeVo" />
+		<typeAlias type="edu.ssafy.boot.dto.NoticeDBVo" alias="NoticeVo" />
 	</typeAliases>
 
 	<mappers>
@@ -21,5 +22,6 @@
 		<mapper resource="mybatis/followSQLMapper.xml" />
 		<mapper resource="mybatis/imageSQLMapper.xml" />
 		<mapper resource="mybatis/userLikeSQLMapper.xml" />
+		<mapper resource="mybatis/noticeSQLMapper.xml" />
 	</mappers>
 </configuration>

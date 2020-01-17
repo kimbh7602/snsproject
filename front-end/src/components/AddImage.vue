@@ -1,41 +1,47 @@
 <template>
-  <div>
-    <input ref="fileInput" type="file" style="display:none;" name="file" id="file" class="inputfile" v-on:change="fileUpload"/>
-    <div class="selected-image" style="margin:5%; margin-bottom:0px; border:5px solid white;">
+  <div class="col-md-12">
+    <div class="offset-md-1 col-md-10">
+    <div style="height:10px;"></div>
+    <div class="selected-image" style="margin-bottom:0px; border:5px solid white;">
       <div style="height:35%"></div>
-      <div @click="$refs.fileInput.click()" style="margin:auto; width:30%; height:35%; background-size:contain; background-repeat:no-repeat; background-image:url('./theme/images/plus.png')">
+      <div @click="$refs.fileInput.click()" style="margin:auto; width:20%; height:35%; background-size:contain; background-repeat:no-repeat; background-image:url('./theme/images/plus.png')">
       </div>
     </div>
-    <div style="margin-left:5%;margin-right:5%;">
+    <div style="margin-top:1%;margin-left:5%;margin-right:5%; height:50px;">
       <div style="display:inline-block; float :left">
         <input type="button" value="취소" @click="goPrev" class="btn btn-primary btn-md text-white">
       </div>
       <div style="display:inline-block; float:right">
-        <input type="button" value="추가" @click="$refs.fileInput.click()" class="btn btn-success btn-md text-white">
+        <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
       </div>
     </div>
-	</div>
+    <input ref="fileInput" type="file" style="display:none;" name="file" id="file" class="inputfile" @drop.prevent="dragupload" @dragover.prevent @dragenter.prevent v-on:change="fileUpload"/>
+    </div>
+  </div>
 </template>
 
 <script>
-import EventBus from "../event-bus.js";
-import filters from "../data/filters.js";
-
 export default {
   name: "App",
+  props:["fimgs"],
   data() {
     return {
       step: 1,
-      filters,
       filterType: "",
       image: "",
-      caption: ""
+      imginfo:{
+        base64:"",
+        filter:""
+      },
+      imgs:[],
+      caption: "",
+      first:true,
     };
   },
   created() {
-    EventBus.$on("selectFilter", evt => {
-      this.filterType = evt.filter;
-    });
+    // EventBus.$on("selectFilter", evt => {
+    //   this.filterType = evt.filter;
+    // });
   },
   methods: {
     fileUpload(e) {
@@ -44,14 +50,29 @@ export default {
       this.image = files[0];
       this.createImage();
     },
+    dragupload(e){
+      let droppedfiles = e.dataTransfer.files;
+      if(!droppedfiles) return;
+      ([...droppedfiles]).forEach(f=>{
+        this.files.push(f);
+      });
+    },
     createImage() {
       const reader = new FileReader();
       reader.readAsDataURL(this.image);
       reader.onload = e => {
         this.image = e.target.result;
+        this.imginfo.base64 = this.image;
+        this.imgs.push(this.imginfo);
         this.step = 2;
-        EventBus.$emit("imglink", { image: this.image });
-        this.$router.push("/imagefilter");
+        // EventBus.$emit("imglink", { image: this.image });
+        this.$router.push({
+          name: 'imagefilter', 
+          params: {
+            imgs: this.imgs, 
+            step: this.step+1,
+          }
+        })
       };
     },
     goToHome() {
@@ -63,7 +84,23 @@ export default {
     goPrev() {
       this.$router.go(-1);
     },
+    goNext() {
+      this.$router.push({
+          name: 'writecontent', 
+          params: {
+            imgs: this.imgs, 
+          }
+        })
+    },
   },
+  mounted(){
+    // console.log(this.fimgs);
+    if(this.fimgs!=undefined){
+      this.imgs = this.fimgs;
+      this.first = false;
+    }
+
+  }
 };
 </script>
 
