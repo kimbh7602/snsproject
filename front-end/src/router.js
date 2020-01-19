@@ -13,13 +13,13 @@ import ImageFilter from "./components/ImageFilter.vue"
 import WriteContent from "./components/WriteContent.vue"
 import Password from "./components/Password.vue"
 import FindFriend from "./components/FindFriend.vue"
+import UserEdit from "./components/UserEdit.vue"
 
 Vue.use(Router);
 
 export const router = new Router({
     mode: "history",
-    routes: [
-        {
+    routes: [{
             path: "/",
             name: "index",
             alias: "/Index",
@@ -108,11 +108,18 @@ export const router = new Router({
             alias: "/Findfriend",
             component: FindFriend,
             props: true,
+        },
+        {
+            path: "/useredit",
+            name: "useredit",
+            alias: "/UserEdit",
+            component: UserEdit,
+            props: true,
         }
     ]
 });
 
-router.beforeEach(function (to, from, next){
+router.beforeEach(function(to, from, next) {
     // store.commit('getChatId');
 
     next();

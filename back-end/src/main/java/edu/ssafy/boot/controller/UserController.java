@@ -148,6 +148,7 @@ public class UserController {
 	@ApiOperation(value = "회원가입")
 	private @ResponseBody ResponseEntity<Map<String, Object>> signUpMem(@RequestBody UserVo user) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
+		System.out.println(user.toString());
 		try {
 			user.setPassword(sersc.computePw(user.getPassword()));
 			boolean signup = ser.signup(user);
