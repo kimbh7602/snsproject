@@ -14,6 +14,9 @@ public class ContentVo {
 	private List<String> hashtagList;
 	private boolean user_like;
 	private List<ImageVo> imageList;
+	private String location_name;
+	private double lat;
+	private double lng;
 
 	public ContentVo() {
 		super();
@@ -61,6 +64,17 @@ public class ContentVo {
 		this.user_id = user_id;
 		this.hashtagList = hashtagList;
 		this.imageList = imageList;
+	}
+
+	public ContentVo(String content_val, String user_id, List<String> hashtagList, List<ImageVo> imageList, String location_name, double lat, double lng) {
+		super();
+		this.content_val = content_val;
+		this.user_id = user_id;
+		this.hashtagList = hashtagList;
+		this.imageList = imageList;
+		this.location_name = location_name;
+		this.lat = lat;
+		this.lng = lng;
 	}
 
 	public ContentVo(int content_id, int share_cid, String content_val, String user_id, String timestamp,
@@ -167,6 +181,30 @@ public class ContentVo {
 		return "ContentVo [content_id=" + content_id + ", share_cid=" + share_cid + ", content_title=" + content_title
 				+ ", content_val=" + content_val + ", user_id=" + user_id + ", timestamp=" + timestamp
 				+ ", content_like=" + content_like + ", hashtag=" + hashtag + ", user_like=" + user_like + "]";
+	}
+
+	public String getLocation_name() {
+		return location_name;
+	}
+
+	public void setLocation_name(String location_name) {
+		this.location_name = location_name;
+	}
+
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	public double getLng() {
+		return lng;
+	}
+
+	public void setLng(double lng) {
+		this.lng = lng;
 	}
 
 }

@@ -17,7 +17,7 @@ public class UserService implements IUserService {
 	IUserDAO dao;
 
 	@Override
-	public boolean login(UserVo user) {
+	public UserVo login(UserVo user) {
 		return dao.login(user);
 	}
 
@@ -78,7 +78,9 @@ public class UserService implements IUserService {
 
 	@Override
 	public UserVo info(String user_id) {
-		return dao.info(user_id);
+		UserVo user = dao.info(user_id);
+		
+		return user;
 	}
 
 	@Override
@@ -89,5 +91,20 @@ public class UserService implements IUserService {
 	@Override
 	public boolean emailDuplicateCheck(String email) {
 		return dao.emailDuplicateCheck(email);
+	}
+
+	@Override
+	public List<UserVo> searchByUserId(String keyword) {
+		return dao.searchByUserId(keyword);
+	}
+
+	@Override
+	public List<UserVo> searchByInterest(List<String> list) {
+		return dao.searchByInterest(list);
+	}
+
+	@Override
+	public List<UserVo> userList() {
+		return dao.userList();
 	}
 }

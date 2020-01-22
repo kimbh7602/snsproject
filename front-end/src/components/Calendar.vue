@@ -119,26 +119,39 @@ export default {
             };
 
             this.scheduleList.push(schedule);
-            // calendar.createSchedules([schedule]);
-            GetImageUrl: function() {
-            const IMG_URL = "http://192.168.100.41:8080/api/content/urls/1"
-            axios.get(IMG_URL)
+
+            axios.post("http://192.168.100.41:8080/api/notice/insertNotice", schedule)
                 .then((response)=>{
-                this.getImages = response.data.urls;
-                // console.log(this.getImages)
+                    this.$store.commit('setModalText', response.data.resmsg);
+                    document.getElementById('modalBtn').click(); 
                 })
                 .catch((error)=>{
-                alert(error)
+                        alert(error)
                 })
-            }
-
-            alert('일정 생성 완료');
         },
         onBeforeDeleteSchedule(scheduleData) {
-            this.scheduleList.pop(scheduleData);
-            alert("일정 삭제 완료");
+            this.scheduleList.forEach(element => {
+                if(element.id === scheduleData.schedule.id){
+                    this.scheduleList.pop(element);
+                    this.$store.commit('setModalText', element.id+" "+scheduleData.schdule.id);
+                    document.getElementById('modalBtn').click();     
+                }
+            });
+            // this.scheduleList.pop(scheduleData);
+            // alert(scheduleData.schedule.id);
+            
+             axios.delete("http://192.168.100.41:8080/api/notice/deleteNotice/"+scheduleData.schedule.id)
+                .then((response)=>{
+                    this.$store.commit('setModalText', response.data.resmsg);
+                    document.getElementById('modalBtn').click();     
+                })
+                .catch((error)=>{
+                    alert(error)
+                })
+
         },
         onBeforeUpdateSchedule(event) {
+            let schedule = null;
             this.scheduleList.forEach(element => {
                 if(element.id === event.schedule.id){
                     this.scheduleList.pop(element);
@@ -156,13 +169,46 @@ export default {
                     }
                     this.scheduleList.push(element);
                 }
+                
+                schedule = element;
             });
 
+            axios.put("http://192.168.100.41:8080/api/notice/updateNotice", schedule)
+                .then((response)=>{
+                    this.$store.commit('setModalText', response.data.resmsg);
+                    document.getElementById('modalBtn').click(); 
+                })
+                .catch((error)=>{
+                    alert(error)
+                })
         }
 
     },
     mounted() {
-        
+        axios.get("http://192.168.100.41:8080/api/notice/noticeList")
+                .then((response)=>{
+                    // alert(response.data.resmsg);
+                    // alert(response.data.resValue[0].start._date);
+                    if(response.data.resValue !== null || response.data.resValue !== undefined){
+                        response.data.resValue.forEach(element => {
+                            let schedule = element;
+                            schedule.start = element.start._date;
+                            schedule.end = element.end._date;
+                            this.scheduleList.push(schedule);
+                        });
+                    }
+                })
+                .catch((error)=>{
+                    alert(error)
+                })
+        var scrollUpDelay = 1;
+        var scrollUpSpeed = 30;
+        if(document.body.scrollTop<1)
+        {
+        return;
+        }
+        document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+        setTimeout('scrollUp()',scrollUpDelay);
     }
 }
 </script> 

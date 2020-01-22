@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.ssafy.boot.dto.ContentVo;
+import edu.ssafy.boot.dto.LocationVo;
 import edu.ssafy.boot.repository.IContentDAO;
 
 @Service("ContentService")
 public class ContentService implements IContentService {
-	
+
 	@Autowired
 	@Qualifier("ContentDAOImpl")
 	IContentDAO dao;
@@ -61,6 +62,11 @@ public class ContentService implements IContentService {
 		}
 		content.setHashtag(hashtag.trim());
 		return dao.updateContent(content);
+	}
+
+	@Override
+	public List<ContentVo> findContentByLocation(LocationVo location) {
+		return dao.findContentByLocation(location);
 	}
 	
 }

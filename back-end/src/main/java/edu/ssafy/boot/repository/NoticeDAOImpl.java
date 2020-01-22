@@ -27,6 +27,7 @@ public class NoticeDAOImpl implements INoticeDAO {
     @Override
     public boolean updateNotice(NoticeDBVo notice) {
         int update = session.update("ssafy.notice.update", notice);
+        System.out.println(notice.toString());
         if(update > 0){
             return true;
         }else{

@@ -9,8 +9,26 @@ public class NoticeDBVo {
     private boolean isAllDay;
     private String start;
     private String end;
+    private String start_date;
+    private String end_date;
 
     public NoticeDBVo() {
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
     }
 
     public String getTitle() {
@@ -22,7 +40,7 @@ public class NoticeDBVo {
     }
 
     public NoticeDBVo(String calendarId, String category, String id, String title, String location, boolean isAllDay,
-            String start, String end) {
+            String start, String end, String start_date, String end_date) {
         this.calendarId = calendarId;
         this.category = category;
         this.id = id;
@@ -31,6 +49,8 @@ public class NoticeDBVo {
         this.isAllDay = isAllDay;
         this.start = start;
         this.end = end;
+        this.start_date = start_date;
+        this.end_date = end_date;
     }
 
     public String getCalendarId() {

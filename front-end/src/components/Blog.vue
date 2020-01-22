@@ -69,3 +69,18 @@
       </div>
     </div>
 </template>
+
+<script>
+export default {
+  mounted(){
+    var scrollUpDelay = 1;
+    var scrollUpSpeed = 30;
+    if(document.body.scrollTop<1)
+    {
+      return;
+    }
+    document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+    setTimeout('scrollUp()',scrollUpDelay);
+  }
+}
+</script>

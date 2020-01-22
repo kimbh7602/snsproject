@@ -1,0 +1,10 @@
+modal 사용법
+
+1. script의 data에 modalText 변수 ""로 넣어주고 실행해야할 곳에서
+                    this.modalText = "회원가입 실패";
+                    this.$store.commit('setModalText', this.modalText);
+                    document.getElementById('modalBtn').click();
+와 같이 메세지 넣어서 사용하기.
+
+	또는 변수 만들지 말고 this.$store.commit('setModalText', "메세지");
+			     document.getElementById('modalBtn').click();

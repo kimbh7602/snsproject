@@ -17,9 +17,9 @@
 
 	<insert id="insert" parameterType="ContentVo">
 		insert into contents
-			(content_val, user_id, timestamp, hashtag)
+			(content_val, user_id, timestamp, hashtag, location_name, lat, lng)
 		values
-			(#{content_val}, #{user_id}, now(), #{hashtag})
+			(#{content_val}, #{user_id}, now(), #{hashtag}, #{location_name}, #{lat}, #{lng})
 	</insert>
 
 	<select id="selectContentId" parameterType="string" resultType="int">
@@ -39,4 +39,16 @@
 			hashtag = #{hashtag}
 		where content_id = #{content_id}
 	</update>
+
+	<select id="findByLocation" parameterType="LocationVo" resultType="ContentVo">
+		<![CDATA[ 
+			select * from contents
+			where abs(lat-#{lat})+abs(lng-#{lng}) <= #{dist}
+		]]>
+	</select>
+
+	<select id="findByLocationImage" parameterType="int" resultType="ImageVo">
+		select * from content_image
+		where content_id = #{content_id}
+	</select>
 </mapper>

@@ -43,12 +43,12 @@ public class NoticeController {
 			if (res) {
 				map.put("resmsg", "공지사항 추가 성공");
 			} else {
-				map.put("resmsg", "공지사항 추가 실패");
+				map.put("resmsg", "공지사항 추가 실패1");
 			}
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (RuntimeException e) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("resmsg", "공지사항 추가 실패");
+			map.put("resmsg", "공지사항 추가 실패2");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		return resEntity;
@@ -88,12 +88,12 @@ public class NoticeController {
 				map.put("resmsg", "삭제 성공");
 				map.put("resvalue", res);
 			}else{
-				map.put("resmsg", "삭제 실패");
+				map.put("resmsg", "삭제 실패1");
 			}
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (RuntimeException e) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("resmsg", "삭제 실패");
+			map.put("resmsg", "삭제 실패2");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 
 		}
@@ -110,7 +110,7 @@ public class NoticeController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			if(noticeList != null && noticeList.size() > 0){
 				map.put("resmsg", "조회성공");
-				map.put("resvalue", noticeList);
+				map.put("resValue", noticeList);
 			}else{
 				map.put("resmsg", "조회실패");
 			}
@@ -133,7 +133,7 @@ public class NoticeController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			if(noticeNow != null && noticeNow.size() > 0){
 				map.put("resmsg", "조회성공");
-				map.put("resvalue", noticeNow);
+				map.put("resValue", noticeNow);
 			}else{
 				map.put("resmsg", "조회실패");
 			}

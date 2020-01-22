@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssafy.directMessage">
+    <insert id="insert" parameterType="DirectMessageVo">
+        insert into direct_message
+            (dm_id, send_id, receive_id, message, timestamp, read_check)
+        values
+            (dm_id, #{send_id}, #{receive_id}, #{message}, now(), false)
+    </insert>
+
+    <delete id="delete" parameterType="DirectMessageVo">
+        delete from direct_message
+        where dm_id = #{dm_id} and timestamp = #{timestamp}
+    </delete>
+
+    <select id="directMessageList" parameterType="UserDmVo" resultType="DirectMessageVo">
+        select * from direct_message
+        where (dm_id = #{dm_id} and send_id = #{user_id})
+            or (dm_id = #{dm_id} and receive_id = #{user_id})
+    </select>
+
+</mapper>

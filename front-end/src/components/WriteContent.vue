@@ -1,5 +1,5 @@
 <template>
-<div class="col-md-12">
+  <div class="offset-md-2 col-md-8">
     <div class="offset-md-1 col-md-10">
         <div style="height:10px;"></div>
         <div class="all-scroll pos-relative mt-50">
@@ -32,6 +32,28 @@
             <textarea name="message" id="message" v-model="intro" cols="30" rows="7" class="form-control" style="resize:none;" placeholder="Write your story"></textarea>
             </div>
         </div>
+        
+        <div v-if="isLocation&&!isLocationSelect" class="row form-group mb-5">
+            <div class="col-md-12">
+            <label class="text-white">Location Search</label> 
+            <input v-model="searchKeyword" type="text" class="form-control">
+            <br>
+            <input data-toggle="modal" data-target="#mapModal" @click="searchLocation" type="button" value="Search" class="btn btn-outline-light btn-block text-white">
+            </div>
+        </div>
+        <div v-if="!isLocation&&!isLocationSelect">
+            <input @click="isLocation=!isLocation" type="button" value="위치정보 등록" class="btn btn-outline-light btn-block">
+            <br/><br/><br/>
+        </div>
+        <div v-if="isLocationSelect" class="row form-group mb-5">
+            <div class="col-md-12">
+            <label class="text-white">Selected Location</label>
+            <input style="text-align:center;" v-model="selectedLocation.name" type="text" class="form-control"><br>
+            <input @click="isLocationSelect=!isLocationSelect" type="button" value="다시 위치검색" class="btn btn-outline-light btn-block">
+            <br/><br/><br/>
+            </div>
+        </div>
+        
         <div style="margin-top:1%; margin-left:5%;margin-right:5%; height:50px;">
             <div style="display:inline-block; float :left">
             <input type="button" value="처음으로" @click="goPrev" class="btn btn-primary btn-md text-white">
@@ -40,12 +62,47 @@
             <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
             </div>
         </div>
+        <!-- <p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p> -->
+        <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" style="text-align:center;">
+                        <gmap-map
+                        :center="center"
+                        :zoom="15"
+                        style="width:100%;  height: 400px;"
+                        >
+                        <gmap-info-window :options="infoOptions" :position="infoWinPos" :opened="infoWinOpen" @closeclick="infoWinOpen=false">
+                            <br><h4 style="align:left">{{infoContent.title}}</h4>
+                            {{infoContent.text}}<br>
+                            <img width="150px" :src="infoContent.img" />
+                        </gmap-info-window>
+
+                        <gmap-marker
+                            :key="index"
+                            v-for="(m, index) in markers"
+                            :position="m.position"
+                            :title="m.title"
+                            :info="m.info"
+                            @click="placeClick(m, index)"
+                        ></gmap-marker>
+                        </gmap-map>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success text-white" @click="selectLocation" data-dismiss="modal">선택</button>
+                        <button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 </template>
 
 <script>
 import http from "../http-common"
+import axios from 'axios'
 export default {
     name:"writecontent",
     props:["imgs"],
@@ -58,6 +115,30 @@ export default {
             errored:false,
             loading:true,
             exist:false,
+            isLocation:false,
+            isLocationSelect:false,
+            searchKeyword:"",
+            locationList:[],
+            center: { lat: 45.508, lng: -73.587 },
+            markers: [],
+            places: [],
+            res:[],
+            infoWinPos : null,
+            infoWinOpen : false,
+            infoContent : {
+                title : null,
+                text : null,
+                img : null
+            },
+            currentIdx : null,
+            currentPlace: null,
+            infoOptions: {
+                pixelOffset: {
+                width: 0,
+                height: -35
+                }
+            },
+            selectedLocation: null
         }
     },
     methods:{
@@ -106,26 +187,121 @@ export default {
             for(var i=0; i<itrltemp.length; i++){
                 this.itrlist[i] = itrltemp[i].innerText;
             }
-            http
-              .post("/content/insertContent",{
-                content_val:this.intro,
-                user_id:"test",
-                hashtagList:this.itrlist,
-                imageList:this.imgs,
-              })
-              .then(response => {
-                if (response.data['resmsg'] == "게시물 추가 성공")
-                    alert("등록 성공!");
-                else
-                    alert("등록 실패!");
-                this.$router.push("/");
-              })
-              .catch(() => {
-                  this.errored = true;
-                  alert("error");
-              })
-              .finally(() => (this.loading = false));
+
+            if(this.isLocationSelect){
+                http
+                  .post("/content/insertContent",{
+                    content_val:this.intro,
+                    user_id:"test",
+                    hashtagList:this.itrlist,
+                    imageList:this.imgs,
+                    location_name:this.selectedLocation.name,
+                    lat:this.selectedLocation.position.lat,
+                    lng:this.selectedLocation.position.lng
+                  })
+                  .then(response => {
+                    if (response.data['resmsg'] == "게시물 추가 성공")
+                        alert("등록 성공!");
+                    else
+                        alert("등록 실패!");
+                    this.$router.push("/");
+                  })
+                  .catch(() => {
+                      this.errored = true;
+                      alert("error");
+                  })
+                  .finally(() => (this.loading = false));
+            }else{
+                http
+                  .post("/content/insertContent",{
+                    content_val:this.intro,
+                    user_id:"test",
+                    hashtagList:this.itrlist,
+                    imageList:this.imgs
+                  })
+                  .then(response => {
+                    if (response.data['resmsg'] == "게시물 추가 성공")
+                        alert("등록 성공!");
+                    else
+                        alert("등록 실패!");
+                    this.$router.push("/");
+                  })
+                  .catch(() => {
+                      this.errored = true;
+                      alert("error");
+                  })
+                  .finally(() => (this.loading = false));
+
+            }
         },
+
+        searchLocation(){
+            let keyword = this.searchKeyword;
+            keyword.replace(" ", "+");
+
+            const url = "http://192.168.100.41:5000/location/"+keyword;
+            
+            axios.get(url)
+                .then((response)=>{
+                    this.locationList = response.data.results;
+                    this.center.lat = parseFloat(this.locationList[0].geometry.location.lat);
+                    this.center.lng = parseFloat(this.locationList[0].geometry.location.lng);
+
+                    this.locationList.forEach(element => {
+                        let addr = "";
+                        axios.post("https://translation.googleapis.com/language/translate/v2?key=AIzaSyAcnkt6IBUt-bGIMw4u-VEIYpesgw4-2Lk",{
+                          "q": [element.formatted_address],
+                          "target": "ko"
+                        })
+                            .then((response)=>{
+                                addr = response.data.data.translations[0].translatedText;
+                                this.markers.push({
+                                    position : {
+                                        lat: parseFloat(element.geometry.location.lat),
+                                        lng: parseFloat(element.geometry.location.lng)
+                                    },
+                                    title : element.name,
+                                    info : {
+                                        title: element.name,
+                                        text: addr
+                                    }
+                                })
+                            })
+                            .catch((error)=>{
+                              alert(error)
+                            })
+                    })
+                })
+                .catch((error)=>{
+                    alert(error)
+                })
+        },
+
+        placeClick(marker, index){
+          this.infoWinPos = marker.position;
+          this.infoContent = marker.info;
+
+          if(this.currentIdx == index){
+              this.infoWinOpen = !this.infoWinOpen;
+          }else{
+              this.infoWinOpen = true;
+              this.currentIdx = index;
+              this.selectedLocation = {
+                  position: marker.position,
+                  name: marker.title,
+                  addr: marker.info.text
+              };
+          }
+      },
+
+      selectLocation(){
+          if(this.selectedLocation != null){
+              this.isLocationSelect = true;
+          }else{
+              this.isLocation = false;
+          }
+      }
+
     },
     mounted(){
         if(this.imgs.length==0){
@@ -144,6 +320,14 @@ export default {
         recaptchaScript.setAttribute('type',"text/javascript")
         recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
         document.body.appendChild(recaptchaScript)
+        var scrollUpDelay = 1;
+        var scrollUpSpeed = 30;
+        if(document.body.scrollTop<1)
+        {
+        return;
+        }
+        document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+        setTimeout('scrollUp()',scrollUpDelay);
     }
 }
 </script>

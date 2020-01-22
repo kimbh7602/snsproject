@@ -116,9 +116,8 @@ export default {
             };
 
             // calendar.createSchedules([schedule]);
-            alert(schedule.id);
-
-            alert('일정 생성 완료');
+            this.$store.commit('setModalText', schedule.id+' 일정 생성 완료');
+            document.getElementById('modalBtn').click();
         }
     },
     mounted() {

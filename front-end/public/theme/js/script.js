@@ -1,110 +1,11 @@
 $(document).ready(function(){
 
     "use strict";
-	
-	
-	// ISOTOPE
-	// $(document).ready(function(){
-	// 	var winWidth = $(window).width();
-	// 	dropdownMenu(winWidth);
-
-	// 	resizeDiv();
-	// 	});
-		
-	// 	window.onresize = function(event) {
-	// 	resizeDiv();
-	// 	}
-		
-	// 	function resizeDiv() {
-	// 	var vpw = $(window).width();
-	// 	var vph = $(window).height();
-	// 	var hh = $('.body-main').height();
-	// 	console.log(hh);
-	// 	dropdownMenu(winWidth);
-	// 	$('.side-job').height(hh);
-	// 	console.log($('.side-job').height());
-	// }
-
-
-	// $(window).on('load', function(){
-	// 	// enableSwiper();
-	// 	// ISOTOPE PORTFOLIO WITH FILTER
-	// 	if(isExists('.p-grid-isotope')){
-	// 		$('.p-grid-isotope').isotope({
-	// 			// set itemSelector so .grid-sizer is not used in layout
-	// 			itemSelector: '.p-item',
-	// 			percentPosition: true,
-	// 			masonry: {
-	// 				columnWidth: '.grid-sizer', 
-					
-	// 			},
-	// 		})
-		 
-	// 	}
-	
-	// });
-	
-	// DROPDOWN MENU
-	
-	// var winWidth = $(window).width();
-	// dropdownMenu(winWidth);
-	
-	// $(window).on('resize', function(){
-	// 	var winWidth = $(window).width();
-	// 	dropdownMenu(winWidth);
-	// 	// enableSwiper();
-	// });
-	
-
-				
-	// $('[data-menu]').on('click', function(){
-		
-	// 	var mainMenu = $(this).data('menu');
-		
-	// 	$(mainMenu).toggleClass('visible-menu');
-		
-	// });
-	
-	
 	enableSwiper();
 	
 });
 
 
-// function dropdownMenu(winWidth){
-// 	// console.log(winWidth);
-// 	if(winWidth > 767){
-// 		// $('.main-menu').hover(function(){
-// 		// 	var $this = $(this),
-// 		// 		menuAnchor = $this.children('a');
-				
-// 		// 	menuAnchor.addClass('mouseover');
-// 		// })
-// 		$('.main-menu li.drop-down').on('mouseover', function(){
-// 			var $this = $(this),
-// 				menuAnchor = $this.children('a');
-				
-// 			menuAnchor.addClass('mouseover');
-			
-// 		}).on('mouseleave', function(){
-// 			var $this = $(this),
-// 				menuAnchor = $this.children('a');
-				
-// 			menuAnchor.removeClass('mouseover');
-// 		});
-		
-// 	}else{
-		
-// 		$('.main-menu li.drop-down > a').on('click', function(){
-			
-// 			if($(this).attr('href') == '#') return false;
-// 			if($(this).hasClass('mouseover')){ $(this).removeClass('mouseover'); }
-// 			else{ $(this).addClass('mouseover'); }
-// 			return false;
-// 		});
-// 	}
-	
-// }
 
 function enableSwiper(){
 	

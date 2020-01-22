@@ -226,14 +226,24 @@
 </template>
 
 <script>
+import $ from "jquery"
 export default {
   mounted() {
     let recaptchaScript = document.createElement('script')
     recaptchaScript.setAttribute('src', "./theme/js/jquery.fancybox.min.js")
     document.head.appendChild(recaptchaScript)
-    // let recaptchaScripta = document.createElement('script')
-    // recaptchaScripta.setAttribute('src', "./theme/common/scripts.js")
-    // document.head.appendChild(recaptchaScripta)
+    // var scrollUpDelay = 1;
+    // var scrollUpSpeed = 30;
+    // if(document.body.scrollTop<1)
+    // {
+    //   return;
+    // }
+    // document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+    // setTimeout('scrollUp()',scrollUpDelay);
+    $('.js-clone-nav').each(function() {
+			var $this = $(this);
+			$this.clone().attr('class', 'site-nav-wrap').appendTo('.site-mobile-menu-body');
+		});
   },
 }
 </script>

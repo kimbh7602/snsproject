@@ -51,7 +51,7 @@
           <router-link to="/single" class="d-block photo-item">
           <div>
             <img src="../../public/theme/images/img_1.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
+              <div id="bg" style="background-color:#00695C;">
                 <p id="text-color" class="mx-3 ellipsis">
                  {{m3}}
                 </p>
@@ -68,7 +68,7 @@
           <router-link to="/single" class="d-block photo-item">
           <div>
             <img src="../../public/theme/images/img_2.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
+              <div id="bg" style="background-color:#0D47A1">
                 <p id="text-color" class="mx-3 ellipsis">
                  {{m4}}
                 </p>
@@ -87,7 +87,7 @@
           <router-link to="/single" class="d-block photo-item">
           <div>
             <img src="../../public/theme/images/img_3.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
+              <div id="bg" style="background-color:#FF8800">
                 <p id="text-color" class="mx-3 ellipsis">
                  {{message2}}
                 </p>
@@ -482,7 +482,8 @@ export default {
         this.bell = false;
       } else {
         this.bell = true;
-        alert('신고가 접수되었습니다.')
+        this.$store.commit('setModalText', '신고가 접수되었습니다.');
+        document.getElementById('modalBtn').click();
       }
     }
   },
@@ -493,6 +494,14 @@ export default {
     // let recaptchaScripta = document.createElement('script')
     // recaptchaScripta.setAttribute('src', "./theme/common/scripts.js")
     // document.head.appendChild(recaptchaScripta)
+    var scrollUpDelay = 1;
+    var scrollUpSpeed = 30;
+    if(document.body.scrollTop<1)
+    {
+      return;
+    }
+    document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+    setTimeout('scrollUp()',scrollUpDelay);
   },
 }
 </script>

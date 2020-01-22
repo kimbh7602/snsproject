@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ssafy.boot.dto.ContentVo;
 import edu.ssafy.boot.dto.ImageVo;
+import edu.ssafy.boot.dto.LocationVo;
 import edu.ssafy.boot.service.IContentService;
 import edu.ssafy.boot.service.IImageService;
 import io.swagger.annotations.ApiOperation;
@@ -110,34 +111,39 @@ public class ContentController {
 		
 		int num = 1;
 		boolean isDone = true;
-		for (ImageVo image : content.getImageList()) {
-			byte[] decode = Base64.decodeBase64(image.getBase64().substring(image.getBase64().lastIndexOf(",")));
-			String image_name = content.getContent_id()+"-"+num+".jpg";
-			String savePath = realPath+File.separator+image_name;
-			String image_url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/" +image_name;
+		if(content.getImageList().size() == 1 && content.getImageList().get(0).getBase64() == ""){
+			iSer.insertImage(new ImageVo(content.getContent_id(), content.getContent_id()+"-1.png", req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/"+content.getContent_id()+"-1.png", "normal"));
+		}else{
 
-			File f = new File(savePath);
-			
-			try {
-				f.createNewFile();
-				fos = new FileOutputStream(f);
-				fos.write(decode);
-				fos.close();
-
-				image.setContent_id(content.getContent_id());
-				image.setImage_name(image_name);
-				image.setImage_url(image_url);
-
-				iSer.insertImage(image);
-				System.out.println(image.toString());
-				num++;
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				isDone = false;
-			}
-		};
-		return isDone;
+			for (ImageVo image : content.getImageList()) {
+				byte[] decode = Base64.decodeBase64(image.getBase64().substring(image.getBase64().lastIndexOf(",")));
+				String image_name = content.getContent_id()+"-"+num+".jpg";
+				String savePath = realPath+File.separator+image_name;
+				String image_url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/" +image_name;
+				
+				File f = new File(savePath);
+				
+				try {
+					f.createNewFile();
+					fos = new FileOutputStream(f);
+					fos.write(decode);
+					fos.close();
+					
+					image.setContent_id(content.getContent_id());
+					image.setImage_name(image_name);
+					image.setImage_url(image_url);
+					
+					iSer.insertImage(image);
+					System.out.println(image.toString());
+					num++;
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					isDone = false;
+				}
+			};
+		}
+			return isDone;
 	}
 
 	@DeleteMapping("/deleteContent/{content_id}")
@@ -194,6 +200,22 @@ public class ContentController {
 			msg.put("resmsg", "게시물 수정 성공");
 		}else{
 			msg.put("resmsg", "게시물 수정	 실패");
+		}
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
+
+	@PostMapping("/findByLocation")
+	@ApiOperation(value = "게시물 위치정보 기반 검색")
+	private @ResponseBody ResponseEntity<Map<String, Object>> findByLocation(@RequestBody LocationVo location){
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		List<ContentVo> contentList = ser.findContentByLocation(location);
+		if(contentList != null && contentList.size() > 0){
+			msg.put("resmsg", "게시물 검색 성공");
+			msg.put("resValue", contentList);
+		}else{
+			msg.put("resmsg", "게시물 검색 실패");
 		}
 		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
 		return resEntity;

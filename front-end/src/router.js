@@ -1,12 +1,13 @@
 import Vue from "vue";
 import Router from "vue-router";
+import store from "./store";
+
 import Index from "./components/Index.vue"
 import Category from "./components/Category.vue"
 import Bio from "./components/Bio.vue"
 import Blog from "./components/Blog.vue"
 import Single from "./components/Single.vue"
 import Register from "./components/Register.vue"
-import Vfor from "./components/Vfor.vue"
 import Chating from "./components/Chating.vue"
 import AddImage from "./components/AddImage.vue"
 import ImageFilter from "./components/ImageFilter.vue"
@@ -14,9 +15,11 @@ import WriteContent from "./components/WriteContent.vue"
 import Password from "./components/Password.vue"
 import FindFriend from "./components/FindFriend.vue"
 import UserEdit from "./components/UserEdit.vue"
+import Login from "./components/Login.vue"
+import FindContent from "./components/FindContent.vue"
 
 Vue.use(Router);
-
+// const modal = { template: '<p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p><div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-body" style="text-align:center;">{{$store.state.modalText}}</div><div class="modal-footer"><button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button></div></div></div></div>'}
 export const router = new Router({
     mode: "history",
     routes: [{
@@ -25,6 +28,18 @@ export const router = new Router({
             alias: "/Index",
             component: Index,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    // store.commit('setModalText', "아이디 또는 비밀번호를 확인해주세요.");
+                    // document.getElementById('modalBtn').click();
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
+
         },
         {
             path: "/category",
@@ -32,6 +47,15 @@ export const router = new Router({
             alias: "/Category",
             component: Category,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/bio",
@@ -39,6 +63,16 @@ export const router = new Router({
             alias: "/Bio",
             component: Bio,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                // store.commit("getId");
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/blog",
@@ -46,6 +80,15 @@ export const router = new Router({
             alias: "/Blog",
             component: Blog,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/single",
@@ -53,6 +96,15 @@ export const router = new Router({
             alias: "/Single",
             component: Single,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/register",
@@ -62,17 +114,19 @@ export const router = new Router({
             props: true,
         },
         {
-            path: "/vfor",
-            name: "vfor",
-            alias: "/Vfor",
-            component: Vfor,
-            props: true,
-        },
-        {
             path: "/chating",
             name: "chating",
             alias: "/Chating",
             component: Chating,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/addimage",
@@ -80,6 +134,15 @@ export const router = new Router({
             alias: "/AddImage",
             component: AddImage,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/imagefilter",
@@ -87,6 +150,15 @@ export const router = new Router({
             alias: "/ImageFilter",
             component: ImageFilter,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/writecontent",
@@ -94,6 +166,15 @@ export const router = new Router({
             alias: "/WriteContent",
             component: WriteContent,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/password",
@@ -108,6 +189,15 @@ export const router = new Router({
             alias: "/Findfriend",
             component: FindFriend,
             props: true,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
         },
         {
             path: "/useredit",
@@ -115,12 +205,42 @@ export const router = new Router({
             alias: "/UserEdit",
             component: UserEdit,
             props: true,
-        }
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
+        },
+        {
+            path: "/login",
+            name: "login",
+            alias: "/Login",
+            component: Login,
+            props: true,
+        },
+        {
+            path: "/findcontent",
+            name: "findcontent",
+            alias: "/Findcontent",
+            component: FindContent,
+            beforeEnter: function(to, from, next){
+                store.commit('setid');
+                if(store.state.islogin){
+                    next();
+                }else{
+                    alert("로그인해주세요.");
+                    router.push("/login")
+                }
+            },
+        },
     ]
 });
 
-router.beforeEach(function(to, from, next) {
-    // store.commit('getChatId');
-
+router.beforeEach(function (to, from, next){
+    store.commit("getId");
     next();
 });

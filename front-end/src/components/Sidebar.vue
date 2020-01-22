@@ -9,14 +9,21 @@
         <div class="site-mobile-menu-body"></div>
     </div>
     <header class="header-bar d-flex d-lg-block align-items-center" data-aos="fade-left">
-        <div class="site-logo">
+        <div class="notification">
+            <i class="icon-bell text-white" style="font-size:1.5em;">
+                <span class="badge" style="font-size:0.5em;">
+                    <em>{{notify}}</em>
+                </span>
+            </i>
+        </div>
+        <div class="site-logo" style="margin-left:3%;">
             <router-link to="/">Shutter</router-link>
         </div>
         <div class="site-logo">
-        <input type="button" class="site-logo btn btn-danger btn-md text-white" @click="goWrite" value="Write" />
+            <input type="button" class="site-logo btn btn-danger btn-md text-white" @click="goWrite" value="Write" />
+            <input type="button" class="site-logo btn btn-success btn-md text-white" @click="logout" value="Logout" />
             <!-- <router-link to="/addimage">Write</router-link> -->
         </div>
-        
         <div class="d-inline-block d-xl-none ml-md-0 ml-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
 
         <div class="main-menu">
@@ -26,9 +33,8 @@
             <!-- <li><router-link to="/bio">Bio</router-link></li> -->
             <li><router-link to="/blog">Blog</router-link></li>
             <li><router-link to="/single">Single</router-link></li>
-            <li><router-link to="/register">Register</router-link></li>
-            <li><router-link to="/vfor">Practice</router-link></li>
-            <li><router-link to="/password">Password</router-link></li>
+            <!-- <li><router-link to="/register">Register</router-link></li> -->
+            <!-- <li><router-link to="/password">Password</router-link></li> -->
             <li><router-link to="/chating">Chating</router-link></li>
             <li><router-link to="/addimage">Write</router-link></li>
             <li><router-link to="/findfriend">Find a Friend</router-link></li>
@@ -44,12 +50,50 @@
 </template>
 
 <script>
+// import $ fromd "jquery"
 export default {
     name:"sidebar",
+    data(){
+        return{
+            notify:0,
+            // check:false,
+        }
+    },
     methods: {
         goWrite(){
             this.$router.push("/addimage");
+        },
+        logout(){
+            this.$store.commit("logout");
+            document.getElementById('modalBtn').click();
+            this.$router.push("/login");
         }
-    }
+    },
 }
 </script>
+
+<style scoped>
+.notification {
+  text-align: center;
+  text-decoration: none;
+  padding: 5px 5px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.notification:hover {
+  background-color: red;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 5px 7px;
+  border-radius: 50%;
+  background: red;
+  /* text-align:center; */
+  color: white;
+}
+</style>

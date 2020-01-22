@@ -1,5 +1,5 @@
 <template>
-<div class="col-md-12">
+  <div class="offset-md-2 col-md-8">
     <div class="offset-md-1 col-md-10">
     <div style="height:10px;"></div>
     <div :class="filterType" id="img-select" class="img-fluid"
@@ -98,14 +98,22 @@ export default {
     
   },
   mounted() {
-        let recaptchaScripta = document.createElement('script')
-        recaptchaScripta.setAttribute('type',"text/javascript")
-        recaptchaScripta.setAttribute('src', "./theme/js/script.js")
-        document.body.appendChild(recaptchaScripta)
-        let recaptchaScript = document.createElement('script')
-        recaptchaScript.setAttribute('type',"text/javascript")
-        recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
-        document.body.appendChild(recaptchaScript)
+      let recaptchaScripta = document.createElement('script')
+      recaptchaScripta.setAttribute('type',"text/javascript")
+      recaptchaScripta.setAttribute('src', "./theme/js/script.js")
+      document.body.appendChild(recaptchaScripta)
+      let recaptchaScript = document.createElement('script')
+      recaptchaScript.setAttribute('type',"text/javascript")
+      recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
+      document.body.appendChild(recaptchaScript)
+      var scrollUpDelay = 1;
+      var scrollUpSpeed = 30;
+      if(document.body.scrollTop<1)
+      {
+        return;
+      }
+      document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+      setTimeout('scrollUp()',scrollUpDelay);
   },
 };
 </script>
@@ -114,7 +122,7 @@ export default {
 #img-select{
   margin-bottom:0px;
   border:5px solid white;
-  height:700px;
+  height:500px;
   background-size:cover;
   background-position:center center;
   background-repeat: no-repeat;

@@ -1,6 +1,7 @@
 package edu.ssafy.boot.repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -16,13 +17,9 @@ public class UserDAOImpl implements IUserDAO {
 	SqlSession session;
 
 	@Override
-	public boolean login(UserVo user) {
+	public UserVo login(UserVo user) {
 		UserVo result = session.selectOne("ssafy.user.login", user);
-		if (result == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return result;
 	}
 
 	@Override
@@ -51,7 +48,7 @@ public class UserDAOImpl implements IUserDAO {
 		if (delete > 0) {
 			return true;
 		} else {
-			return false;	
+			return false;
 		}
 	}
 
@@ -66,10 +63,10 @@ public class UserDAOImpl implements IUserDAO {
 		map.put("password", password);
 		map.put("email", email);
 		int update = session.update("ssafy.user.updateTempPw", map);
-		
-		if(update > 0) {
+
+		if (update > 0) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
@@ -84,5 +81,23 @@ public class UserDAOImpl implements IUserDAO {
 		boolean isOk = session.selectOne("ssafy.user.emailDuplicateCheck", email);
 		System.out.println(isOk);
 		return isOk;
+	}
+
+	@Override
+	public List<UserVo> searchByUserId(String keyword) {
+		List<UserVo> userList = session.selectList("ssafy.user.searchByUserId", keyword);
+		return userList;
+	}
+
+	@Override
+	public List<UserVo> searchByInterest(List<String> list) {
+		List<UserVo> userList = session.selectList("ssafy.user.searchByInterest", list);
+		return userList;
+	}
+
+	@Override
+	public List<UserVo> userList() {
+		List<UserVo> userList = session.selectList("ssafy.user.userList");
+		return userList;
 	}
 }
