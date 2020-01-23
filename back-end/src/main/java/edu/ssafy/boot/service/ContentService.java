@@ -1,5 +1,6 @@
 package edu.ssafy.boot.service;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,18 +8,30 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.ssafy.boot.dto.ContentVo;
+import edu.ssafy.boot.dto.LocationVo;
 import edu.ssafy.boot.repository.IContentDAO;
 
 @Service("ContentService")
 public class ContentService implements IContentService {
-	
+
 	@Autowired
 	@Qualifier("ContentDAOImpl")
 	IContentDAO dao;
 
 	@Override
 	public List<ContentVo> contentMyList(String user_id) {
-		return dao.contentMyList(user_id);
+		List<ContentVo> contentList = dao.contentMyList(user_id);
+
+		contentList.sort(new Comparator<ContentVo>() {
+
+			@Override
+			public int compare(ContentVo o1, ContentVo o2) {
+				return o2.getTimestamp().compareTo(o1.getTimestamp());
+			}
+			
+		});
+
+		return contentList;
 	}
 
 	@Override
@@ -61,6 +74,11 @@ public class ContentService implements IContentService {
 		}
 		content.setHashtag(hashtag.trim());
 		return dao.updateContent(content);
+	}
+
+	@Override
+	public List<ContentVo> findContentByLocation(LocationVo location) {
+		return dao.findContentByLocation(location);
 	}
 	
 }

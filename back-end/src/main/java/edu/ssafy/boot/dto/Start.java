@@ -3,6 +3,10 @@ package edu.ssafy.boot.dto;
 public class Start {
     private String _date;
 
+    public Start(){
+        
+    }
+
     public Start(String _date) {
         this.set_date(_date);
     }

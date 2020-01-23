@@ -38,7 +38,8 @@ export default {
   ],
   data () {
     return {
-      bell: this.iconbell
+      bell: this.iconbell,
+      
     }
   },
   methods: {
@@ -47,13 +48,20 @@ export default {
         this.bell = false;
       } else {
         this.bell = true;
-        alert('신고가 접수되었습니다.')
+        this.$store.commit('setModalText', '신고가 접수되었습니다.');
+        document.getElementById('modalBtn').click();
       }
     }
   },
   mounted() {
-    console.log(this.iconbell)
-    console.log(this.bell)
+    var scrollUpDelay = 1;
+    var scrollUpSpeed = 30;
+    if(document.body.scrollTop<1)
+    {
+      return;
+    }
+    document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+    setTimeout('scrollUp()',scrollUpDelay);
   }
 }
 </script>

@@ -82,16 +82,15 @@
                     <div class="row form-group">
                       <div class="col-md-12">
                         <input type="submit" value="Edit" class="btn btn-primary btn-md text-white">
+                        <input type="button" value="Delete"  @click="del" class="btn btn-danger btn-md text-white">
                       </div>
                     </div>
                   </form>
                 </div>
-                
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
 </template>
@@ -138,6 +137,30 @@ export default {
             uitrlist:[],
             intro:""
         }
+    },
+    mounted(){
+      var tmp;
+        http
+        .get("user/info/"+"bbb")
+        .then(response => {
+          if (response.data['resmsg'] == "조회성공"){
+              tmp = response.data['resvalue'];
+              this.uid=tmp.user_id;
+              this.utel=tmp.tel;
+              this.uemail=tmp.email;
+              this.itrlist=tmp.interestList;
+              this.uitrlist=tmp.dislikeList;
+              this.intro=tmp.description;
+              alert(this.itrlist)
+            }
+          else
+              alert("회원조회 실패!");
+        })
+        .catch(() => {
+            this.errored = true;
+            alert("error");
+        })
+        .finally(() => (this.loading = false));
     },
     methods:{
         appendDiv() {
@@ -199,7 +222,6 @@ export default {
             document.getElementById('uninterest').focus();
         },
         edit() {
-            alert("수정실행")
           var itrltemp = document.getElementsByClassName('itrlone');
           var uitrltemp = document.getElementsByClassName('uitrlone');
           for(var i=0; i<itrltemp.length; i++){
@@ -224,6 +246,22 @@ export default {
                     alert("회원수정 성공!");
                 else
                     alert("회원수정 실패!");
+                this.$router.push("/");
+              })
+              .catch(() => {
+                  this.errored = true;
+                  alert("error");
+              })
+              .finally(() => (this.loading = false));
+        },
+         del() {
+          http
+              .delete("user/delete/"+this.uid)
+              .then(response => {
+                if (response.data['resmsg'] == "삭제성공")
+                    alert("회원삭제 성공!");
+                else
+                    alert("회원삭제 실패!");
                 this.$router.push("/");
               })
               .catch(() => {

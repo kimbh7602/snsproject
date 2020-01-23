@@ -114,12 +114,6 @@ public class UserVo {
 		this.interestList = interestList;
 	}
 
-	@Override
-	public String toString() {
-		return "UserVo [user_id=" + user_id + ", password=" + password + ", tel=" + tel + ", email=" + email
-				+ ", interest=" + interest + "]";
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -143,4 +137,13 @@ public class UserVo {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+
+	@Override
+	public String toString() {
+		return "UserVo [user_id=" + user_id + ", password=" + password + ", tel=" + tel + ", email=" + email
+				+ ", interest=" + interest + ", dislike=" + dislike + ", interestList=" + interestList
+				+ ", dislikeList=" + dislikeList + ", description=" + description + ", timestamp=" + timestamp
+				+ ", status=" + status + "]";
+	}
+	
 }

@@ -22,15 +22,25 @@ public class NoticeService implements INoticeService {
 
     @Override
     public boolean insertNotice(NoticeVo notice) {
+        String start = notice.getStart().get_date();
+        String end = notice.getEnd().get_date();
+        String start_date = start.substring(0, 10);
+        String end_date = end.substring(0, 10);
+
         NoticeDBVo noticedb = new NoticeDBVo(notice.getCalendarId(), notice.getCategory(), notice.getId(), notice.getTitle()
-        , notice.getLocation(), notice.isAllDay(), notice.getStart().get_date(), notice.getEnd().get_date());
+        , notice.getLocation(), notice.isAllDay(), start, end, start_date, end_date);
         return dao.insertNotice(noticedb);
     }
 
     @Override
     public boolean updateNotice(NoticeVo notice) {
+        String start = notice.getStart().get_date();
+        String end = notice.getEnd().get_date();
+        String start_date = start.substring(0, 10);
+        String end_date = end.substring(0, 10);
+
         NoticeDBVo noticedb = new NoticeDBVo(notice.getCalendarId(), notice.getCategory(), notice.getId(), notice.getTitle()
-        , notice.getLocation(), notice.isAllDay(), notice.getStart().get_date(), notice.getEnd().get_date());
+        , notice.getLocation(), notice.isAllDay(), start, end, start_date, end_date);
         return dao.updateNotice(noticedb);
     }
 

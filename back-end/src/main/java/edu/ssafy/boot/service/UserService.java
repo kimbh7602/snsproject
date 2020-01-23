@@ -1,12 +1,18 @@
 package edu.ssafy.boot.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.ssafy.boot.dto.UserVo;
+import edu.ssafy.boot.dto.WordCloudVo;
 import edu.ssafy.boot.repository.IUserDAO;
 
 @Service("UserService")
@@ -17,7 +23,7 @@ public class UserService implements IUserService {
 	IUserDAO dao;
 
 	@Override
-	public boolean login(UserVo user) {
+	public UserVo login(UserVo user) {
 		return dao.login(user);
 	}
 
@@ -28,15 +34,15 @@ public class UserService implements IUserService {
 
 		String interest = "";
 		String dislike = "";
-		
-		if(interestList != null){
+
+		if (interestList != null) {
 			for (String in : interestList) {
-				interest += in+" ";
+				interest += in + " ";
 			}
 		}
-		if(dislikeList != null){
+		if (dislikeList != null) {
 			for (String dis : dislikeList) {
-				dislike += dis+" ";
+				dislike += dis + " ";
 			}
 		}
 
@@ -53,15 +59,15 @@ public class UserService implements IUserService {
 
 		String interest = "";
 		String dislike = "";
-		
-		if(interestList != null){
+
+		if (interestList != null) {
 			for (String in : interestList) {
-				interest += in+" ";
+				interest += in + " ";
 			}
 		}
-		if(dislikeList != null){
+		if (dislikeList != null) {
 			for (String dis : dislikeList) {
-				dislike += dis+" ";
+				dislike += dis + " ";
 			}
 		}
 
@@ -78,7 +84,9 @@ public class UserService implements IUserService {
 
 	@Override
 	public UserVo info(String user_id) {
-		return dao.info(user_id);
+		UserVo user = dao.info(user_id);
+
+		return user;
 	}
 
 	@Override
@@ -89,5 +97,48 @@ public class UserService implements IUserService {
 	@Override
 	public boolean emailDuplicateCheck(String email) {
 		return dao.emailDuplicateCheck(email);
+	}
+
+	@Override
+	public List<UserVo> searchByUserId(String keyword) {
+		return dao.searchByUserId(keyword);
+	}
+
+	@Override
+	public List<UserVo> searchByInterest(List<String> list) {
+		return dao.searchByInterest(list);
+	}
+
+	@Override
+	public List<UserVo> userList() {
+		return dao.userList();
+	}
+
+	@Override
+	public List<WordCloudVo> wordList() {
+		List<String> interestList = dao.interestFrequency();
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+		for (String string : interestList) {
+			String[] arr = string.split(" ");
+			for (String interest : arr) {
+				if(map.containsKey(interest)){
+					map.replace(interest, map.get(interest)+1);
+				}else{
+					map.put(interest, 1);
+				}
+			}
+		}
+
+		List<WordCloudVo> wordList = new ArrayList<WordCloudVo>();
+
+		Set<Entry<String, Integer>> entrySet = map.entrySet();
+
+		for (Entry<String,Integer> entry : entrySet) {
+			WordCloudVo word = new WordCloudVo(entry.getKey(), entry.getValue());
+			wordList.add(word);
+		}
+		
+		return wordList;
 	}
 }

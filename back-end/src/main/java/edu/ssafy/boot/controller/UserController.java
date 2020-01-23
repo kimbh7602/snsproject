@@ -1,7 +1,7 @@
 package edu.ssafy.boot.controller;
 
 import java.util.HashMap;
-
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.ssafy.boot.dto.BlockVo;
 import edu.ssafy.boot.dto.LogVo;
 import edu.ssafy.boot.dto.UserVo;
+import edu.ssafy.boot.dto.WordCloudVo;
 import edu.ssafy.boot.service.IBlockchainService;
 import edu.ssafy.boot.service.ISecurityService;
 import edu.ssafy.boot.service.IUserService;
@@ -51,10 +52,15 @@ public class UserController {
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인서비스")
 	private @ResponseBody ResponseEntity<Map<String, Object>> login(@RequestBody UserVo user, HttpServletRequest request) {
+		// System.out.println(user.toString());
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			user.setPassword(sersc.computePw(user.getPassword()));
-			boolean res = ser.login(user);
+			boolean res = false;
+			UserVo result = ser.login(user);
+			if(result != null){
+				res = true;
+			}
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (res) {
 				//run configurations 에서 arguments-> vm arguments ->"-Djava.net.preferIPv4Stack=true" 입력
@@ -63,6 +69,7 @@ public class UserController {
 				serbc.addBlock(block);
 				serbc.displayChain();
 				map.put("resmsg", "로그인");
+				map.put("resValue", result.getUser_id());
 			} else {
 				map.put("resmsg", "아이디와 비밀번호가 일치하지 않음");
 			}
@@ -77,12 +84,17 @@ public class UserController {
 
 	@PutMapping("/update")
 	@ApiOperation(value = "회원정보 수정")
-	private ResponseEntity<Map<String, Object>> update(@RequestBody UserVo user) {
+	private ResponseEntity<Map<String, Object>> update(@RequestBody UserVo user, HttpServletRequest request) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
+		user.setPassword(sersc.computePw(user.getPassword()));
 		try {
 			boolean res = ser.updateUserInfo(user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if(res){
+				//run configurations 에서 arguments-> vm arguments ->"-Djava.net.preferIPv4Stack=true" 입력
+				LogVo log = new LogVo(user.getUser_id(), request.getRemoteAddr(), "회원정보수정");
+				BlockVo block = new BlockVo(log, new java.util.Date());
+				serbc.addBlock(block);
 				map.put("resmsg", "수정성공");
 				map.put("resvalue", res);
 			}else{
@@ -132,6 +144,7 @@ public class UserController {
 			if(user != null){
 				map.put("resmsg", "조회성공");
 				map.put("resvalue", user);
+				System.out.println(user.toString());
 			}else{
 				map.put("resmsg", "조회실패");
 			}
@@ -148,7 +161,6 @@ public class UserController {
 	@ApiOperation(value = "회원가입")
 	private @ResponseBody ResponseEntity<Map<String, Object>> signUpMem(@RequestBody UserVo user) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
-		System.out.println(user.toString());
 		try {
 			user.setPassword(sersc.computePw(user.getPassword()));
 			boolean signup = ser.signup(user);
@@ -171,12 +183,11 @@ public class UserController {
 	@ApiOperation(value = "이메일 중복체크")
 	private @ResponseBody ResponseEntity<Map<String, Object>> emailCheck(@PathVariable("email") String email) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
-		// System.out.println("123");
+		
 		try {
-			System.out.println(email);
 			boolean res = ser.emailDuplicateCheck(email);
 			Map<String, Object> map = new HashMap<String, Object>();
-			System.out.println(res);
+			
 			if (!res) 
 				map.put("resmsg", "사용가능");
 			else
@@ -187,6 +198,100 @@ public class UserController {
 		} catch (RuntimeException e) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("resmsg", "이메일 확인 실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	@PostMapping("/searchByInterest")
+	@ApiOperation(value = "관심사 검색")
+	private @ResponseBody ResponseEntity<Map<String, Object>> searchByInterest(@RequestBody List<String> list) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		// System.out.println("123");
+		try {
+			List<UserVo> userList = ser.searchByInterest(list);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(userList != null && userList.size() > 0){
+				map.put("resmsg", "관심사 검색 성공");
+				map.put("resValue", userList);
+			}else{
+				map.put("resmsg", "관심사 검색 실패");
+			}
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "관심사 검색 실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	@GetMapping("/searchByUserId/{keyword}")
+	@ApiOperation(value = "아이디 검색")
+	private @ResponseBody ResponseEntity<Map<String, Object>> searchByUserId(@PathVariable("keyword") String keyword) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		// System.out.println("123");
+		try {
+			List<UserVo> userList = ser.searchByUserId(keyword);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(userList != null && userList.size() > 0){
+				map.put("resmsg", "아이디 검색 성공");
+				map.put("resValue", userList);
+			}else{
+				map.put("resmsg", "아이디 검색 실패");
+			}
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "아이디 검색 실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	@GetMapping("/userList")
+	@ApiOperation(value = "전체회원정보조회", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> userList() {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		List<UserVo> userList = null;
+		try {
+			userList = ser.userList();
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(userList != null && userList.size() > 0){
+				map.put("resmsg", "조회성공");
+				map.put("resValue", userList);
+			}else{
+				map.put("resmsg", "조회실패");
+			}
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "조회실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	@GetMapping("/wordCloud")
+	@ApiOperation(value = "관심사 빈도 출력", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> wordCloud() {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		List<WordCloudVo> wordList = null;
+		try {
+			wordList = ser.wordList();
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(wordList != null && wordList.size() > 0){
+				map.put("resmsg", "조회성공");
+				map.put("resValue", wordList);
+			}else{
+				map.put("resmsg", "조회실패");
+			}
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "조회실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		return resEntity;

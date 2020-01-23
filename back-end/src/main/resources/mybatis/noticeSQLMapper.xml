@@ -5,9 +5,9 @@
 <mapper namespace="ssafy.notice">
     <insert id="insert" parameterType="NoticeVo">
         insert into notice
-            (calendarId, category, id, title, location, isAllDay, start, end)
+            (calendarId, category, id, title, location, isAllDay, start, end, start_date, end_date)
         values
-            (#{calendarId}, #{category}, #{id}, #{title}, #{location}, #{isAllDay}, #{start}, #{end})
+            (#{calendarId}, #{category}, #{id}, #{title}, #{location}, #{isAllDay}, #{start}, #{end}, #{start_date}, #{end_date})
     </insert>
 
     <update id="update" parameterType="NoticeVo">
@@ -17,7 +17,9 @@
             location = #{location},
             isAllDay = #{isAllDay},
             start = #{start},
-            end = #{end}
+            end = #{end},
+            start_date = #{start_date},
+            end_date = #{end_date}
         where
             id = #{id}
     </update>
@@ -35,7 +37,7 @@
         <![CDATA[ 
         select * from notice
         where
-            date(start) <= date(now()) and date(end) >= date(now())
+            date(start_date) <= date(now()) and date(end_date) >= date(now())
         ]]>
     </select>
 </mapper>

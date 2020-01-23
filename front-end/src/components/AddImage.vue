@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-12">
+  <div class="offset-md-2 col-md-8">
     <div class="offset-md-1 col-md-10">
     <div style="height:10px;"></div>
     <div class="selected-image" style="margin-bottom:0px; border:5px solid white;">
@@ -99,14 +99,21 @@ export default {
       this.imgs = this.fimgs;
       this.first = false;
     }
-
+    var scrollUpDelay = 1;
+    var scrollUpSpeed = 30;
+    if(document.body.scrollTop<1)
+    {
+      return;
+    }
+    document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+    setTimeout('scrollUp()',scrollUpDelay);
   }
 };
 </script>
 
 <style scoped>
 .selected-image{
-    height:700px;
+    height:500px;
     background-size: cover;
 }
 </style>

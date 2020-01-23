@@ -7,7 +7,7 @@
 		insert into user_like
 			(content_id, user_id, timestamp)
 		values
-			(#{content_id}, #{user_id}, #{timestamp})
+			(#{content_id}, #{user_id}, now())
 	</insert>
 
 	<delete id="delete" parameterType="UserLikeVo">

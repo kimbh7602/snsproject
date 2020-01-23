@@ -93,7 +93,7 @@
                           <!-- 인증번호  -->
                           <div class="d-flex bd-highlight">
                             <div class="w-100 bd-highlight">
-                              <input type="email" v-model="uniqnum" class="form-control">
+                              <input type="text" v-model="uniqnum" class="form-control">
                             </div>
                             <div class="flex-shrink-1 bd-highlight">
                               <input type="button" value="인증번호 받기" class="btn btn-link" v-on:click="uniqueNum()">
@@ -134,8 +134,8 @@
                     <!-- register/reset button -->
                     <div class="row form-group">
                       <div class="col-md-12">
-                        <input type="submit" value="Register" class="btn btn-primary btn-md text-white">
-                        <input type="reset" value="Reset" @click="deleteDiv" class="btn btn-danger btn-md text-white">
+                        <input type="submit" value="가입" class="col-md-3 btn btn-primary btn-md text-white">
+                        <input type="reset" value="취소" @click="deleteDiv" class="offset-md-6 col-md-3 btn btn-danger btn-md text-white">
                       </div>
                     </div>
                   </form>
@@ -147,6 +147,20 @@
         </div>
 
       </div>
+      <!-- Modal -->
+      <!-- <p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p>
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body" style="text-align:center;">
+              {{modalText}}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button>
+            </div>
+          </div>
+        </div>
+      </div> -->
     </div>
 </template>
 
@@ -187,6 +201,8 @@ export default {
             emailCheck:false,
             emailKeysucc:false,
             timeout:false,
+            modalText:"",
+            idOk:false,
         }
     },
     methods:{
@@ -216,18 +232,33 @@ export default {
           }
         },
         duplicateId() {
+          // var replaceChar = /[~!@#$%^&*;/()_+|<>?:{}]/gi;
+          // 완성형 아닌 한글 정규식
+          // var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
+          var checkid = /^[A-Za-z0-9+]{4,12}$/;
           if (this.uid === "") {
-            alert('아이디를 입력해주십시오.')
-          } else {
+            this.modalText = "아이디를 입력해주세요.";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();
+          } else if(!checkid.test(this.uid)){
+            this.modalText = "4~12자리의 영문 및 숫자로 입력해주세요.";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();
+          }else {
             http
-              .get('content/urls/1', {
+              .get('user/info/'+this.uid, {
                 user_id: this.uid,
               })
                 .then((response)=>{
-                  if (response.data['resmsg'] == "true") { // id가 중복일 때,
-                      alert("이미 사용 중인 아이디입니다.");
+                  if (response.data['resmsg'] == "조회성공") { // id가 중복일 때,
+                    this.modalText = "이미 사용 중인 아이디입니다.";
+                    this.$store.commit('setModalText', this.modalText);
+                    document.getElementById('modalBtn').click();
                   } else { // 중복되지 않을 때
-                      alert("사용 가능한 아이디입니다");
+                    this.modalText = "사용 가능한 아이디입니다.";
+                    this.$store.commit('setModalText', this.modalText);
+                    document.getElementById('modalBtn').click();
+                    this.idOk = true;
                   }
                 })
                 .catch(() => {
@@ -241,21 +272,29 @@ export default {
           var regExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
           // var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
           if (this.uemail === "") {
-            alert('이메일을 입력해주십시오.')
+            this.modalText = "이메일을 입력해주세요.";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();            
           }
           if (!regExp.test(this.uemail)) {
-              alert('이메일 형식으로 입력해주십시오.')
+            this.modalText = "이메일 형식으로 입력해주세요.";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();
           } else {
             // this.emailCheck = true;
             http
               .get("/user/emailCheck/"+this.uemail)
                 .then((response)=>{
                   this.emailDupl = response.data['resValue'];
-                  if (this.emailDupl) { // 중복일 때,
+                  if (this.emailDupl) {
                     this.emailCheck = true;
-                    alert("사용 가능한 이메일입니다.");
+                    this.modalText = "사용 가능한 이메일입니다.";
+                    this.$store.commit('setModalText', this.modalText);
+                    document.getElementById('modalBtn').click();
                   } else {
-                    alert("이미 사용 중인 이메일입니다.");
+                    this.modalText = "이미 사용 중인 이메일입니다.";
+                    this.$store.commit('setModalText', this.modalText);
+                    document.getElementById('modalBtn').click();
                   }
                 })
                 .catch(() => {
@@ -266,14 +305,16 @@ export default {
           }
         },
         uniqueNum() {
-          if(this.minutes=='03' && this.seconds=='00'){
-            this.startTimer();
-          }
           http
               .post('/email/checkEmail/'+this.uemail)
                 .then((response)=>{
                   this.emailKey = response.data['resValue'];
-                  alert("인증 이메일이 발송되었습니다.");
+                  this.modalText = "인증 이메일이 발송되었습니다.";
+                  this.$store.commit('setModalText', this.modalText);
+                  if(this.minutes=='03' && this.seconds=='00'){
+                    this.startTimer();
+                  }
+                  document.getElementById('modalBtn').click();
                 })
                 .catch(() => {
                   this.errored = true;
@@ -282,12 +323,16 @@ export default {
         },
         uniqueNumCheck() {
           if(this.emailKey == this.uniqnum && !this.timeout){
-            alert("인증완료");
+            this.modalText = "이메일 인증 완료";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();
             this.resetTimer()
             this.emailKeysucc = true;
           }
           else{
-            alert("인증실패");
+            this.modalText = "이메일 인증 실패";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();
           }
         },
         appendDiv() {
@@ -296,6 +341,9 @@ export default {
             var span = document.createElement('span');
             var bold = document.createElement('bold')
             var text = document.getElementById('interest').value;
+            if(text==""){
+              return;
+            }
             // this.itrlist.push(text);
             bold.innerText = text;
             div.style.background=colorCode;
@@ -332,6 +380,9 @@ export default {
             var span = document.createElement('span');
             var bold = document.createElement('bold')
             var text = document.getElementById('uninterest').value;
+            if(text==""){
+              return;
+            }
             // this.itrlist.push(text);
             bold.innerText = text;
             div.style.background=colorCode;
@@ -358,28 +409,50 @@ export default {
             this.uitrlist[j] = uitrltemp[j].innerText;
           }
           this.loading = true;
-          http
-              .post("/user/signup",{
-                user_id:this.uid,
-                password:this.upw,
-                tel:this.utel,
-                email:this.uemail,
-                interestList:this.itrlist,
-                dislikeList:this.uitrlist,
-                description:this.intro,
-              })
-              .then(response => {
-                if (response.data['resmsg'] == "등록성공")
-                    alert("회원가입 성공!");
-                else
-                    alert("회원가입 실패!");
-                this.$router.push("/");
-              })
-              .catch(() => {
-                  this.errored = true;
-                  alert("error");
-              })
-              .finally(() => (this.loading = false));
+          if(!this.idOk){
+            this.modalText = "아이디 중복체크를 해주세요.";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();
+          }else if(!this.emailDupl){
+            this.modalText = "이메일 중복체크를 해주세요.";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();
+          }else if(!this.emailKeysucc){
+            this.modalText = "이메일 인증을 해주세요.";
+            this.$store.commit('setModalText', this.modalText);
+            document.getElementById('modalBtn').click();
+          }
+          else{
+            http
+                .post("/user/signup",{
+                  user_id:this.uid,
+                  password:this.upw,
+                  tel:this.utel,
+                  email:this.uemail,
+                  interestList:this.itrlist,
+                  dislikeList:this.uitrlist,
+                  description:this.intro,
+                })
+                .then(response => {
+                  if (response.data['resmsg'] == "등록성공"){
+                    this.modalText = "회원가입 성공";
+                    this.$store.commit('setModalText', this.modalText);
+                    // document.body.removeAttribute('class');
+                    document.getElementById('modalBtn').click();
+                    this.$router.push("/");
+                  }
+                  else{
+                    this.modalText = "회원가입 실패";
+                    this.$store.commit('setModalText', this.modalText);
+                    document.getElementById('modalBtn').click();
+                  }
+                })
+                .catch(() => {
+                    this.errored = true;
+                    alert("error");
+                })
+                .finally(() => (this.loading = false));
+          }
         },
     },
     computed: {
@@ -391,6 +464,16 @@ export default {
           const seconds = this.totalTime - (this.minutes * 60);
           return this.padTime(seconds);
         }
+    },
+    mounted(){
+      var scrollUpDelay = 1;
+      var scrollUpSpeed = 30;
+      if(document.body.scrollTop<1)
+      {
+        return;
+      }
+      document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
+      setTimeout('scrollUp()',scrollUpDelay);
     }
 }
 </script>

@@ -12,6 +12,9 @@
 		<typeAlias type="edu.ssafy.boot.dto.ImageVo" alias="ImageVo" />
 		<typeAlias type="edu.ssafy.boot.dto.UserLikeVo" alias="UserLikeVo" />
 		<typeAlias type="edu.ssafy.boot.dto.NoticeDBVo" alias="NoticeVo" />
+		<typeAlias type="edu.ssafy.boot.dto.UserDmVo" alias="UserDmVo" />
+		<typeAlias type="edu.ssafy.boot.dto.DirectMessageVo" alias="DirectMessageVo" />
+		<typeAlias type="edu.ssafy.boot.dto.LocationVo" alias="LocationVo" />
 	</typeAliases>
 
 	<mappers>
@@ -23,5 +26,7 @@
 		<mapper resource="mybatis/imageSQLMapper.xml" />
 		<mapper resource="mybatis/userLikeSQLMapper.xml" />
 		<mapper resource="mybatis/noticeSQLMapper.xml" />
+		<mapper resource="mybatis/userDmSQLMapper.xml" />
+		<mapper resource="mybatis/directMessageSQLMapper.xml" />
 	</mappers>
 </configuration>

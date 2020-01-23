@@ -41,7 +41,6 @@ public class ImageController {
 	@PostMapping("/image/fileupload/{user_id}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleFileUpload(HttpServletResponse res, HttpServletRequest req, @PathVariable("user_id") String user_id) {
-    	System.out.println("!!");
     	String path = "/upload";
     	String realPath = req.getServletContext().getRealPath(path);
     	System.out.println(realPath);

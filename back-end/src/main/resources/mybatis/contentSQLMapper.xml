@@ -3,11 +3,15 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ssafy.content">
-	<select id="selectMyList" parameterType="string" resultType="ContentVo">
+	<select id="selectMyFollowList" parameterType="string" resultType="ContentVo">
 		select c.* from contents as c
 		join follow as f
 		on (c.user_id = f.follow_id)
 		where f.follower_id = #{user_id}
+	</select>
+
+	<select id="selectMyList" parameterType="string" resultType="ContentVo">
+		select * from contents where user_id = #{user_id}
 	</select>
 	
 	<select id="selectOne" parameterType="int" resultType="ContentVo">
@@ -17,9 +21,9 @@
 
 	<insert id="insert" parameterType="ContentVo">
 		insert into contents
-			(content_val, user_id, timestamp, hashtag)
+			(content_val, user_id, timestamp, hashtag, location_name, lat, lng)
 		values
-			(#{content_val}, #{user_id}, now(), #{hashtag})
+			(#{content_val}, #{user_id}, now(), #{hashtag}, #{location_name}, #{lat}, #{lng})
 	</insert>
 
 	<select id="selectContentId" parameterType="string" resultType="int">
@@ -39,4 +43,16 @@
 			hashtag = #{hashtag}
 		where content_id = #{content_id}
 	</update>
+
+	<select id="findByLocation" parameterType="LocationVo" resultType="ContentVo">
+		<![CDATA[ 
+			select * from contents
+			where abs(lat-#{lat})+abs(lng-#{lng}) <= #{dist}
+		]]>
+	</select>
+
+	<select id="imageListByContentId" parameterType="int" resultType="ImageVo">
+		select * from content_image
+		where content_id = #{content_id}
+	</select>
 </mapper>

@@ -9,6 +9,11 @@
 			user_id = #{user_id} and
 			password = #{password}
 	</select>
+
+	<update id="loginTime" parameterType="string">
+		update users set timestamp = now()
+		where user_id = #{user_id}
+	</update>
 	
 	<select id="info" parameterType="string" resultType="Uservo">
 		select * from users
@@ -59,5 +64,26 @@
 
 	<select id="emailDuplicateCheck" parameterType="string" resultType="boolean">
 		select exists ( select * from users where email = #{email}) as exist
+	</select>
+
+	<select id="searchByUserId" parameterType="string" resultType="UserVo">
+		select * from users
+		where user_id like concat(#{keyword}, '%')
+	</select>
+
+	<select id="searchByInterest" parameterType="java.util.List" resultType="UserVo">
+		select * from users
+		where 1 and
+		<foreach collection="list" item="keyword" separator="and">
+			interest like concat('%', #{keyword}, '%')
+		</foreach>
+	</select>
+
+	<select id="userList" resultType="UserVo">
+		select * from users
+	</select>
+
+	<select id="interest" resultType="string">
+		select interest from users
 	</select>
 </mapper>
