@@ -54,7 +54,19 @@ public class ContentController {
 		Map<String, Object> msg = new HashMap<String, Object>();
 		List<ContentVo> list = ser.contentMyList(user_id);
 		msg.put("resmsg", "타임라인 출력 성공");
-		msg.put("resvalue", list);
+		msg.put("resValue", list);
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
+
+	@GetMapping("/contentUserList/{user_id}")
+	@ApiOperation(value = "개인 게시물 리스트", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> contentUserList(@PathVariable("user_id") String user_id) throws ServletException, IOException {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		List<ContentVo> list = ser.contentUserList(user_id);
+		msg.put("resmsg", "개인 게시물 리스트 출력 성공");
+		msg.put("resValue", list);
 		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
 		return resEntity;
 	}
@@ -65,10 +77,8 @@ public class ContentController {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		Map<String, Object> msg = new HashMap<String, Object>();
 		ContentVo content = ser.detail(content_id);
-		List<String> urls = ser.detailUrls(content_id);
 		msg.put("resmsg", "게시물 출력 성공");
-		msg.put("content", content);
-		msg.put("urls", urls);
+		msg.put("resValue", content);
 		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
 		return resEntity;
 	}

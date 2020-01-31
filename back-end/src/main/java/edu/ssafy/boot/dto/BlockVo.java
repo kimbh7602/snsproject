@@ -11,15 +11,15 @@ public class BlockVo {
 	private String hash;
 	private String prehash;
 	private LogVo data;
-	private Date Timestamp;
+	private String Timestamp;
 
-	public BlockVo(LogVo data, Date Timestamp) {
+	public BlockVo(LogVo data, String Timestamp) {
 		this.hash = computeHash();
 		this.data = data;
 		this.Timestamp = Timestamp;
 	}
-	
-	//블록데이터 해쉬함수변환
+
+	// 블록데이터 해쉬함수변환
 	public String computeHash() {
 
 		String dataToHash = "" + this.Timestamp + this.prehash + this.data;
@@ -31,7 +31,7 @@ public class BlockVo {
 			digest = MessageDigest.getInstance("SHA-256");
 			byte[] hash = digest.digest(dataToHash.getBytes(StandardCharsets.UTF_8));
 			encoded = Base64.getEncoder().encodeToString(hash);
-		} catch (NoSuchAlgorithmException e) { 	
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 
@@ -64,11 +64,11 @@ public class BlockVo {
 		this.data = data;
 	}
 
-	public Date getTimestamp() {
+	public String getTimestamp() {
 		return Timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(String timestamp) {
 		Timestamp = timestamp;
 	}
 

@@ -1,5 +1,5 @@
 <template>
-<div class="site-wrap">
+<div>
     <div class="site-mobile-menu">
         <div class="site-mobile-menu-header">
         <div class="site-mobile-menu-close mt-3">
@@ -31,7 +31,6 @@
     </header>
 </div>
 </template>
-
 
 <style scoped>
 .notification {

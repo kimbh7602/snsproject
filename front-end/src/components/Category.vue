@@ -1,473 +1,162 @@
 <template>
     <div class="container-fluid photos">
       <div class="row align-items-stretch">
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
+        <div class="col-6 col-md-6 col-lg-4" style="padding: 10px 10px" data-aos="fade-up" v-for="item in Items" :key="item.id">
           <div class="d-block photo-item">
-            <img src="../../public/theme/images/img_4.jpg" alt="Image" class="img-fluid my-0">
+            <div class="all-scroll pos-relative mt-50">
+              <div class="swiper-scrollbar"></div>
+              <div class="swiper-container oflow-visible" data-slide-effect="coverflow" data-autoheight="false"  data-swiper-wheel-control="true"
+                                        data-swiper-speed="1000" data-swiper-margin="25" data-swiper-slides-per-view="1"
+                                        data-swiper-breakpoints="true" data-swiper-autoplay="false" data-scrollbar="true"
+                                        data-swiper-loop="false" data-swpr-responsive="[1, 2, 1, 2]">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide polaroid" v-for="img in item.imageList" :key="img.index">
+                        <div v-on:click="goDetail(item.content_id)" :class="img.filter" class="" style="width:100%; height:300px">
+                          <img :src="img.image_url" style="box-shadow: 3px 3px 3px;" alt="Image"/>
+                          <!-- <div style="text-align:right;">from {{item.user_id}}</div> -->
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
               <div class="photo-text-more">
-                <h3 class="heading mx-2 ellipsis" v-on:click="goDetail()">{{message2}}</h3>
-                <span class="meta">
-                  <div class="mb-3 my-3 d-flex justify-content-around size">
-                    <div v-on:click="clickHeart()">
-                      <i class="icon-heart" v-if="like"></i>
-                      <i class="icon-heart-o" v-else></i>
-                    </div>
-                    <div v-on:click="clickFollow()">
-                      <i class="icon-check" v-if="follow"></i>
-                      <i class="icon-user-plus" v-else></i>
-                    </div>
-                    <div v-on:click="clickBell()">
-                      <i class="icon-bell" v-if="bell"></i>
-                      <i class="icon-bell-o" v-else></i>
+                <div class="" data-aos="fade-up">
+                  <div class="d-block photo-item">
+                    <div class="postcard">
+                      <div class="content">
+                        <!-- 우표 -->
+                        <div class="stamp-cover" style="background:black; height:52px; width:52px;">
+                          <div class="stamp" style=" margin:1px; float:right; background-color:white; height:50px; width:50px;">
+                          </div>
+                        </div>
+                        <img src="../../public/theme/images/ai.jpg" style="width:37px;height:37px;" class="stamp-img"/>
+                        <img src="../../public/theme/images/stamp1.png" style="width:45px;height:45px;" alt="Postage mark" class="postmark">
+                        <!-- 끝 -->
+                        <div class="mail-title offset-1 col-9" style="text-align:left;"><p style="font-size:2em; font-family: loveson;">Dear {{uid}}</p></div>
+                        <div class="mail-message offset-2 col-8 ellipsis" style=" font-family: loveson; word-break:break-all;text-align:left;">{{item.content_val}}</div>
+                        <div class="col-11 col-offset-1" style="font-family: loveson; word-break:break-all;text-align:right;">from {{item.user_id}}</div>
+                        <div class="mb-3 my-3 d-flex justify-content-around size content-button">
+                          <div @click="clickHeart(item.content_id)">
+                            <i class="icon-heart" v-if="item.user_like"></i>
+                            <i class="icon-heart-o" v-else></i>
+                          </div>
+                          <div v-on:click="clickFollow()">
+                            <i class="icon-check" v-if="follow"></i>
+                            <i class="icon-user-plus" v-else></i>
+                          </div>
+                          <div v-on:click="clickBell()">
+                            <i class="icon-bell" v-if="bell"></i>
+                            <i class="icon-bell-o" v-else></i>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </span>
+                </div>
               </div>
           </div>
         </div>
-        <!-- post end -->
-
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_5.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{m3}}
-                </p>
-              </div>
-            </div>
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_1.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg" style="background-color:#00695C;">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{m3}}
-                </p>
-              </div>
-            </div>
-            <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-          </router-link>
-        </div>
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_2.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg" style="background-color:#0D47A1">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{m4}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_3.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg" style="background-color:#FF8800">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_6.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_7.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_8.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_9.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_10.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_1.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_2.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_3.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_4.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_5.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_6.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_7.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_8.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_9.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_4.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <router-link to="/single" class="d-block photo-item">
-          <div>
-            <img src="../../public/theme/images/img_5.jpg" alt="Image" class="img-fluid my-0">
-              <div id="bg">
-                <p id="text-color" class="mx-3 ellipsis">
-                 {{message2}}
-                </p>
-              </div>
-            </div>
-
-            <div class="photo-text-more">
-              <div class="photo-text-more">
-              <h3 class="heading">Photos Title Here</h3>
-              <span class="meta">42 Photos</span>
-            </div>
-            </div>
-          </router-link>
-        </div>
+      </div>
+      <div class="text-white text-center" v-if="this.contentErrorMsg">
+        <h5>{{this.contentErrorMsg}}</h5>
       </div>
     </div>
 </template>
 
 <script>
-import axios from 'axios'
+import $ from "jquery"
+import http from '../http-common';
+import store from '../store'
 export default {
   data() {
     return {
-      message: "안녕하세요",
-      message2: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      m3: "세줄일기, 세줄일기, 세줄일기",
-      m4: "hi",
-      image: "images/img_4.jpg",
-      like : false,
       follow: false,
       bell: false,
-      getImageUrls: [],
       errored: false,
+      uid: "",
+      Items: [],
+      contentIds: [],
+      contentErrorMsg: "",
     }
   },
   methods: {
-    getData: function() {
-      const DATA_URL = "더미데이터가 담겨있는 url"
-      axios.get(DATA_URL)
-        .then((response)=>{
-          this.getImageUrls = response.data.urls;
-          this.getImageFilters = response.data;
-          this.contentIds = response.data;
-          this.contentTitles = response.data;
-          this.contentValues = response.data;
-          // 이런 식으로 해보고 경로가 다를 시에는 예를 들어 getImageList: function() 이렇게 하나 더 만들던가
-          // 그리고 image_url과 filter는 딕셔너리 형태로 묶여있으면 좋겠음.
-          // 예) [{'image_url': 'filter'}, {}, {}, ...]
-          // console.log(this.getImages)
+    getLike() {
+      this.uid = store.state.user_id
+      http
+        .get('/userLike/userLikeList/' + this.uid)
+        .then((res) => {
+          for (var i = 0; i < res.data.resvalue.length; i++) {
+            this.contentIds.push({
+              con_id: res.data.resvalue[i].content_id
+            })
+          }
         })
         .catch(()=>{
           this.errored = true;
-          // console.log(error)
         })
     },
-    goDetail() {
+    getData() {
+      http
+        .get('/content/contentMyList/' + "test")
+        .then((res)=>{
+          if (res.data.resValue.length > 0) {
+            this.contentErrorMsg = ""
+            if (res.data.resmsg == "타임라인 출력 성공") {
+              for (var i = 0; i < res.data.resValue.length; i++) {
+                for (var j = 0; j < this.contentIds.length; j++) {
+                  if (res.data.resValue[i].content_id == this.contentIds[j].con_id) {
+                    res.data.resValue[i].user_like = true
+                  }
+                }
+              }
+              this.Items = res.data.resValue;
+            }
+          } else {
+            this.contentErrorMsg = "게시물이 없습니다."
+          }
+        })
+        .catch(()=>{
+          this.errored = true;
+        })
+    },
+    goDetail: function(con_id) {
       this.$router.push({
-        name: 'bio', 
+        name: 'bio',
         params: {
-          text: this.message2, 
-          images: this.image, 
-          iconbell: this.bell,
+          cid: con_id
         }
       })
     },
-    clickHeart() {
-      if (this.like === true) {
-        this.like = false;
-      } else {
-        this.like = true;
+    clickHeart(num) {
+      var idx = 0
+      for (idx = 0; idx < this.Items.length; idx++) {
+        if (this.Items[idx].content_id == num) {
+          if (this.Items[idx].user_like == false) {
+            this.Items[idx].user_like = true
+            http
+              .post('/userLike/like', {
+                content_id: this.Items[idx].content_id,
+                timestamp: this.Items[idx].timestamp,
+                user_id: this.uid
+              })
+              .catch(()=>{
+                this.errored = true;
+              })
+          } else {
+            this.Items[idx].user_like = false       
+            http
+              .delete('/userLike/dislike', {
+                data: {
+                  content_id: this.Items[idx].content_id,
+                  timestamp: this.Items[idx].timestamp,
+                  user_id: this.uid
+                }
+              })
+              .catch(()=>{
+                this.errored = true;
+              })
+          }
+        }
       }
     },
     clickFollow() {
@@ -487,22 +176,23 @@ export default {
       }
     }
   },
-  mounted() {
-    let recaptchaScript = document.createElement('script')
-    recaptchaScript.setAttribute('src', "./theme/js/jquery.fancybox.min.js")
-    document.head.appendChild(recaptchaScript)
-    // let recaptchaScripta = document.createElement('script')
-    // recaptchaScripta.setAttribute('src', "./theme/common/scripts.js")
-    // document.head.appendChild(recaptchaScripta)
-    var scrollUpDelay = 1;
-    var scrollUpSpeed = 30;
-    if(document.body.scrollTop<1)
-    {
-      return;
-    }
-    document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
-    setTimeout('scrollUp()',scrollUpDelay);
+  created() {
+    this.getLike()
+    this.getData()
   },
+  mounted() {
+    $('html').scrollTop(0);
+  },
+  updated(){
+    let recaptchaScripta = document.createElement('script')
+    recaptchaScripta.setAttribute('type',"text/javascript")
+    recaptchaScripta.setAttribute('src', "./theme/js/script.js")
+    document.body.appendChild(recaptchaScripta)
+    let recaptchaScriptb = document.createElement('script')
+    recaptchaScriptb.setAttribute('type',"text/javascript")
+    recaptchaScriptb.setAttribute('src', "./theme/js/swiper.js")
+    document.body.appendChild(recaptchaScriptb)
+  }
 }
 </script>
 
@@ -527,6 +217,7 @@ export default {
     height: 6rem;
   }
   .size {
-    font-size: 2em;
+    font-size: 1em;
   }
+
 </style>

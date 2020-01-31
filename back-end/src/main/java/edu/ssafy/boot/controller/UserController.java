@@ -1,11 +1,16 @@
 package edu.ssafy.boot.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -22,8 +27,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ssafy.boot.dto.BlockVo;
+import edu.ssafy.boot.dto.ImageVo;
 import edu.ssafy.boot.dto.LogVo;
 import edu.ssafy.boot.dto.UserVo;
+import edu.ssafy.boot.dto.WordCloudVo;
 import edu.ssafy.boot.service.IBlockchainService;
 import edu.ssafy.boot.service.ISecurityService;
 import edu.ssafy.boot.service.IUserService;
@@ -51,7 +58,6 @@ public class UserController {
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인서비스")
 	private @ResponseBody ResponseEntity<Map<String, Object>> login(@RequestBody UserVo user, HttpServletRequest request) {
-		// System.out.println(user.toString());
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			user.setPassword(sersc.computePw(user.getPassword()));
@@ -64,9 +70,8 @@ public class UserController {
 			if (res) {
 				//run configurations 에서 arguments-> vm arguments ->"-Djava.net.preferIPv4Stack=true" 입력
 				LogVo log = new LogVo(user.getUser_id(), request.getRemoteAddr(), "로그인");
-				BlockVo block = new BlockVo(log, new java.util.Date());
+				BlockVo block = new BlockVo(log, new java.util.Date().toString());
 				serbc.addBlock(block);
-				serbc.displayChain();
 				map.put("resmsg", "로그인");
 				map.put("resValue", result.getUser_id());
 			} else {
@@ -83,16 +88,18 @@ public class UserController {
 
 	@PutMapping("/update")
 	@ApiOperation(value = "회원정보 수정")
-	private ResponseEntity<Map<String, Object>> update(@RequestBody UserVo user, HttpServletRequest request) {
+	private ResponseEntity<Map<String, Object>> update(@RequestBody UserVo user, HttpServletResponse response, HttpServletRequest request) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		user.setPassword(sersc.computePw(user.getPassword()));
+		imageDelete(user.getUser_id(), response, request);
+		user = imageUpload(user, response, request);
 		try {
 			boolean res = ser.updateUserInfo(user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if(res){
 				//run configurations 에서 arguments-> vm arguments ->"-Djava.net.preferIPv4Stack=true" 입력
 				LogVo log = new LogVo(user.getUser_id(), request.getRemoteAddr(), "회원정보수정");
-				BlockVo block = new BlockVo(log, new java.util.Date());
+				BlockVo block = new BlockVo(log, new java.util.Date().toString());
 				serbc.addBlock(block);
 				map.put("resmsg", "수정성공");
 				map.put("resvalue", res);
@@ -111,12 +118,15 @@ public class UserController {
 	
 	@DeleteMapping("/delete/{user_id}")
 	@ApiOperation(value = "회원정보 삭제")
-	private ResponseEntity<Map<String, Object>> delete(@PathVariable("user_id") String user_id) {
+	private ResponseEntity<Map<String, Object>> delete(@PathVariable("user_id") String user_id, HttpServletRequest request) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			boolean res = ser.deleteUserInfo(user_id);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if(res){
+				LogVo log = new LogVo(user_id, request.getRemoteAddr(), "회원삭제");
+				BlockVo block = new BlockVo(log, new java.util.Date().toString());
+				serbc.addBlock(block);
 				map.put("resmsg", "삭제성공");
 				map.put("resvalue", res);
 			}else{
@@ -131,19 +141,50 @@ public class UserController {
 		}
 		return resEntity;
 	}
+	
+	
+	
+	
+	@GetMapping("/pwconfirm/{upw},{uid}")
+	@ApiOperation(value="비밀번호확인")
+	private @ResponseBody ResponseEntity<Map<String, Object>> pwConfirm(@PathVariable("upw") String upw, @PathVariable("uid") String uid,HttpServletRequest request) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		UserVo user = null;
+		try {
+			user = ser.info(uid); //스토리지 아이디를 통해서 유저 정보 가져오기
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(user.getPassword().equals(sersc.computePw(upw))){
+				map.put("resmsg", "비밀번호확인 성공");
+				map.put("resvalue", user);
+				
+			}else{
+				map.put("resmsg", "비밀번호확인 실패");
+			}
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "조회실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+	
 
 	@GetMapping("/info/{user_id}")
 	@ApiOperation(value = "회원정보조회", response = UserVo.class)
-	private @ResponseBody ResponseEntity<Map<String, Object>> infoMem(@PathVariable("user_id") String user_id) {
+	private @ResponseBody ResponseEntity<Map<String, Object>> infoMem(@PathVariable("user_id") String user_id, HttpServletRequest request) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		UserVo user = null;
 		try {
 			user = ser.info(user_id);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if(user != null){
+				LogVo log = new LogVo(user_id, request.getRemoteAddr(), "회원정보조회");
+				BlockVo block = new BlockVo(log, new java.util.Date().toString());
+				serbc.addBlock(block);
 				map.put("resmsg", "조회성공");
 				map.put("resvalue", user);
-				System.out.println(user.toString());
+				
 			}else{
 				map.put("resmsg", "조회실패");
 			}
@@ -158,16 +199,22 @@ public class UserController {
 
 	@PostMapping("/signup")
 	@ApiOperation(value = "회원가입")
-	private @ResponseBody ResponseEntity<Map<String, Object>> signUpMem(@RequestBody UserVo user) {
+	private @ResponseBody ResponseEntity<Map<String, Object>> signUpMem(@RequestBody UserVo user, HttpServletResponse res,  HttpServletRequest req) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			user.setPassword(sersc.computePw(user.getPassword()));
+			user = imageUpload(user, res, req);
 			boolean signup = ser.signup(user);
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (signup) 
+			if (signup) {
+				LogVo log = new LogVo(user.getUser_id(), req.getRemoteAddr(), "회원정보조회");
+				BlockVo block = new BlockVo(log, new java.util.Date().toString());
+				serbc.addBlock(block);
 				map.put("resmsg", "등록성공");
-			else
-				map.put("resmsg", "1등록실패");
+			}
+			else {
+				map.put("resmsg", "등록실패");
+			}
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 
 		} catch (RuntimeException e) {
@@ -206,7 +253,6 @@ public class UserController {
 	@ApiOperation(value = "관심사 검색")
 	private @ResponseBody ResponseEntity<Map<String, Object>> searchByInterest(@RequestBody List<String> list) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
-		// System.out.println("123");
 		try {
 			List<UserVo> userList = ser.searchByInterest(list);
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -230,7 +276,6 @@ public class UserController {
 	@ApiOperation(value = "아이디 검색")
 	private @ResponseBody ResponseEntity<Map<String, Object>> searchByUserId(@PathVariable("keyword") String keyword) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
-		// System.out.println("123");
 		try {
 			List<UserVo> userList = ser.searchByUserId(keyword);
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -260,7 +305,7 @@ public class UserController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			if(userList != null && userList.size() > 0){
 				map.put("resmsg", "조회성공");
-				map.put("resvalue", userList);
+				map.put("resValue", userList);
 			}else{
 				map.put("resmsg", "조회실패");
 			}
@@ -271,5 +316,82 @@ public class UserController {
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		return resEntity;
+	}
+
+	@GetMapping("/wordCloud")
+	@ApiOperation(value = "관심사 빈도 출력", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> wordCloud() {
+		System.out.println("word");
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		List<WordCloudVo> wordList = null;
+		try {
+			wordList = ser.wordList();
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(wordList != null && wordList.size() > 0){
+				map.put("resmsg", "조회성공");
+				map.put("resValue", wordList);
+			}else{
+				map.put("resmsg", "조회실패");
+			}
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "조회실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	private UserVo imageUpload(UserVo user, HttpServletResponse res, HttpServletRequest req){
+		FileOutputStream fos;
+    	String path = "/profile";
+    	String realPath = req.getServletContext().getRealPath(path);
+		
+		boolean isDone = true;
+		if(user.getProfileImage() != null && user.getProfileImage().getBase64() != ""){
+
+			ImageVo image = user.getProfileImage();
+				byte[] decode = Base64.decodeBase64(image.getBase64().substring(image.getBase64().lastIndexOf(",")));
+				String image_name = user.getUser_id() + ".jpg";
+				String savePath = realPath+File.separator+image_name;
+				String image_url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/" +image_name;
+				
+				File f = new File(savePath);
+				
+				try {
+					f.createNewFile();
+					fos = new FileOutputStream(f);
+					fos.write(decode);
+					fos.close();
+					user.setProfile_url(image_url);
+					user.setProfile_filter(image.getFilter());
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					isDone = false;
+				}
+			};
+		
+			return user;
+	}
+
+	private boolean imageDelete(String user_id, HttpServletResponse res, HttpServletRequest req){
+    	String path = "/profile";
+		String realPath = req.getServletContext().getRealPath(path);
+		
+		boolean isDelete = true;
+			String savePath = realPath+File.separator+user_id + ".jpg";
+			File file = new File(savePath);
+			if(file.exists()){
+				if(file.delete()){
+					System.out.println(user_id + " 삭제 성공");
+				}else{
+					System.out.println(user_id + " 삭제 실패");
+					isDelete = false;
+				}
+			}
+
+		return isDelete;
 	}
 }

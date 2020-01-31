@@ -3,6 +3,7 @@ package edu.ssafy.boot.service;
 import java.util.List;
 
 import edu.ssafy.boot.dto.UserVo;
+import edu.ssafy.boot.dto.WordCloudVo;
 
 public interface IUserService {
 	public UserVo login(UserVo user);
@@ -15,4 +16,5 @@ public interface IUserService {
 	public List<UserVo> searchByUserId(String keyword);
 	public List<UserVo> searchByInterest(List<String> list);
 	public List<UserVo> userList();
+	public List<WordCloudVo> wordList();
 }

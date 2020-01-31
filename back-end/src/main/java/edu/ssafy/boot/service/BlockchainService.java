@@ -18,9 +18,13 @@ public class BlockchainService implements IBlockchainService {
 		chain.add(generateGenesis());
 	}
 	
+	public List<BlockVo> getChain() {
+		return chain;
+	}
+
 	//첫 블록생성
 	private BlockVo generateGenesis() {
-		BlockVo genesis = new BlockVo(null, new java.util.Date());
+		BlockVo genesis = new BlockVo(null, new java.util.Date().toString());
 		genesis.setPrehash(null);
 		genesis.computeHash();
 		return genesis;

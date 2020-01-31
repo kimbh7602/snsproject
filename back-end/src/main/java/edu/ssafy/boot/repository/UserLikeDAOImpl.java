@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import edu.ssafy.boot.dto.ContentVo;
+import edu.ssafy.boot.dto.ImageVo;
 import edu.ssafy.boot.dto.UserLikeVo;
 
 @Repository("UserLikeDAOImpl")
@@ -37,6 +38,11 @@ public class UserLikeDAOImpl implements IUserLikeDAO {
 
     @Override
     public List<ContentVo> userLikeList(String user_id) {
-        return session.selectList("ssafy.userLike.userLikeList", user_id);
+        List<ContentVo> contentList = session.selectList("ssafy.userLike.userLikeList", user_id);
+        for (ContentVo contentVo : contentList) {
+            List<ImageVo> imageList = session.selectList("ssafy.image.imageList", contentVo.getContent_id());
+            contentVo.setImageList(imageList);
+        }
+        return contentList;
     }
 }

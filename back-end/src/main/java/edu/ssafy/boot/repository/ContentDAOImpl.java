@@ -18,13 +18,23 @@ public class ContentDAOImpl implements IContentDAO {
 
 	@Override
 	public List<ContentVo> contentMyList(String user_id) {
-		// TODO Auto-generated method stub
-		return session.selectList("ssafy.content.selectMyList", user_id);
+		List<ContentVo> contentList = session.selectList("ssafy.content.selectMyFollowList", user_id);
+		List<ContentVo> myList = session.selectList("ssafy.content.selectMyList", user_id);
+		for (ContentVo contentVo : myList) {
+			contentList.add(contentVo);
+		}
+		for (ContentVo contentVo : contentList) {
+			List<ImageVo> imageList = session.selectList("ssafy.content.imageListByContentId", contentVo.getContent_id());
+			contentVo.setImageList(imageList);
+		}
+		return contentList;
 	}
 
 	@Override
 	public ContentVo detail(int content_id) {
 		ContentVo content = session.selectOne("ssafy.content.selectOne", content_id);
+		List<ImageVo> imageList = session.selectList("ssafy.image.imageList", content_id);
+		content.setImageList(imageList);
 		return content;
 	}
 
@@ -84,7 +94,17 @@ public class ContentDAOImpl implements IContentDAO {
 	public List<ContentVo> findContentByLocation(LocationVo location) {
 		List<ContentVo> contentList = session.selectList("ssafy.content.findByLocation", location);
 		for (ContentVo contentVo : contentList) {
-			List<ImageVo> imageList = session.selectList("ssafy.content.findByLocationImage", contentVo.getContent_id());
+			List<ImageVo> imageList = session.selectList("ssafy.content.imageListByContentId", contentVo.getContent_id());
+			contentVo.setImageList(imageList);
+		}
+		return contentList;
+	}
+
+	@Override
+	public List<ContentVo> contentUserList(String user_id) {
+		List<ContentVo> contentList = session.selectList("ssafy.content.contentUserList", user_id);
+		for (ContentVo contentVo : contentList) {
+			List<ImageVo> imageList = session.selectList("ssafy.content.imageListByContentId", contentVo.getContent_id());
 			contentVo.setImageList(imageList);
 		}
 		return contentList;

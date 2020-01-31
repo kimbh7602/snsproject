@@ -16,4 +16,5 @@ public interface IUserDAO {
 	public List<UserVo> searchByUserId(String keyword);
 	public List<UserVo> searchByInterest(List<String> list);
 	public List<UserVo> userList();
+	public List<String> interestFrequency();
 }

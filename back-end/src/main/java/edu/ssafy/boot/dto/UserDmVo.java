@@ -10,6 +10,12 @@ public class UserDmVo {
 		super();
 	}
 
+	public UserDmVo(String user_id, String other_id) {
+		super();
+		this.user_id = user_id;
+		this.other_id = other_id;
+	}
+
 	public UserDmVo(int dm_id, String user_id, String other_id, String recent_message) {
 		super();
 		this.dm_id = dm_id;

@@ -676,6 +676,7 @@ h1, h2, h3, h4, h5,
       visibility: hidden; }
     .main-content .photos .photo-item .photo-text-more {
       position: absolute;
+      /* transform: rotateY(180deg); */
       z-index: 3;
       top: 50%;
       left: 50%;
@@ -710,14 +711,21 @@ h1, h2, h3, h4, h5,
       @media (max-width: 575.98px) {
         .main-content .photos .photo-item img {
           height: 200px; } }
-    .main-content .photos .photo-item:hover:after {
+    .main-content .photos .photo-item:after {
+      opacity: 0;
+      visibility: hidden; }
+    .main-content .photos .photo-item .photo-text-more {
+      margin-top: 0;
+      opacity: 0;
+      visibility: hidden; }
+    /* .main-content .photos .photo-item:hover:after {
       opacity: 1;
-      visibility: visible; }
+      visibility: visible; } */
     .main-content .photos .photo-item:hover .photo-text-more {
       margin-top: 0;
       opacity: 1;
+      /* transform: rotateY(180deg); */
       visibility: visible; }
-
 .site-mobile-menu .site-mobile-menu-body ul:first-child {
   margin-bottom: 20px !important;
   float: left; }
@@ -775,3 +783,481 @@ transition: background-color 5000s ease-in-out 0s;
  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
  -webkit-text-fill-color: #fff !important;
 }
+
+/* 네온효과 */
+@font-face {
+  font-family: neon;
+  src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/707108/neon.ttf);
+}
+
+
+.neon {
+  font-family: neon;
+  color: #FB4264;
+  /* font-size: 9vw;
+  line-height: 9vw; */
+  text-shadow: 0 0 3vw #F40A35;
+  animation: neon 1s ease infinite;
+  -moz-animation: neon 1s ease infinite;
+  -webkit-animation: neon 1s ease infinite;
+}
+
+@keyframes neon {
+  0%,
+  100% {
+    text-shadow: 0 0 1vw #FA1C16, 0 0 3vw #FA1C16, 0 0 10vw #FA1C16, 0 0 10vw #FA1C16, 0 0 .4vw #FED128, .5vw .5vw .1vw #806914;
+    color: #FED128;
+  }
+  50% {
+    text-shadow: 0 0 .5vw #800E0B, 0 0 1.5vw #800E0B, 0 0 5vw #800E0B, 0 0 5vw #800E0B, 0 0 .2vw #800E0B, .5vw .5vw .1vw #40340A;
+    color: #806914;
+  }
+}
+
+.flux {
+  font-family: neon;
+  color: #426DFB;
+  /* font-size: 9vw;
+  line-height: 9vw; */
+  text-shadow: 0 0 3vw #2356FF;
+  animation: flux 2s linear infinite;
+  -moz-animation: flux 2s linear infinite;
+  -webkit-animation: flux 2s linear infinite;
+  -o-animation: flux 2s linear infinite;
+}
+
+@keyframes flux {
+  0%,
+  100% {
+    text-shadow: 0 0 1vw #1041FF, 0 0 3vw #1041FF, 0 0 10vw #1041FF, 0 0 10vw #1041FF, 0 0 .4vw #8BFDFE, .5vw .5vw .1vw #147280;
+    color: #28D7FE;
+  }
+  50% {
+    text-shadow: 0 0 .5vw #082180, 0 0 1.5vw #082180, 0 0 5vw #082180, 0 0 5vw #082180, 0 0 .2vw #082180, .5vw .5vw .1vw #0A3940;
+    color: #146C80;
+  }
+}
+
+/* 손글씨 */
+
+@font-face {
+  font-family: 'NanumSaRangHaeADeur';
+  src: url('../fonts/loveson/NanumSaRangHaeADeur.svg#NanumSaRangHaeADeur') format('svg'),
+       url('../fonts/loveson/NanumSaRangHaeADeur.ttf') format('truetype'),
+       url('../fonts/loveson/NanumSaRangHaeADeur.woff') format('woff');
+  font-weight: bolder;
+  font-style: bolder;
+}
+
+@font-face {
+  font-family: 'loveson';
+  src: url('../fonts/loveson/loveson.eot');
+  src: url('../fonts/loveson/loveson.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/loveson/loveson.woff2') format('woff2');
+  font-weight: bolder;
+  font-style: bolder;
+}
+
+
+
+/* 마우스오버 */
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,500,700);
+@import url(https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css);
+figure.snip1477 {
+  font-family: 'Raleway', Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+  /* margin: 10px;
+  min-width: 230px;
+  max-width: 315px;
+  width: 100%; */
+  color: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  background-color: #000000;
+}
+figure.snip1477 *,
+figure.snip1477 *:before,
+figure.snip1477 *:after {
+  z-index: 100;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: all 0.55s ease;
+  transition: all 0.55s ease;
+}
+figure.snip1477 img {
+  max-width: 100%;
+  backface-visibility: hidden;
+  vertical-align: top;
+  opacity: 0.9;
+}
+figure.snip1477 .title {
+  position: absolute;
+  top: 58%;
+  left: 25px;
+  padding: 5px 10px 10px;
+}
+/*아이콘 추가*/
+/* figure.snip1477 .sns-icon {
+  position: absolute;
+  top: 65%;
+  left: 150px;
+  padding: 5px 10px 10px;
+} */
+
+figure.snip1477 .title:before,
+figure.snip1477 .title:after {
+  height: 2px;
+  width: 400px;
+  position: absolute;
+  content: '';
+  background-color: #ffffff;
+}
+figure.snip1477 .title:before {
+  top: 0;
+  left: 10px;
+  -webkit-transform: translateX(100%);
+  transform: translateX(100%);
+}
+figure.snip1477 .title:after {
+  bottom: 0;
+  right: 10px;
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
+}
+figure.snip1477 .title div:before,
+figure.snip1477 .title div:after {
+  width: 2px;
+  height: 300px;
+  position: absolute;
+  content: '';
+  background-color: #ffffff;
+}
+figure.snip1477 .title div:before {
+  top: 10px;
+  /* left:50px; */
+  /* right: -40px; */
+  right:0;
+  -webkit-transform: translateY(100%);
+  transform: translateY(100%);
+}
+figure.snip1477 .title div:after {
+  bottom: 10px;
+  left: 0;
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+}
+figure.snip1477 h2,
+figure.snip1477 h4 {
+  z-index: 100;
+  margin: 0;
+  text-transform: uppercase;
+}
+figure.snip1477 h2 {
+  font-weight: 400;
+  background-color: #000000;
+}
+figure.snip1477 h4 {
+  display: block;
+  font-weight: 700;
+  background-color: #ffffff;
+  padding: 5px 10px;
+  color: #000000;
+}
+figure.snip1477 figcaption {
+  position: absolute;
+  bottom: 42%;
+  left: 25px;
+  text-align: left;
+  opacity: 0;
+  padding: 5px 60px 5px 10px;
+  font-size: 1em;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+}
+figure.snip1477 figcaption p {
+  margin: 0;
+}
+figure.snip1477 a {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+/* figure.snip1477:hover img,
+figure.snip1477.hover img {
+  zoom: 1;
+  filter: alpha(opacity=35);
+  -webkit-opacity: 0.35;
+  opacity: 0.35;
+}
+figure.snip1477:hover .title:before,
+figure.snip1477.hover .title:before,
+figure.snip1477:hover .title:after,
+figure.snip1477.hover .title:after,
+figure.snip1477:hover .title div:before,
+figure.snip1477.hover .title div:before,
+figure.snip1477:hover .title div:after,
+figure.snip1477.hover .title div:after {
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+figure.snip1477:hover .title:before,
+figure.snip1477.hover .title:before,
+figure.snip1477:hover .title:after,
+figure.snip1477.hover .title:after {
+  -webkit-transition-delay: 0.15s;
+  transition-delay: 0.15s;
+} */
+/* figure.snip1477:hover figcaption,
+figure.snip1477.hover figcaption {
+  opacity: 1;
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.2s;
+} */
+figure.snip1477 figcaption{
+  opacity: 1;
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.2s;
+}
+
+figure.snip1477 img,
+figure.snip1477 img {
+  width: 100%;
+				object-fit: cover;
+				height: 300px;
+  zoom: 1;
+  filter: alpha(opacity=35);
+  -webkit-opacity: 0.35;
+  opacity: 0.35;
+}
+figure.snip1477 .title:before,
+figure.snip1477 .title:before,
+figure.snip1477 .title:after,
+figure.snip1477 .title:after,
+figure.snip1477 .title div:before,
+figure.snip1477 .title div:before,
+figure.snip1477 .title div:after,
+figure.snip1477 .title div:after {
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+figure.snip1477 .title:before,
+figure.snip1477 .title:before,
+figure.snip1477 .title:after,
+figure.snip1477 .title:after {
+  -webkit-transition-delay: 0.15s;
+  transition-delay: 0.15s;
+}
+
+
+
+figure.snip1477:hover .title:after,
+figure.snip1477.hover .title:after,
+figure.snip1477:hover .title div:after,
+figure.snip1477.hover .title div:after {
+  -webkit-transform: translate(-100%, -100%);
+  transform: translate(-100%, -100%);
+}
+
+figure.snip1477:hover .title:before,
+figure.snip1477.hover .title:before,
+figure.snip1477:hover .title div:before,
+figure.snip1477.hover .title div:before{
+  -webkit-transform: translate(100%, 100%);
+  transform: translate(100%, 100%);
+}
+
+figure.snip1477:hover figcaption,
+figure.snip1477.hover figcaption{
+  opacity: 0;
+  z-index: -1;
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.2s;
+}
+
+/* figure.snip1477:hover h2,
+figure.snip1477.hover h2,
+figure.snip1477:hover h4,
+figure.snip1477.hover h4 {
+  opacity: 0;
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.2s;
+} */
+
+
+figure.snip1477:hover img,
+figure.snip1477.hover img {
+  max-width: 100%;
+  backface-visibility: hidden;
+  vertical-align: top;
+  opacity: 0.9;
+}
+
+
+/* Post Card */
+.postcard {
+  /* font-family: loveson; */
+  /* font-family: NanumSaRangHaeADeur; */
+  /* position: relative;
+  margin: 0 auto;
+  width: 80%;
+  border-radius: 8px;
+   background: #000 url('http://www.letstravelsomewhere.com/wp-content/themes/letstravelsomewhere2013/images/bg-airmail-5.jpg');
+  padding: 7px;
+  box-shadow: 
+    1px 1px 5px rgba(0,0,0,0.5); */
+    background-origin: padding-box;
+    height:319px;
+    background: #000 url('http://www.letstravelsomewhere.com/wp-content/themes/letstravelsomewhere2013/images/bg-airmail-5.jpg'); 
+}
+
+.polaroid {
+  background:#000; /*Change this to a background image or remove*/
+  border:solid #fff;
+  border-width:8px 11px 11px 8px;
+  box-shadow:1px 1px 5px #333; /* Standard blur at 5px. Increase for more depth */
+  -webkit-box-shadow:1px 1px 5px #333;
+  -moz-box-shadow:1px 1px 5px #333;
+}
+
+.postcard .content {
+  position: relative;
+  text-align: center;
+  /* background: black; */
+  background: #fff;
+  height:319px;
+  background-clip: content-box;
+  /* padding: 60px;
+  border-radius: 5px;
+  border: solid 1px #ccc;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.4); */
+  padding: 10px;
+}
+
+.content-button{
+  position: fixed; bottom: 0; width: 100%;
+}
+
+.mail-title{
+  margin-top:30px;
+}
+
+.img-stamp{
+  position: absolute;
+  top:20px;
+  right:20px;
+}
+
+
+img.postmark{
+  position: absolute; 
+  top: 45px; right: 50px;
+}
+
+.stamp-img{
+  position: absolute;
+
+  right:28px;
+  top:28px;
+}
+
+.stamp-cover{
+  position: absolute;
+  right:20px;
+  top:20px;
+  -webkit-mask-box-image: url(http://www.html5rocks.com/en/tutorials/masking/adobe/stampTiles.svg) 150  repeat;
+}
+
+.stamp {
+  /* position: absolute;
+  right:20px;
+  top:20px; */
+  -webkit-mask-box-image: url(http://www.html5rocks.com/en/tutorials/masking/adobe/stampTiles.svg) 150  repeat;
+  mask-box-image: url(http://www.html5rocks.com/en/tutorials/masking/adobe/stampTiles.svg) 100 repeat;
+}
+.stamp:after {
+	z-index: -1;
+}
+
+
+/* .stamp {
+	width: 50px;
+	height: 50px;
+	display: inline-block;
+	padding: 10px;
+  margin-top: 50px;
+	background: white;
+	position: relative;
+  text-align:center;
+	-webkit-filter: drop-shadow(0px 0px 10px rgba(0,0,0,0.20));
+	background: radial-gradient(
+		transparent 0px, 
+		transparent 4px, 
+		white 4px,
+		white
+	);
+	background-size: 20px 20px;
+	background-position: -10px -10px;
+}
+.stamp:after {
+	content: '';
+	position: absolute;
+	left: 5px; top: 5px; right: 5px; bottom: 5px;
+	z-index: -1;
+}
+
+.stamp:before {
+	position: absolute;
+	bottom: 0; left: 0;
+	font: bold 24px arial;
+	color: white;
+	opacity: 0.75;
+	line-height: 100%;
+	padding: 20px;
+} */
+/* body { margin: 0; } */
+/* div#postage-stamps { 
+  background: #ffc url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/4273/envelope-texture.jpg) no-repeat;
+  text-align: right;
+  width:100%;
+  position: relative;
+  background-size: cover;
+  padding-bottom: 2rem;
+} */
+
+/* stamp 2 */
+/* img#mongolian-cyclist { 
+  margin-right: 100px;
+  margin-top: 40px;
+  transform: rotate(2.1deg);
+}
+img#stamp-img { 
+  width: 50px;
+  height: 50px;
+  position: absolute; 
+  right: 300px; 
+  top: 40px;
+  transform: rotate(-.8deg);
+}
+.stamp {
+  width: 50px;
+  height: 50px;
+  border-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/4273/stamp-border.png) 10 round;
+  border-width: 8px;
+  border-style: solid;
+}
+img.postmark {
+  width: 50px; 
+  height:50px; 
+  position: absolute; 
+  top: 60px; right: 500px;
+}
+img.postmark2 {
+  width: 89px;
+  height: 51px;
+  position: absolute;
+  right: 20px;
+  top: 50px;
+} */

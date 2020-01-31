@@ -1,17 +1,18 @@
 <template>
-  <div class="offset-md-2 col-md-8">
+  <div class="offset-md-2 col-md-8" data-aos="fade-up">
     <div class="offset-md-1 col-md-10">
         <div style="height:10px;"></div>
         <div class="all-scroll pos-relative mt-50">
             <h5 class="mb-50"><b>Image</b></h5>                                            
             <div class="swiper-scrollbar"></div>
-            <div class="swiper-container oflow-visible" data-slide-effect="flip" data-autoheight="false" 
+            <div class="swiper-container oflow-visible" data-slide-effect="flip" data-autoheight="false" data-wheel-control="true" 
                                     data-swiper-speed="200" data-swiper-margin="25" data-swiper-slides-per-view="1"
                                     data-swiper-breakpoints="true" data-scrollbar="true" data-swiper-loop="false"
                                     data-swpr-responsive="[1, 2, 1, 2]">
                 <div class="swiper-wrapper">
-                        <div :class="img.filter" id="img-select" class="img-fluid swiper-slide" v-for="img in imgs" :key="img.filter"
-            :style="{ backgroundImage: 'url(' + img.base64 + ')' }"></div>
+                    <div :class="img.filter" class="img-fluid swiper-slide" v-for="img in imgs" :key="img.filter">
+                        <img :src = img.base64 class="img-fluid">
+                    </div>
                 </div>
                 <div v-if="exist" class="swiper-pagination"  slot="pagination"></div>
                 <div v-if="exist" class="swiper-button-prev" slot="button-prev"></div>
@@ -38,34 +39,14 @@
             <label class="text-white">Location Search</label> 
             <input v-model="searchKeyword" type="text" class="form-control">
             <br>
-            <input data-toggle="modal" data-target="#mapModal" @click="searchLocation" type="button" value="Search" class="btn btn-outline-light btn-block text-white">
+            <input @click="searchLocation" type="button" value="Search" class="btn btn-outline-light btn-block text-white">
             </div>
         </div>
         <div v-if="!isLocation&&!isLocationSelect">
             <input @click="isLocation=!isLocation" type="button" value="위치정보 등록" class="btn btn-outline-light btn-block">
             <br/><br/><br/>
         </div>
-        <div v-if="isLocationSelect" class="row form-group mb-5">
-            <div class="col-md-12">
-            <label class="text-white">Selected Location</label>
-            <input style="text-align:center;" v-model="selectedLocation.name" type="text" class="form-control"><br>
-            <input @click="isLocationSelect=!isLocationSelect" type="button" value="다시 위치검색" class="btn btn-outline-light btn-block">
-            <br/><br/><br/>
-            </div>
-        </div>
-        
-        <div style="margin-top:1%; margin-left:5%;margin-right:5%; height:50px;">
-            <div style="display:inline-block; float :left">
-            <input type="button" value="처음으로" @click="goPrev" class="btn btn-primary btn-md text-white">
-            </div>
-            <div style="display:inline-block; float:right">
-            <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
-            </div>
-        </div>
-        <!-- <p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p> -->
-        <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
+        <div v-if="isSearching" class="modal-content">
                     <div class="modal-body" style="text-align:center;">
                         <gmap-map
                         :center="center"
@@ -93,6 +74,28 @@
                         <button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button>
                     </div>
                 </div>
+
+        <div v-if="isLocationSelect" class="row form-group mb-5">
+            <div class="col-md-12">
+            <label class="text-white">Selected Location</label>
+            <input style="text-align:center;" v-model="selectedLocation.name" type="text" class="form-control"><br>
+            <input @click="isLocationSelect=!isLocationSelect" type="button" value="다시 위치검색" class="btn btn-outline-light btn-block">
+            <br/><br/><br/>
+            </div>
+        </div>
+        
+        <div style="margin-top:1%; margin-left:5%;margin-right:5%; height:50px;">
+            <div style="display:inline-block; float :left">
+            <input type="button" value="처음으로" @click="goPrev" class="btn btn-primary btn-md text-white">
+            </div>
+            <div style="display:inline-block; float:right">
+            <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
+            </div>
+        </div>
+        <p id="mapModalBtn" style="display:none;" data-toggle="modal" data-target="#mapModal"></p>
+        <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                
             </div>
         </div>
 
@@ -103,6 +106,8 @@
 <script>
 import http from "../http-common"
 import axios from 'axios'
+import $ from "jquery"
+import store from "../store"
 export default {
     name:"writecontent",
     props:["imgs"],
@@ -117,6 +122,7 @@ export default {
             exist:false,
             isLocation:false,
             isLocationSelect:false,
+            isSearching:false,
             searchKeyword:"",
             locationList:[],
             center: { lat: 45.508, lng: -73.587 },
@@ -148,6 +154,9 @@ export default {
             var span = document.createElement('span');
             var bold = document.createElement('bold')
             var text = document.getElementById('interest').value;
+            if(text==""){
+              return;
+            }
             // this.itrlist.push(text);
             bold.innerText = text;
             div.style.background=colorCode;
@@ -192,7 +201,7 @@ export default {
                 http
                   .post("/content/insertContent",{
                     content_val:this.intro,
-                    user_id:"test",
+                    user_id:store.state.user_id,
                     hashtagList:this.itrlist,
                     imageList:this.imgs,
                     location_name:this.selectedLocation.name,
@@ -211,11 +220,15 @@ export default {
                       alert("error");
                   })
                   .finally(() => (this.loading = false));
-            }else{
+            }else if(this.imgs[0].base64==""&&this.intro==""){
+                this.$store.commit('setModalText', "내용을 입력해주세요.");
+                document.getElementById('modalBtn').click();
+            }
+            else{
                 http
                   .post("/content/insertContent",{
                     content_val:this.intro,
-                    user_id:"test",
+                    user_id:store.state.user_id,
                     hashtagList:this.itrlist,
                     imageList:this.imgs
                   })
@@ -236,6 +249,8 @@ export default {
         },
 
         searchLocation(){
+            // document.querySelector("#mapModalBtn").click();
+            this.isSearching = true;
             let keyword = this.searchKeyword;
             keyword.replace(" ", "+");
 
@@ -295,6 +310,7 @@ export default {
       },
 
       selectLocation(){
+          this.isSearching = false;
           if(this.selectedLocation != null){
               this.isLocationSelect = true;
           }else{
@@ -304,13 +320,13 @@ export default {
 
     },
     mounted(){
-        if(this.imgs.length==0){
-            this.imgs.push(this.defaultImag);
+        $('html').scrollTop(0);
+        if(this.imgs===undefined){
+            this.$router.push("/addimage");
         }
-        else{
+        else if(this.imgs.length>0){
             this.filterType = this.imgs[this.imgs.length-1].filter;
             this.exist=true;
-            console.log(this.imgs);
         }
         let recaptchaScripta = document.createElement('script')
         recaptchaScripta.setAttribute('type',"text/javascript")
@@ -320,14 +336,13 @@ export default {
         recaptchaScript.setAttribute('type',"text/javascript")
         recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
         document.body.appendChild(recaptchaScript)
-        var scrollUpDelay = 1;
-        var scrollUpSpeed = 30;
-        if(document.body.scrollTop<1)
-        {
-        return;
-        }
-        document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
-        setTimeout('scrollUp()',scrollUpDelay);
     }
 }
 </script>
+
+<style>
+.normal img{
+  width:100%;
+  z-index:1
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-<div class="site-wrap">
+<div>
     <div class="site-mobile-menu">
         <div class="site-mobile-menu-header">
         <div class="site-mobile-menu-close mt-3">
@@ -8,8 +8,24 @@
         </div>
         <div class="site-mobile-menu-body"></div>
     </div>
+
+    <!-- <p id="notiBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p> -->
+    <div class="modal fade" id="notiModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body" style="text-align:center;">
+            {{$store.state.modalText}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <header class="header-bar d-flex d-lg-block align-items-center" data-aos="fade-left">
-        <div class="notification">
+        <div class="notification" id="notiBtn">
             <i class="icon-bell text-white" style="font-size:1.5em;">
                 <span class="badge" style="font-size:0.5em;">
                     <em>{{notify}}</em>
@@ -29,7 +45,6 @@
         <div class="main-menu">
         <ul class="js-clone-nav">
             <li class="active"><router-link to="/">Home</router-link></li>
-            <li><router-link to="/category">Category</router-link></li>
             <!-- <li><router-link to="/bio">Bio</router-link></li> -->
             <li><router-link to="/blog">Blog</router-link></li>
             <li><router-link to="/single">Single</router-link></li>
@@ -64,10 +79,17 @@ export default {
             this.$router.push("/addimage");
         },
         logout(){
+            window.console.log(this.$store.state.user_id);
+            this.$logout({
+                user_id : this.$store.state.user_id
+            });
+            // this.$socket.emit('disconnectEvt', function(){
+            //     this.$socket.disconnet();
+            // });
             this.$store.commit("logout");
             document.getElementById('modalBtn').click();
             this.$router.push("/login");
-        }
+        },
     },
 }
 </script>

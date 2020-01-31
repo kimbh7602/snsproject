@@ -31,4 +31,14 @@ public class DirectMessageService implements IDirectMessageService {
     public List<DirectMessageVo> directMessageList(UserDmVo userDm) {
         return dao.directMessageList(userDm);
     }
+
+    @Override
+    public boolean directMessageReadCheck(UserDmVo userDm) {
+        return dao.directMessageReadCheck(userDm);
+    }
+
+    @Override
+    public int directMessageUnReadCnt(int dm_id) {
+        return dao.directMessageUnReadCnt(dm_id);
+    }
 }

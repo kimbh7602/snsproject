@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssafy.notification">
+	<insert id="insert" parameterType="NotificationVo">
+		insert into notification
+			(user_id, target_user_id, category, timestamp, target_event_id)
+		values
+			(#{user_id}, #{target_user_id}, #{category}, now(), #{target_event_id})
+	</insert>
+
+	<select id="selectList" parameterType="string" resultType="NotificationVo">
+		select * from notification
+		where target_user_id = #{user_id}
+	</select>
+
+	<select id="selectUnchecked" parameterType="string" resultType="NotificationVo">
+		select * from notification
+		where target_user_id = #{user_id}
+		and is_checked = false
+	</select>
+
+	<select id="selectCategory" parameterType="map" resultType="NotificationVo">
+		select * from notification
+		where target_user_id = #{user_id}
+		and category = #{category}
+	</select>
+
+	<select id="selectUncheckedCategory" parameterType="map" resultType="NotificationVo">
+		select * from notification
+		where target_user_id = #{user_id}
+		and is_checked = false
+		and category = #{category}
+	</select>
+
+	<update id="updateCheck" parameterType="int">
+		update notification
+		set is_checked = true
+		where notification_id = #{notification_id}
+	</update>
+
+	<delete id="deleteLike" parameterType="map">
+		delete from notification
+		where user_id = #{user_id}
+		and target_event_id = #{content_id}
+	</delete>
+
+	<delete id ="deleteScrap" parameterType="map">
+		delete from notification
+		where user_id = #{user_id}
+		and target_event_id = #{content_id}
+	</delete>
+
+	<delete id="deleteFollow" parameterType="map">
+		delete from notification
+		where user_id = #{follower_id}
+		and target_user_id = #{follow_id}
+	</delete>
+
+	<delete id="deleteComment" parameterType="map">
+		delete from notification
+		where user_id = #{user_id}
+		and target_user_id = #{target_id}
+		and target_event_id = #{comment_id}
+	</delete>
+</mapper>

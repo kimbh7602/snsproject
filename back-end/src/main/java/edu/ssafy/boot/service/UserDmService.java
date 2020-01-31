@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import edu.ssafy.boot.dto.DirectMessageVo;
 import edu.ssafy.boot.dto.UserDmVo;
 import edu.ssafy.boot.repository.IUserDmDAO;
 
@@ -29,13 +30,18 @@ public class UserDmService implements IUserDmService {
     }
 
     @Override
-    public boolean updateUserDm(UserDmVo userDm) {
-        return dao.updateUserDm(userDm);
+    public boolean updateUserDm(DirectMessageVo message) {
+        return dao.updateUserDm(message);
     }
 
     
     @Override
     public List<UserDmVo> userDmList(String user_id) {
         return dao.userDmList(user_id);
+    }
+
+    @Override
+    public List<UserDmVo> allDmList() {
+        return dao.allDmList();
     }
 }

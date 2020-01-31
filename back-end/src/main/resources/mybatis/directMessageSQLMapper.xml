@@ -7,7 +7,7 @@
         insert into direct_message
             (dm_id, send_id, receive_id, message, timestamp, read_check)
         values
-            (dm_id, #{send_id}, #{receive_id}, #{message}, now(), false)
+            (#{dm_id}, #{send_id}, #{receive_id}, #{message}, now(), false)
     </insert>
 
     <delete id="delete" parameterType="DirectMessageVo">
@@ -19,6 +19,21 @@
         select * from direct_message
         where (dm_id = #{dm_id} and send_id = #{user_id})
             or (dm_id = #{dm_id} and receive_id = #{user_id})
+    </select>
+
+    <update id="update" parameterType="userDmVo">
+        update direct_message
+        set read_check = true
+        where
+            dm_id = #{dm_id} and
+            receive_id = #{user_id}
+    </update>
+
+    <select id="unReadCnt" parameterType="int" resultType="int">
+        select CNT(*) from direct_message
+        where
+            dm_id = #{dm_id} and
+            read_check = false
     </select>
 
 </mapper>

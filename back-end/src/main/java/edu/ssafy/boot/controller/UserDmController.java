@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.ssafy.boot.dto.DirectMessageVo;
 import edu.ssafy.boot.dto.UserDmVo;
 import edu.ssafy.boot.service.IUserDmService;
 import io.swagger.annotations.ApiOperation;
@@ -76,10 +77,10 @@ public class UserDmController {
 
     @PutMapping("/updateUserDm")
     @ApiOperation(value = "DM목록수정")
-    private @ResponseBody ResponseEntity<Map<String, Object>> updateUserDm(@RequestBody UserDmVo userDm) {
+    private @ResponseBody ResponseEntity<Map<String, Object>> updateUserDm(@RequestBody DirectMessageVo message) {
         ResponseEntity<Map<String, Object>> resEntity = null;
         try {
-            boolean update = ser.updateUserDm(userDm);
+            boolean update = ser.updateUserDm(message);
             Map<String, Object> map = new HashMap<String, Object>();
             if (update)
                 map.put("resmsg", "DM목록수정성공");
@@ -113,6 +114,25 @@ public class UserDmController {
         }
         return resEntity;
     }
-    
+
+    @GetMapping("/allDmList")
+    @ApiOperation(value = "DM목록", response = List.class)
+    public @ResponseBody ResponseEntity<Map<String, Object>> allDmList() {
+        ResponseEntity<Map<String, Object>> resEntity = null;
+        try {
+            List<UserDmVo> userDmList = ser.allDmList();
+            System.out.println(userDmList);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("resmsg", "DM목록성공");
+            map.put("resvalue", userDmList);
+            resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+            
+        } catch (RuntimeException e) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("resmsg", "DM목록실패");
+            resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        }
+        return resEntity;
+    }
 }
     
