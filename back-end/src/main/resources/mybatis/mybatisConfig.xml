@@ -15,6 +15,7 @@
 		<typeAlias type="edu.ssafy.boot.dto.UserDmVo" alias="UserDmVo" />
 		<typeAlias type="edu.ssafy.boot.dto.DirectMessageVo" alias="DirectMessageVo" />
 		<typeAlias type="edu.ssafy.boot.dto.LocationVo" alias="LocationVo" />
+		<typeAlias type="edu.ssafy.boot.dto.NotificationVo" alias="NotificationVo" />
 	</typeAliases>
 
 	<mappers>
@@ -28,5 +29,6 @@
 		<mapper resource="mybatis/noticeSQLMapper.xml" />
 		<mapper resource="mybatis/userDmSQLMapper.xml" />
 		<mapper resource="mybatis/directMessageSQLMapper.xml" />
+		<mapper resource="mybatis/notificationSQLMapper.xml" />
 	</mappers>
 </configuration>

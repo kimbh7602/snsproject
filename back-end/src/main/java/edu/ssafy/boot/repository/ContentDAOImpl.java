@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import edu.ssafy.boot.dto.ContentVo;
 import edu.ssafy.boot.dto.ImageVo;
 import edu.ssafy.boot.dto.LocationVo;
+import edu.ssafy.boot.dto.UserVo;
 
 @Repository("ContentDAOImpl")
 public class ContentDAOImpl implements IContentDAO {
@@ -26,6 +27,11 @@ public class ContentDAOImpl implements IContentDAO {
 		for (ContentVo contentVo : contentList) {
 			List<ImageVo> imageList = session.selectList("ssafy.content.imageListByContentId", contentVo.getContent_id());
 			contentVo.setImageList(imageList);
+			UserVo user = session.selectOne("ssafy.user.info", contentVo.getUser_id());
+			if(user.getProfile_url() != null && user.getProfile_filter() != null){
+				contentVo.setProfile_url(user.getProfile_url());
+				contentVo.setPrifile_filter(user.getProfile_filter());
+			}
 		}
 		return contentList;
 	}
@@ -33,6 +39,8 @@ public class ContentDAOImpl implements IContentDAO {
 	@Override
 	public ContentVo detail(int content_id) {
 		ContentVo content = session.selectOne("ssafy.content.selectOne", content_id);
+		List<ImageVo> imageList = session.selectList("ssafy.image.imageList", content_id);
+		content.setImageList(imageList);
 		return content;
 	}
 
@@ -94,6 +102,26 @@ public class ContentDAOImpl implements IContentDAO {
 		for (ContentVo contentVo : contentList) {
 			List<ImageVo> imageList = session.selectList("ssafy.content.imageListByContentId", contentVo.getContent_id());
 			contentVo.setImageList(imageList);
+			UserVo user = session.selectOne("ssafy.user.info", contentVo.getUser_id());
+			if(user.getProfile_url() != null && user.getProfile_filter() != null){
+				contentVo.setProfile_url(user.getProfile_url());
+				contentVo.setPrifile_filter(user.getProfile_filter());
+			}
+		}
+		return contentList;
+	}
+
+	@Override
+	public List<ContentVo> contentUserList(String user_id) {
+		List<ContentVo> contentList = session.selectList("ssafy.content.contentUserList", user_id);
+		for (ContentVo contentVo : contentList) {
+			List<ImageVo> imageList = session.selectList("ssafy.content.imageListByContentId", contentVo.getContent_id());
+			contentVo.setImageList(imageList);
+			UserVo user = session.selectOne("ssafy.user.info", contentVo.getUser_id());
+			if(user.getProfile_url() != null && user.getProfile_filter() != null){
+				contentVo.setProfile_url(user.getProfile_url());
+				contentVo.setPrifile_filter(user.getProfile_filter());
+			}
 		}
 		return contentList;
 	}

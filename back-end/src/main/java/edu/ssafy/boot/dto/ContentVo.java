@@ -17,6 +17,8 @@ public class ContentVo {
 	private String location_name;
 	private double lat;
 	private double lng;
+	private String profile_url;
+	private String prifile_filter;
 
 	public ContentVo() {
 		super();
@@ -205,6 +207,22 @@ public class ContentVo {
 
 	public void setLng(double lng) {
 		this.lng = lng;
+	}
+
+	public String getProfile_url() {
+		return profile_url;
+	}
+
+	public void setProfile_url(String profile_url) {
+		this.profile_url = profile_url;
+	}
+
+	public String getPrifile_filter() {
+		return prifile_filter;
+	}
+
+	public void setPrifile_filter(String prifile_filter) {
+		this.prifile_filter = prifile_filter;
 	}
 
 }

@@ -6,9 +6,9 @@
         </div>
         <input v-model="msg" type="text" class="form-control p-2 text-dark align-self-center" style="border-bottom: none;" 
             placeholder="메시지를 입력해주세요."
-            @keyup:enter="submitMessageFunc">
+            @keyup.enter="insertDirectMessage">
         <div class="input-group-append" style="border: 0px;">
-            <span class="input-group-text" style="border: 0px;" @click="submitMessageFunc">➤</span>
+            <span class="input-group-text" style="border: 0px;" @click="insertDirectMessage">➤</span>
         </div>
     </div>
   </div>
@@ -17,7 +17,7 @@
 <script>
 export default {
     props: {
-        select: Object
+        userDm: Object
     },
     data() {
         return {
@@ -26,17 +26,41 @@ export default {
         }
     },
     methods: {
-        submitMessageFunc() {
+        // 날짜형식 포맷
+        getTimeStamp() {
+            var d = new Date();
+            var s =
+                this.leadingZeros(d.getFullYear(), 4) + '-' +
+                this.leadingZeros(d.getMonth() + 1, 2) + '-' +
+                this.leadingZeros(d.getDate(), 2) + ' ' +
+
+                this.leadingZeros(d.getHours(), 2) + ':' +
+                this.leadingZeros(d.getMinutes(), 2) + ':' +
+                this.leadingZeros(d.getSeconds(), 2);
+
+            return s;
+        },
+        leadingZeros(n, digits) {
+            var zero = '';
+            n = n.toString();
+
+            if (n.length < digits) {
+                for (let i = 0; i < digits - n.length; i++)
+                zero += '0';
+            }
+            return zero + n;
+        },
+        insertDirectMessage() {
             if (this.msg.length != 0) {
                 this.message = {
-                    dm_id: 1,
-                    send_id: this.select.user_id,
-                    receive_id: this.select.other_id,
+                    dm_id: this.userDm.dm_id,
+                    send_id: this.userDm.user_id,
+                    receive_id: this.userDm.other_id,
                     message: this.msg,
-                    timestamp: Date.now(),
+                    timestamp: this.getTimeStamp(),
                     read_check: 0
                 };
-                this.$emit('submitMessage', this.message);
+                this.$emit('insertDirectMessage', this.message);
                 this.msg = '';
             }
         },

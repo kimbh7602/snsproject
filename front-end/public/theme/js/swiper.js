@@ -87,7 +87,7 @@ $(document).ready(function(){
             scrollbarSnapOnRelease: false,
             // Keyboard Mousewheel
             keyboardControl: false,
-            mousewheelControl: false,
+            mousewheelControl: true,
             mousewheelReleaseOnEdges: false,
             mousewheelInvert: false,
             mousewheelForceToAxis: false,

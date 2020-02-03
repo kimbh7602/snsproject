@@ -14,4 +14,5 @@ public interface IContentService {
 	public boolean deleteContent(int content_id);
 	public boolean updateContent(ContentVo content);
 	public List<ContentVo> findContentByLocation(LocationVo location);
+	public List<ContentVo> contentUserList(String user_id);
 }

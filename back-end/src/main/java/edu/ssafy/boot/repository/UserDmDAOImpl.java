@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import edu.ssafy.boot.dto.DirectMessageVo;
 import edu.ssafy.boot.dto.UserDmVo;
 
 @Repository("UserDmDAOImpl")
@@ -35,8 +36,8 @@ public class UserDmDAOImpl implements IUserDmDAO {
     }
 
     @Override
-    public boolean updateUserDm(UserDmVo userDm) {
-        int update = session.update("ssafy.userDm.update", userDm);
+    public boolean updateUserDm(DirectMessageVo message) {
+        int update = session.update("ssafy.userDm.update", message);
         if (update > 0) {
             return true;
         } else {
@@ -47,5 +48,11 @@ public class UserDmDAOImpl implements IUserDmDAO {
     @Override
     public List<UserDmVo> userDmList(String user_id) {
         return session.selectList("ssafy.userDm.userDmList", user_id);
+    }
+
+    @Override
+    public List<UserDmVo> allDmList() {
+        List<UserDmVo> dmList = session.selectList("ssafy.userDm.allDmList");
+        return dmList;
     }
 }

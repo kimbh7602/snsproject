@@ -23,7 +23,8 @@
 import 'tui-calendar/dist/tui-calendar.css'
 import { Calendar } from '@toast-ui/vue-calendar';
 import axios from 'axios'
- 
+import $ from "jquery"
+
 export default {
     name: 'myCalendar',
     components: {
@@ -185,6 +186,7 @@ export default {
 
     },
     mounted() {
+        $('html').scrollTop(0);
         axios.get("http://192.168.100.41:8080/api/notice/noticeList")
                 .then((response)=>{
                     // alert(response.data.resmsg);

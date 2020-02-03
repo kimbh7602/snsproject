@@ -10,6 +10,11 @@
 		where f.follower_id = #{user_id}
 	</select>
 
+	<select id="contentUserList" parameterType="string" resultType="ContentVo">
+		select * from contents
+		where user_id = #{user_id}
+	</select>
+
 	<select id="selectMyList" parameterType="string" resultType="ContentVo">
 		select * from contents where user_id = #{user_id}
 	</select>

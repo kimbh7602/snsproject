@@ -3,10 +3,10 @@ import Router from "vue-router";
 import store from "./store";
 
 import Index from "./components/Index.vue"
-import Category from "./components/Category.vue"
 import Bio from "./components/Bio.vue"
 import Blog from "./components/Blog.vue"
 import Single from "./components/Single.vue"
+import Category from "./components/Category.vue"
 import Register from "./components/Register.vue"
 import Chating from "./components/Chating.vue"
 import AddImage from "./components/AddImage.vue"
@@ -19,6 +19,11 @@ import Login from "./components/Login.vue"
 import FindContent from "./components/FindContent.vue"
 import WordCloud from "./components/WordCloud.vue"
 import Chart from "./components/Chart.vue"
+import PwConfirm from "./components/PwConfirm.vue"
+import AdminLog from "./components/AdminLog.vue"
+import AdminUserList from "./components/AdminUserList.vue"
+import Mypage from "./components/Mypage.vue"
+import Calendar from "./components/Calendar.vue"
 
 Vue.use(Router);
 // const modal = { template: '<p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p><div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-body" style="text-align:center;">{{$store.state.modalText}}</div><div class="modal-footer"><button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button></div></div></div></div>'}
@@ -152,15 +157,15 @@ export const router = new Router({
             alias: "/ImageFilter",
             component: ImageFilter,
             props: true,
-            beforeEnter: function(to, from, next){
-                store.commit('setid');
-                if(store.state.islogin){
-                    next();
-                }else{
-                    alert("로그인해주세요.");
-                    router.push("/login")
-                }
-            },
+            // beforeEnter: function(to, from, next){
+            //     store.commit('setid');
+            //     if(store.state.islogin){
+            //         next();
+            //     }else{
+            //         alert("로그인해주세요.");
+            //         router.push("/login")
+            //     }
+            // },
         },
         {
             path: "/writecontent",
@@ -223,6 +228,10 @@ export const router = new Router({
             alias: "/Login",
             component: Login,
             props: true,
+            // beforeEnter: function(to, from, next){
+            //     store.commit('setid');
+            //     next();
+            // },
         },
         {
             path: "/findcontent",
@@ -267,8 +276,42 @@ export const router = new Router({
                     alert("로그인해주세요.");
                     router.push("/login")
                 }
-            },
-        }
+            }
+        },
+        {
+            path: "/pwconfirm",
+            name: "pwconfirm",
+            alias: "/PwConfirm",
+            component: PwConfirm,
+            props: true,
+        },
+        {
+            path: "/adminlog",
+            name: "adminlog",
+            alias: "/AdminLog",
+            component: AdminLog,
+            props: true,
+        },
+        {
+            path: "/adminuserlist",
+            name: "adminuserlist",
+            alias: "/AdminUserList",
+            component: AdminUserList,
+        },
+        {
+            path: "/mypage/:userId",
+            name: "mypage",
+            alias: "/Mypage",
+            component: Mypage,
+            props: true,
+        },
+        {
+            path: "/calendar",
+            name: "calendar",
+            alias: "/Calendar",
+            component: Calendar,
+            props: true,
+        },
     ]
 });
 

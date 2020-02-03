@@ -80,5 +80,21 @@ public class ContentService implements IContentService {
 	public List<ContentVo> findContentByLocation(LocationVo location) {
 		return dao.findContentByLocation(location);
 	}
+
+	@Override
+	public List<ContentVo> contentUserList(String user_id) {
+		List<ContentVo> contentList = dao.contentUserList(user_id);
+		
+		contentList.sort(new Comparator<ContentVo>() {
+
+			@Override
+			public int compare(ContentVo o1, ContentVo o2) {
+				return o2.getTimestamp().compareTo(o1.getTimestamp());
+			}
+			
+		});
+
+		return contentList;
+	}
 	
 }

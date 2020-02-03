@@ -11,82 +11,63 @@
             
             <div class="row">
                 <div class="col-md-12" data-aos="fade-up">
-                    <p class="mb-5">Lorem ipsum dolor sit amet, consectetur <a href="#">adipisicing</a> elit. Ipsa explicabo quasi cum, laudantium neque at veniam itaque atque <a href="#">necessitatibus</a> temporibus! Beatae sit soluta magni neque autem, suscipit dolorem, quo alias.</p>              
+                    <p class="mb-5">Lorem ipsum dolor sit amet, consectetur <a @click="sendNotification" href="#">adipisicing</a> elit. Ipsa explicabo quasi cum, laudantium neque at veniam itaque atque <a href="#">necessitatibus</a> temporibus! Beatae sit soluta magni neque autem, suscipit dolorem, quo alias.</p>              
                     <div class="row">
                         <!-- chatinglist -->
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="bg-danger">
                                 <h5 class="text-white p-3">List</h5>
                             </div>
                             
                             <div class="list-group">
-                                <virtual-list :size="70" :remain="8">
-                                    <a v-for="chating in chatings" :key="chating.id" href="#" class="list-group-item list-group-item-action">
-                                        <div class="row">
-                                            <div class="col-md-2 d-flex justify-content-center align-self-center">
-                                                <h1><i class="fas fa-user-circle"></i></h1>
-                                            </div>
-                                            <div class="col-md-10">
-                                                <div class="d-flex w-100 justify-content-between">
-                                                    <p class="mb-0">{{ chating.title }}</p>
-                                                    <small>{{ chating.timestamp }}</small>
-                                                </div>
-                                                <div class="d-flex justify-content-between">
-                                                    <small>{{ chating.content }}</small>
-                                                    <span class="badge badge-primary badge-pill align-self-center"> {{ chating.cnt }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </virtual-list>
+                              <virtual-list :size="70" :remain="8" v-if="check">
+                                  <a v-for="(userDm, index) in fetchedUserDmList" :key="`userDm${index}`" :value="userDm.dm_id" @click="selectUserDm(userDm);open();" class="list-group-item list-group-item-action">
+                                      <div class="row pl-2">
+                                          <div class="col-md-2 d-flex justify-content-center align-self-center">
+                                              <h1>🦱</h1>
+                                          </div>
+                                          <div class="col-md-10">
+                                              <div class="d-flex w-100 justify-content-between">
+                                                  <p v-if="userId == userDm.user_id" class="mb-0 ml-2">{{ userDm.other_id }}</p>
+                                                  <p v-else class="mb-0 ml-2">{{ userDm.user_id }}</p>
+                                                  <small>{{ userDm.timestamp }}</small>
+                                              </div>
+                                              <div class="d-flex justify-content-between">
+                                                  <small>{{ userDm.recent_message }}</small>
+                                                  <span class="badge badge-primary badge-pill align-self-center" v-if="fetchedUnReadCnt.cnt > 0"> {{ userDm.cnt }}</span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </a>
+                              </virtual-list>
+                              <virtual-list :size="70" :remain="8" v-else>
+                                  <a v-for="(follow, index) in fetchedFollowList" :key="index" class="list-group-item list-group-item-action">
+                                    <div class="row pl-2">
+                                      <div class="col-md-2 d-flex justify-content-center ">
+                                        <h1 class="m-0">🦱</h1>
+                                      </div>
+                                      <div class="d-flex col-md-10 justify-content-between align-self-center">
+                                        <p class="mb-0 ml-2">{{ follow }}</p>
+                                        <button class="btn btn-sm btn-info" @click="insertUserDm(follow)">선택</button>
+                                      </div>
+                                    </div>
+                                  </a>
+                              </virtual-list>
+                              <h3 v-if="check" @click="add">➕</h3>
+                              <h3 v-else @click="add">➖</h3>
                             </div>
                         </div>
                         <!-- chating -->
-                        <div class="card col-md-7 p-0">
+                        <div v-show="check2" class="card col-md-8 p-0">
                             <!-- header -->
-                            <div class="card-header bg-light content-align-center" style="height: 60px;">
-                                <h5 class="text-dark mt-1">싸피 </h5>
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center" style="height: 60px;">
+                                <h4 class="text-dark mt-1 mx-auto">{{ userDm.other_id }} </h4><span @click="close">✖</span>
                             </div>
 
                             <!-- body -->
-                            <virtual-list :size="80" :remain="8" style="background-color: black;">
-                                <div class="card-body">
-                                    <div v-for="message in messages" :key="message.id">
-                                        <div class="row my-2 mx-1" v-if="message.receive_id == 'admin'">
-                                            <div class="col-md-1 d-flex justify-content-center">
-                                                <h1><i class="fas fa-user-circle"></i></h1>
-                                            </div>
-                                            <div class="col-md-11">
-                                                <div class="w-100">
-                                                    <span class="m-0 ">{{ message.send_id }}</span>
-                                                </div>
-                                                <div class="m-0 d-flex">
-                                                    <h5><span class="badge bg-white p-2">{{ message.message }}</span></h5>
-                                                    <small class="ml-2 align-self-center">{{ message.timestamp }}</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div v-else>
-                                            <div class="m-0 d-flex justify-content-end">
-                                                <small v-if="message.read_check == 0" class="mr-2 align-self-center text-warning">1</small>
-                                                <small class="mr-2 align-self-center">{{ message.timestamp }}</small>
-                                                <h5><span class="badge badge-primary p-2">{{ message.message }}</span></h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </virtual-list>
+                            <message-list :userDm="userDm" :fetchedDirectMessageList="fetchedDirectMessageList"></message-list>
                             <!-- footer -->
-                            <div class="card-footer input-group p-0" style="border: 0px; height: 50px;">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" style="border: 0px;">✛</span>
-                                </div>
-                                <input v-model="msg" type="text" class="form-control p-2 text-dark align-self-center" style="border-bottom: none;" placeholder="메시지를 입력해주세요.">
-                                <div class="input-group-append" style="border: 0px;">
-                                    <span class="input-group-text" style="border: 0px;">➤</span>
-                                </div>
-                            </div>
+                            <message-form id="container" :userDm="userDm" @insertDirectMessage="insertDirectMessage"></message-form>
                         </div>
                     </div>
                 </div>
@@ -98,81 +79,201 @@
 </template>
 
 <script>
-import virtualList from 'vue-virtual-scroll-list'
+import virtualList from 'vue-virtual-scroll-list';
+import MessageList from './MessageList.vue';
+import MessageForm from './MessageForm.vue';
+import { mapGetters, mapMutations } from 'vuex';
+import io from 'socket.io-client';
+// import http from "../http-common"
 
 export default {
-    components: {
-        virtualList,
-    },
-    data() {
-        return {
-            msg: '',
-            chatings: [
-                {
-                    title: '싸피',
-                    content: 'Donec id elit non mi porta.',
-                    timestamp: '2:00',
-                    cnt: 14
-                },
-                {
-                    title: '싸피2',
-                    content: 'Donec id elit non mi porta.',
-                    timestamp: '2:00',
-                    cnt: 14
-                },
-                {
-                    title: '싸피3',
-                    content: 'Donec id elit non mi porta.',
-                    timestamp: '3:00',
-                    cnt: 14
-                }
-            ],
-            messages: [
-                {
-                    dm_id: 1,
-                    send_id: 'user1',
-                    receive_id: 'admin',
-                    message: 'ㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 1
-                },
-                {
-                    dm_id: 1,
-                    send_id: 'user2',
-                    receive_id: 'admin',
-                    message: 'ㅎㅇㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 1
-                },
-                {
-                    dm_id: 1,
-                    send_id: 'user3',
-                    receive_id: 'admin',
-                    message: 'ㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 1
-                },
-                {
-                    dm_id: 1,
-                    send_id: 'admin',
-                    receive_id: 'user1',
-                    message: 'ㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 0
-                },
-                {
-                    dm_id: 1,
-                    send_id: 'admin',
-                    receive_id: 'user2',
-                    message: 'ㅎㅇㅎㅇㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 0
-                },
-            ]
-        }
+    
+  components: {
+    virtualList,
+    MessageList,
+    MessageForm
+  },
+  data() {
+    return {
+        temp: [],
+        userId: '',
+        check: true,
+        check2: false,
+        userDm: {},
+        socket: null
     }
+  },
+  computed: {
+    ...mapGetters([
+      'fetchedUserDmList',
+      'fetchedDirectMessageList',
+      'fetchedFollowList',
+      'fetchedUnReadCnt'
+    ]),
+  },
+  // watch: {
+  //   fetchedDirectMessageList: {
+  //       handler() {
+  //           this.selectUserDm(this.userDm);
+  //       }
+  //   },
+  // },
+  methods: {
+    ...mapMutations([
+      'PUSH_MSG_DATA'
+    ]),
+    selectUserDm(userDm) {
+      this.userDm = userDm;
+      if (this.userId != userDm.user_id) {
+        this.userDm = {
+            dm_id: userDm.dm_id,
+            user_id: userDm.other_id,
+            other_id: userDm.user_id,
+            recent_message: userDm.recent_message
+        }
+      }
+      this.$store.dispatch('FETCH_DIRECTMESSAGELIST', this.userDm);
+      // this.$joinRoom(this.userDm);
+      return false;
+      // this.computedChatings.forEach(chat => {
+      //   if (chat.dm_id === chating.dm_id) {
+      //     chat.cnt = 0;
+      //   }
+      // });
+    },
+    add() {
+        this.check = !this.check;
+    },
+    open() {
+        this.check2 = true;
+    },
+    close() {
+        this.check2 = false;
+    },
+    insertUserDm(follow) {
+      const userDm = {
+        user_id: this.userId,
+        other_id: follow,
+      };
+      this.$store.dispatch('INSERT_USERDM', userDm);
+      this.check = true;
+      // this.chatings.push({
+      //   dm_id: 3,
+      //   user_id: this.userId,
+      //   other_id: friend,
+      //   recent_message: '',
+      //   timestamp: '3:00',
+      //   cnt: 0
+      // });
+      // this.selectChating(chating);
+    },
+    insertDirectMessage(message) {
+        // 소켓으로 메시지 전송
+        // this.$sendMessage(message);
+
+        this.socket.emit('chat', message);
+        // window.console.log(message);
+
+        this.$store.dispatch('INSERT_DIRECTMESSAGE', message);
+        this.$store.dispatch('UPDATE_RECENTMESSAGE', message);
+
+    },
+    // scrollToEnd() {
+    //   var container = this.$el.querySelector("#container");
+    //   container.scrollTop = container.scrollHeight;
+    // },
+    sendNotification(){
+      // this.$socket.emit('notification', {
+      //   user_id: 'kimbh',
+      //   target_user_id: 'kimbh1',
+      //   category: 'like'
+      // });
+    }
+  },
+
+  // beforeCreate() {
+  //   this.$socket.emit('disconnectEvt', function(){});
+  // },
+  mounted() {
+    this.userId = this.$store.state.user_id;
+
+    // this.$socket.emit('disconnectEvt', function(){
+    //   // this.$socket.disconnect(true);
+    // });
+    
+    this.socket = io('http://192.168.100.41:3000');
+    
+    this.socket.emit('login', {
+      user_id : this.userId
+    });
+    // this.$socket.socket = io('http://192.168.100.41:3000');
+    // this.$login({
+    //                   user_id : this.userId
+    //                 });
+
+    // http
+    //   .get(`/userDm/allDmList`)
+    //   .then(response => {
+    //     this.$initRoom(response.data.resvalue);
+    //   })
+    //   .catch(e => console.log(e))
+
+    // this.$store.dispatch('FETCH_ALLDMLIST');
+    
+    // window.console.log(this.$store.state.allDmList);
+    // this.$initRoom(this.$store.state.allDmList);
+
+    // 소켓에서 메시지 받음
+    // const $ths = this;
+    this.socket.on('chat', (data) => {
+      if((this.userDm.user_id == data.send_id && this.userDm.other_id == data.receive_id) || (this.userDm.user_id == data.receive_id && this.userDm.other_id == data.send_id)){
+        this.PUSH_MSG_DATA(data);
+        window.console.log(data);
+      }
+      // $ths.datas.push(data);
+      this.$store.commit('SET_RECENTMESSAGE', data);
+
+      // this.$store.state.userDmList.forEach(element => {
+      //   if(element.dm_id === data.dm_id){
+      //     element.recent_message = data.message;
+      //   }
+      // })
+      // this.$socket.disconnect();
+    });
+
+    // this.socket.on('notification', (data) => {
+    //   // window.console.log('notification', data, this.$store.state.user_id);
+    //   if(data.target_user_id == this.$store.state.user_id){
+    //     this.$snotify.simple('알림을 확인해보세요!', 'Like!', {
+    //         icon : '/favicon.ico',
+    //         // html : '<div>Like!</div><div>알림을 확인해보세요!</div> <input type="button" @click="sendNotification" value="Login" class="btn btn-sm">'
+    //       });
+    //   }
+    // });
+
+    this.$store.dispatch('FETCH_FOLLOWLIST', this.userId);
+    this.$store.dispatch('FETCH_USERDMLIST', this.userId);
+    
+  },
+
+  beforeDestroy(){
+    this.socket.emit('disconnectEvt', function(){});
+    // this.$socket = io('http://192.168.100.41:3000');
+    // this.$socket.on('notification', (data) => {
+    //   // window.console.log('notification', data, this.$store.state.user_id);
+    //   if(data.target_user_id == this.$store.state.user_id){
+    //     this.$snotify.simple('알림을 확인해보세요!', 'Like!', {
+    //         icon : '/favicon.ico',
+    //         // html : '<div>Like!</div><div>알림을 확인해보세요!</div> <input type="button" @click="sendNotification" value="Login" class="btn btn-sm">'
+    //       });
+    //   }
+    // });
+  }
 }
 </script>
 
-<style>
+<style scoped>
+    #container::-webkit-scrollbar {
+        display: none !important;
+    }
 </style>

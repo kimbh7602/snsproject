@@ -15,7 +15,7 @@
 		where user_id = #{user_id}
 	</update>
 	
-	<select id="info" parameterType="string" resultType="Uservo">
+	<select id="info" parameterType="string" resultType="UserVo">
 		select * from users
 		where
 			user_id = #{user_id}
@@ -23,9 +23,9 @@
 	
 	<insert id="signup" parameterType="UserVo">
 		insert into users
-			(user_id, password, tel, email, interest, dislike, description)
+			(user_id, password, tel, email, interest, dislike, description, profile_url, profile_filter)
 		values
-			(#{user_id}, #{password}, #{tel}, #{email}, #{interest}, #{dislike}, #{description})
+			(#{user_id}, #{password}, #{tel}, #{email}, #{interest}, #{dislike}, #{description}, #{profile_url}, #{profile_filter})
 	</insert>
 	
 	<update id="updateUserInfo" parameterType="UserVo">
@@ -36,7 +36,9 @@
 			email = #{email},
 			interest = #{interest},
 			dislike = #{dislike},
-			description = #{description}
+			description = #{description},
+			profile_url = #{profile_url},
+			profile_filter = #{profile_filter}
 		where
 			user_id = #{user_id}
 	</update>
@@ -60,6 +62,14 @@
 			status = false
 		where
 			datediff(now(), timestamp) > 30
+	</update>
+
+	<update id="updateUserStatusBack" parameterType="string">
+		update users
+		set
+			status = true
+		where
+			user_id = #{user_id}
 	</update>
 
 	<select id="emailDuplicateCheck" parameterType="string" resultType="boolean">

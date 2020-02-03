@@ -14,6 +14,9 @@ public class UserVo {
 	private String description;
 	private String timestamp;
 	private boolean status;
+	private String profile_url;
+	private String profile_filter;
+	private ImageVo profileImage;
 
 	public UserVo() {
 		super();
@@ -30,7 +33,19 @@ public class UserVo {
 		this.description = description;
 	}
 
-	public UserVo(String user_id, String password, String tel, String email, String interest, String dislike, String description, boolean status) {
+	public UserVo(String user_id, String password, String tel, String email, List<String> interestList,
+			List<String> dislikeList, String description, ImageVo profileImage) {
+		this.user_id = user_id;
+		this.password = password;
+		this.tel = tel;
+		this.email = email;
+		this.setInterestList(interestList);
+		this.setDislikeList(dislikeList);
+		this.description = description;
+		this.profileImage = profileImage;
+	}
+
+	public UserVo(String user_id, String password, String tel, String email, String interest, String dislike, String description, boolean status, String profile_url, String profile_filter) {
 		super();
 		this.user_id = user_id;
 		this.password = password;
@@ -40,6 +55,8 @@ public class UserVo {
 		this.setDislike(dislike);
 		this.description = description;
 		this.status = status;
+		this.profile_url = profile_url;
+		this.profile_filter = profile_filter;
 	}
 
 	public UserVo(String user_id, String password) {
@@ -144,6 +161,30 @@ public class UserVo {
 				+ ", interest=" + interest + ", dislike=" + dislike + ", interestList=" + interestList
 				+ ", dislikeList=" + dislikeList + ", description=" + description + ", timestamp=" + timestamp
 				+ ", status=" + status + "]";
+	}
+
+	public String getProfile_url() {
+		return profile_url;
+	}
+
+	public void setProfile_url(String profile_url) {
+		this.profile_url = profile_url;
+	}
+
+	public ImageVo getProfileImage() {
+		return profileImage;
+	}
+
+	public void setProfileImage(ImageVo profileImage) {
+		this.profileImage = profileImage;
+	}
+
+	public String getProfile_filter() {
+		return profile_filter;
+	}
+
+	public void setProfile_filter(String profile_filter) {
+		this.profile_filter = profile_filter;
 	}
 	
 }

@@ -1,15 +1,14 @@
 <template>
-  <div>
-      <virtual-list :size="80" :remain="8" style="background-color: black;">
+    <div class="scroll-body" style="background-color: black; height:600px; max-height:600px; overflow-y: auto;">
         <div class="card-body">
-            <div v-for="message in computedMessages" :key="message.id">
-                <div class="row my-2 mx-1" v-if="message.receive_id == select.user_id">
+            <div v-for="message in fetchedDirectMessageList" :key="message.id">
+                <div class="row my-2" v-if="message.receive_id == userDm.user_id">
                     <div class="col-md-1 d-flex justify-content-center">
-                        <h1><i class="fas fa-user-circle"></i></h1>
+                        <h1>🦱</h1>
                     </div>
-                    <div class="col-md-11">
+                    <div class="col-md-11 pl-3">
                         <div class="w-100">
-                            <span class="m-0 ">{{ message.send_id }}</span>
+                            <span class="m-0">{{ message.send_id }}</span>
                         </div>
                         <div class="m-0 d-flex">
                             <h5><span class="badge bg-white p-2">{{ message.message }}</span></h5>
@@ -26,74 +25,23 @@
                 </div>
             </div>
         </div>
-    </virtual-list>
-  </div>
+    </div>
 </template>
 
 <script>
-import virtualList from 'vue-virtual-scroll-list';
 
 export default {
     props: {
-        select: Object
+        userDm: Object,
+        fetchedDirectMessageList: Array,
     },
     components: {
-        virtualList,
+        // virtualList,
     },
-    data() {
-        return {
-            messages: [
-                {
-                    dm_id: 1,
-                    send_id: 'aaa',
-                    receive_id: 'bbb',
-                    message: 'ㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 1
-                },
-                {
-                    dm_id: 2,
-                    send_id: 'aaa',
-                    receive_id: 'ccc',
-                    message: 'ㅎㅇㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 1
-                },
-                {
-                    dm_id: 3,
-                    send_id: 'bbb',
-                    receive_id: 'aaa',
-                    message: 'ㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 1
-                },
-                {
-                    dm_id: 4,
-                    send_id: 'ccc',
-                    receive_id: 'aaa',
-                    message: 'ㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 0
-                },
-                {
-                    dm_id: 5,
-                    send_id: 'aaa',
-                    receive_id: 'bbb',
-                    message: 'ㅎㅇㅎㅇㅎㅇ',
-                    timestamp: '2:59',
-                    read_check: 0
-                },
-            ]
-        }
-    },
-    computed: {
-        computedMessages() {
-            // console.log(this.select)
-            return this.messages.filter(message => {
-                return message.send_id === this.select.other_id || message.receive_id === this.select.other_id;
-            })
-        }
-    },
+    updated(){
+        const div = document.querySelector(".scroll-body");
+        div.scrollTop = div.scrollHeight - div.clientHeight;
+    }
 }
 </script>
 

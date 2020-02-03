@@ -18,9 +18,13 @@ public class BlockchainService implements IBlockchainService {
 		chain.add(generateGenesis());
 	}
 	
+	public List<BlockVo> getChain() {
+		return chain;
+	}
+
 	//첫 블록생성
 	private BlockVo generateGenesis() {
-		BlockVo genesis = new BlockVo(null, new java.util.Date());
+		BlockVo genesis = new BlockVo(null, new java.util.Date().toString());
 		genesis.setPrehash(null);
 		genesis.computeHash();
 		return genesis;
@@ -30,7 +34,7 @@ public class BlockchainService implements IBlockchainService {
 	public void addBlock(BlockVo blk) {
 		BlockVo newBlock = blk;
 		newBlock.setPrehash(chain.get(chain.size() - 1).getHash());
-//		newBlock.computeHash();
+		newBlock.computeHash();
 		this.chain.add(newBlock);
 	}
 	

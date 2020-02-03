@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ssafy.boot.dto.FollowVo;
+import edu.ssafy.boot.dto.NotificationVo;
 import edu.ssafy.boot.service.IFollowService;
+import edu.ssafy.boot.service.INotificationService;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin(origins="*")
@@ -31,15 +33,26 @@ public class FollowController {
 	@Qualifier("FollowService")
 	IFollowService ser;
 
+	@Autowired
+    @Qualifier("NotificationService")
+    INotificationService nSer;
+
 	@PostMapping("/insertFollow")
 	@ApiOperation(value = "팔로우")
 	private @ResponseBody ResponseEntity<Map<String, Object>> follow(@RequestBody FollowVo follow) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			boolean followres = ser.follow(follow);
+			NotificationVo notification = new NotificationVo();
+			notification.setUser_id(follow.getFollower_id());
+			notification.setTarget_user_id(follow.getFollow_id());
+			notification.setCategory("follow");
+			boolean insert = nSer.insertNotification(notification);
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (followres)
+			if (followres && insert){
 				map.put("resmsg", "팔로우성공");
+				map.put("resValue", notification);
+			}
 			else
 				map.put("resmsg", "1팔로우실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
@@ -58,8 +71,9 @@ public class FollowController {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			boolean followres = ser.unfollow(follow);
+			boolean delete = nSer.deleteFollow(follow.getFollower_id(), follow.getFollow_id());
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (followres)
+			if (followres && delete)
 				map.put("resmsg", "팔로우취소성공");
 			else
 				map.put("resmsg", "1팔로우취소실패");
@@ -97,7 +111,7 @@ public class FollowController {
 	private @ResponseBody ResponseEntity<Map<String, Object>> followerList(@PathVariable("follow_id") String follow_id) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
-			List<String> followerList = ser.followList(follow_id);
+			List<String> followerList = ser.followerList(follow_id);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("resmsg", "팔로워목록성공");
 			map.put("resvalue", followerList);

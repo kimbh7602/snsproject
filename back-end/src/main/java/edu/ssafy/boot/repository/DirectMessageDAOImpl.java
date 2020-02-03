@@ -39,4 +39,19 @@ public class DirectMessageDAOImpl implements IDirectMessageDAO {
     public List<DirectMessageVo> directMessageList(UserDmVo userDm) {
         return session.selectList("ssafy.directMessage.directMessageList", userDm);
     }
+
+    @Override
+    public boolean directMessageReadCheck(UserDmVo userDm) {
+        int update = session.update("ssafy.directMessage.update", userDm);
+        if (update > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int directMessageUnReadCnt(int dm_id) {
+        return session.selectOne("ssafy.directMessage.unReadCnt", dm_id);
+    }
 }

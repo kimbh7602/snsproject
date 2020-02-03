@@ -48,12 +48,15 @@ public class UserService implements IUserService {
 
 		user.setInterest(interest.trim());
 		user.setDislike(dislike.trim());
+		user.setInterestList(null);
+		user.setDislikeList(null);
 
 		return dao.signup(user);
 	}
 
 	@Override
 	public boolean updateUserInfo(UserVo user) {
+
 		List<String> interestList = user.getInterestList();
 		List<String> dislikeList = user.getDislikeList();
 
@@ -62,11 +65,15 @@ public class UserService implements IUserService {
 
 		if (interestList != null) {
 			for (String in : interestList) {
+
+				in = in.replace(" ", "");
 				interest += in + " ";
 			}
 		}
 		if (dislikeList != null) {
 			for (String dis : dislikeList) {
+				dis = dis.replace(" ", "");
+
 				dislike += dis + " ";
 			}
 		}
@@ -79,12 +86,42 @@ public class UserService implements IUserService {
 
 	@Override
 	public boolean deleteUserInfo(String user_id) {
+
 		return dao.deleteUserInfo(user_id);
 	}
 
 	@Override
 	public UserVo info(String user_id) {
 		UserVo user = dao.info(user_id);
+
+		List<String> interestList = new ArrayList<String>();
+		List<String> dislikeList = new ArrayList<String>();
+
+		if (user.getInterest() == null) {
+			user.setInterestList(null);
+		} else {
+			String interest = user.getInterest();
+			String[] inter = interest.split(" ");
+			for (int i = 0; i < inter.length; i++) {
+				interestList.add(inter[i].trim().toString());
+			}
+			user.setInterestList(interestList);
+			user.setInterest(null);
+		}
+
+		if (user.getDislike() == null) {
+			user.setDislikeList(null);
+		} else {
+			String dislike = user.getDislike();
+			String[] dis = dislike.split(" ");
+			for (int i = 0; i < dis.length; i++) {
+				if (dis[i].length() != 0)
+					dislikeList.add(dis[i].trim().toString());
+			}
+			user.setDislikeList(dislikeList);
+			user.setDislike(null);
+
+		}
 
 		return user;
 	}
@@ -122,9 +159,9 @@ public class UserService implements IUserService {
 		for (String string : interestList) {
 			String[] arr = string.split(" ");
 			for (String interest : arr) {
-				if(map.containsKey(interest)){
-					map.replace(interest, map.get(interest)+1);
-				}else{
+				if (map.containsKey(interest)) {
+					map.replace(interest, map.get(interest) + 1);
+				} else {
 					map.put(interest, 1);
 				}
 			}
@@ -134,11 +171,11 @@ public class UserService implements IUserService {
 
 		Set<Entry<String, Integer>> entrySet = map.entrySet();
 
-		for (Entry<String,Integer> entry : entrySet) {
+		for (Entry<String, Integer> entry : entrySet) {
 			WordCloudVo word = new WordCloudVo(entry.getKey(), entry.getValue());
 			wordList.add(word);
 		}
-		
+
 		return wordList;
 	}
 }

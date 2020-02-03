@@ -9,4 +9,6 @@ public interface IDirectMessageService {
     public boolean insertDirectMessage(DirectMessageVo directMessage);
     public boolean deleteDirectMessage(DirectMessageVo directMessage);
     public List<DirectMessageVo> directMessageList(UserDmVo userDm);
+    public boolean directMessageReadCheck(UserDmVo userDm);
+    public int directMessageUnReadCnt(int dm_id);
 }

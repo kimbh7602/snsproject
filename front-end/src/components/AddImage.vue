@@ -1,11 +1,12 @@
 <template>
-  <div class="offset-md-2 col-md-8">
+  <div class="offset-md-2 col-md-8" data-aos="fade-up">
     <div class="offset-md-1 col-md-10">
     <div style="height:10px;"></div>
-    <div class="selected-image" style="margin-bottom:0px; border:5px solid white;">
+    <div class="selected-image" style="margin-bottom:0px; border:5px solid white;" @dragover.prevent @dragenter.prevent @drop.prevent="dragupload" v-on:change="fileUpload">
       <div style="height:35%"></div>
       <div @click="$refs.fileInput.click()" style="margin:auto; width:20%; height:35%; background-size:contain; background-repeat:no-repeat; background-image:url('./theme/images/plus.png')">
       </div>
+      <!-- <span>이미지를 drag&drop하거나 +를 클릭하여 추가해주세요.</span> -->
     </div>
     <div style="margin-top:1%;margin-left:5%;margin-right:5%; height:50px;">
       <div style="display:inline-block; float :left">
@@ -15,12 +16,13 @@
         <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
       </div>
     </div>
-    <input ref="fileInput" type="file" style="display:none;" name="file" id="file" class="inputfile" @drop.prevent="dragupload" @dragover.prevent @dragenter.prevent v-on:change="fileUpload"/>
+    <input ref="fileInput" type="file" accept="image/*" style="display:none;" name="file" id="file" class="inputfile" @dragover.prevent @dragenter.prevent @drop.prevent="dragupload" v-on:change="fileUpload"/>
     </div>
   </div>
 </template>
 
 <script>
+import $ from "jquery"
 export default {
   name: "App",
   props:["fimgs"],
@@ -36,6 +38,7 @@ export default {
       imgs:[],
       caption: "",
       first:true,
+      defaultImag:{base64:"",filter:"normal"},
     };
   },
   created() {
@@ -51,11 +54,10 @@ export default {
       this.createImage();
     },
     dragupload(e){
-      let droppedfiles = e.dataTransfer.files;
-      if(!droppedfiles) return;
-      ([...droppedfiles]).forEach(f=>{
-        this.files.push(f);
-      });
+      const files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.image = files[0];
+      this.createImage();
     },
     createImage() {
       const reader = new FileReader();
@@ -71,6 +73,7 @@ export default {
           params: {
             imgs: this.imgs, 
             step: this.step+1,
+            prevpage: "addimage",
           }
         })
       };
@@ -85,6 +88,9 @@ export default {
       this.$router.go(-1);
     },
     goNext() {
+      if(this.imgs.length==0){
+        this.imgs.push(this.defaultImag);
+      }
       this.$router.push({
           name: 'writecontent', 
           params: {
@@ -99,14 +105,7 @@ export default {
       this.imgs = this.fimgs;
       this.first = false;
     }
-    var scrollUpDelay = 1;
-    var scrollUpSpeed = 30;
-    if(document.body.scrollTop<1)
-    {
-      return;
-    }
-    document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
-    setTimeout('scrollUp()',scrollUpDelay);
+    $('html').scrollTop(0);
   }
 };
 </script>

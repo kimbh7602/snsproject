@@ -5,9 +5,9 @@
 <mapper namespace="ssafy.userDm">
     <insert id="insert" parameterType="UserDmVo">
         insert into user_dm
-            (user_id, other_id, recent_message)
+            (user_id, other_id)
         values
-            (#{user_id}, #{other_id}, #{recent_message})
+            (#{user_id}, #{other_id})
     </insert>
 
     <delete id="delete" parameterType="int">
@@ -17,15 +17,20 @@
     
     <select id="userDmList" parameterType="string" resultType="UserDmVo">
         select * from user_dm
-        where user_id = #{user_id}
+        where 
+            user_id = #{user_id} or
+            other_id = #{user_id}
     </select>
 
-    <update id="update" parameterType="UserDmVo">
+    <select id="allDmList" resultType="UserDmVo">
+        select * from user_dm
+    </select>
+
+    <update id="update" parameterType="DirectMessageVo">
         update user_dm
         set 
-            recent_message = #{recent_message}
+            recent_message = #{message}
         where
             dm_id = #{dm_id}
     </update>
-
 </mapper>

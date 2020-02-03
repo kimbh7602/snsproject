@@ -20,7 +20,7 @@
 <script>
 import 'tui-calendar/dist/tui-calendar.css'
 import { Calendar } from '@toast-ui/vue-calendar';
- 
+import $ from "jquery"
 export default {
     name: 'myCalendar',
     components: {
@@ -121,7 +121,7 @@ export default {
         }
     },
     mounted() {
-        
+        $('html').scrollTop(0);        
     }
 }
 </script> 

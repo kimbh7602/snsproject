@@ -176,16 +176,10 @@
 </template>
 
 <script>
+import $ from "jquery"
 export default {
   mounted(){
-    var scrollUpDelay = 1;
-    var scrollUpSpeed = 30;
-    if(document.body.scrollTop<1)
-    {
-      return;
-    }
-    document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
-    setTimeout('scrollUp()',scrollUpDelay);
+    $('html').scrollTop(0);
   }
 }
 </script>

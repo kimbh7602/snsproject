@@ -21,6 +21,9 @@ import edu.ssafy.boot.dto.DirectMessageVo;
 import edu.ssafy.boot.dto.UserDmVo;
 import edu.ssafy.boot.service.IDirectMessageService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @CrossOrigin(origins = "*")
 @RestController()
@@ -91,6 +94,46 @@ public class DirectMessageController {
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		return resEntity;
-    }
+	}
+	
+	@PutMapping("/readCheck")
+	@ApiOperation(value = "메시지읽음")
+	private @ResponseBody ResponseEntity<Map<String, Object>> directMessageReadCheck(@RequestBody UserDmVo userDm) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		try {
+			boolean readCheck = ser.directMessageReadCheck(userDm);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if (readCheck)
+				map.put("resmsg", "메시지읽음성공");
+			else
+				map.put("resmsg", "1메시지읽음실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "메시지읽음실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	@GetMapping("/unReadCnt/{dm_id}")
+	@ApiOperation(value = "안읽은메시지")
+	private @ResponseBody ResponseEntity<Map<String, Object>> directMessageUnReadCnt(@PathVariable("dm_id") int dm_id) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		try {
+            int unreadCnt = ser.directMessageUnReadCnt(dm_id);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("resmsg", "안읽은메시지성공");
+            map.put("resvalue", unreadCnt);
+            resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+            
+        } catch (RuntimeException e) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("resmsg", "안읽은메시지실패");
+            resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        }
+        return resEntity;
+	}
 }
     

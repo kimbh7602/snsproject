@@ -84,7 +84,7 @@
         </div>
 
         <!-- Modal -->
-        <p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p>
+        <!-- <p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p>
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -96,12 +96,13 @@
                     </div>
                 </div>
             </div>
-        </div>      
+        </div>       -->
     </div>
 </template>
 
 <script>
 import http from '../http-common';
+import $ from "jquery"
 export default {
     data() {
         return {
@@ -146,8 +147,6 @@ export default {
                 })
                     .catch(() => {
                         this.errored = true;
-                        this.modalText = "error";
-                        document.getElementById('modalBtn').click();
                     })
                     .finally(() => (this.loading = false));
         },
@@ -184,13 +183,11 @@ export default {
                             this.resultInterests.push({ritr: res.data.resValue[i].interest, rid: res.data.resValue[i].user_id})
                         }
                     } else {
-                        this.interestErrorMsg = "관심사가 일치하는 친구가 없습니다."
+                        this.interestErrorMsg = "관심사가 일치하는 친구가 없습니다.";
                     }
                 })
                     .catch(() => {
                         this.errored = true;
-                        this.modalText = "error";
-                        document.getElementById('modalBtn').click();
                     })
                     .finally(() => (this.loading = false));
         },
@@ -210,15 +207,8 @@ export default {
         },
     },
     mounted(){
-        var scrollUpDelay = 1;
-        var scrollUpSpeed = 30;
-        if(document.body.scrollTop<1)
-        {
-        return;
-        }
-        document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
-        setTimeout('scrollUp()',scrollUpDelay);
-    }
+        $('html').scrollTop(0);
+    },
 }
 </script>
 

@@ -15,7 +15,28 @@
                     <div style="display:none">
                         <input type="submit" onclick="return false;" />
                         <input type="text"/>
-                    </div>      
+                    </div>
+                    <!-- image -->
+                    <input ref="fileInput" type="file" accept="image/*" style="display:none;" name="file" id="file" class="inputfile" @dragover.prevent @dragenter.prevent @drop.prevent="dragupload" v-on:change="fileUpload"/>
+                    <div class="row form-group">
+                      <div class="col-md-12">
+                        <label class="text-white" for="uid">Profile</label>
+                        <div class="d-flex bd-highlight">
+                          <div class="w-25 bd-highlight">
+                            <div v-if="!this.imgs" class="selected-image" style="margin-bottom:0px; border:2px solid white;" @dragover.prevent @dragenter.prevent @drop.prevent="dragupload" v-on:change="fileUpload">
+                              <div style="height:35%"></div>
+                              <div @click="$refs.fileInput.click()" style="margin:auto; width:20%; height:35%; background-size:contain; background-repeat:no-repeat; background-image:url('./theme/images/plus.png')">
+                              </div>
+                              <!-- <span>이미지를 drag&drop하거나 +를 클릭하여 추가해주세요.</span> -->
+                            </div>
+
+                            <div v-else @click="$refs.fileInput.click()" :class="imginfo.filter" id="img-select">
+                              <img :src = imginfo.base64 class="img-fluid" style="height:100px;">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>   
                     <!-- id -->
                     <div class="row form-group">
                       <div class="col-md-12">
@@ -147,23 +168,8 @@
         </div>
 
       </div>
-      <!-- Modal -->
-      <!-- <p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p>
-      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-body" style="text-align:center;">
-              {{modalText}}
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button>
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
 </template>
-
 <style>
     .roundedge{
         border-radius: 5px;
@@ -174,12 +180,19 @@
         border-style:solid;
         border-width: 1px;
     }
+    .selected-image{
+      height:100px;
+      background-size: cover;
+    }
 </style>
 
 <script>
 import http from "../http-common"
+import $ from "jquery"
+
 export default {
     name: "register",
+    props: ["imgs"],
     data(){
         return{
             uid:"",
@@ -203,12 +216,15 @@ export default {
             timeout:false,
             modalText:"",
             idOk:false,
+            image: "",
+            imginfo:{
+              base64:"",
+              filter:""
+            },
+            regimgs:[],
         }
     },
     methods:{
-      // modal(){
-      //   this.modal = !this.modal;
-      // },
         startTimer: function() {
           this.timer = setInterval(() => this.countdown(), 1000);
           this.resetButton = true;
@@ -322,7 +338,7 @@ export default {
                 .finally(() => (this.loading = false));
         },
         uniqueNumCheck() {
-          if(this.emailKey == this.uniqnum && !this.timeout){
+          if(this.emailKey!=""&& this.uniqnum!="" && this.emailKey == this.uniqnum && !this.timeout){
             this.modalText = "이메일 인증 완료";
             this.$store.commit('setModalText', this.modalText);
             document.getElementById('modalBtn').click();
@@ -399,6 +415,38 @@ export default {
             document.getElementById('uninterest').value='';
             document.getElementById('uninterest').focus();
         },
+
+        fileUpload(e) {
+          const files = e.target.files || e.dataTransfer.files;
+          if (!files.length) return;
+          this.image = files[0];
+          this.createImage();
+        },
+        dragupload(e){
+          const files = e.target.files || e.dataTransfer.files;
+          if (!files.length) return;
+          this.image = files[0];
+          this.createImage();
+        },
+        createImage() {
+          const reader = new FileReader();
+          reader.readAsDataURL(this.image);
+          reader.onload = e => {
+            this.image = e.target.result;
+            this.imginfo.base64 = this.image;
+            this.regimgs.push(this.imginfo);
+            // EventBus.$emit("imglink", { image: this.image });
+            this.$router.push({
+              name: 'imagefilter', 
+              params: {
+                imgs: this.regimgs,
+                prevpage: "register",
+              }
+            })
+          };
+        },
+
+
         regist() {
           var itrltemp = document.getElementsByClassName('itrlone');
           var uitrltemp = document.getElementsByClassName('uitrlone');
@@ -432,6 +480,7 @@ export default {
                   interestList:this.itrlist,
                   dislikeList:this.uitrlist,
                   description:this.intro,
+                  profileImage: this.imginfo,
                 })
                 .then(response => {
                   if (response.data['resmsg'] == "등록성공"){
@@ -439,7 +488,7 @@ export default {
                     this.$store.commit('setModalText', this.modalText);
                     // document.body.removeAttribute('class');
                     document.getElementById('modalBtn').click();
-                    this.$router.push("/");
+                    this.$router.push("/login");
                   }
                   else{
                     this.modalText = "회원가입 실패";
@@ -466,14 +515,12 @@ export default {
         }
     },
     mounted(){
-      var scrollUpDelay = 1;
-      var scrollUpSpeed = 30;
-      if(document.body.scrollTop<1)
-      {
-        return;
+      $('html').scrollTop(0);
+      if(this.imgs!=undefined){
+        this.imginfo.filter = this.imgs[this.imgs.length-1].filter;
+        this.imginfo.base64 = this.imgs[this.imgs.length-1].base64;
+        this.regimgs = this.imgs;
       }
-      document.body.scrollTop=document.body.scrollTop-scrollUpSpeed;
-      setTimeout('scrollUp()',scrollUpDelay);
     }
 }
 </script>
