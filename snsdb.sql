@@ -16,9 +16,6 @@ create table users (
     profile_filter varchar(100)
 );
 
-select * from users;
-
-
 create table contents (
 	content_id int primary key auto_increment,
     share_cid int,
@@ -40,8 +37,6 @@ create table user_like (
     user_id varchar(100),
     timestamp datetime
 );
-
-select * from user_like;
 
 alter table user_like add constraint pk_userLike primary key (content_id, user_id);
 
@@ -66,8 +61,6 @@ create table follow (
     follower_id varchar(100)
 );
 
-select * from follow;
-
 alter table follow add constraint pk_follow primary key (follow_id, follower_id);
 
 create table user_dm (
@@ -76,11 +69,6 @@ create table user_dm (
     other_id varchar(100),
     recent_message varchar(1000)
 );
-
-select * from user_dm;
-select * from direct_message;
-insert into user_dm (user_id, other_id) values ('kimbh', 'kimbh1');
-select * from users;
 
 create table direct_message (
 	dm_id int,
@@ -131,10 +119,3 @@ create table notification (
     is_checked boolean default false,
     target_event_id int
 );
-
-select * from notification;
-select * from notification
-		where target_user_id = 'abab';
-        
-select * from users;
-select * from direct_message;
