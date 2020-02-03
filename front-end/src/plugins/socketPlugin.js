@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.100.41:3000');
+let socket = io('http://localhost:3000');
 
 const SocketPlugin = {
   install(vue) {

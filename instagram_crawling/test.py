@@ -34,10 +34,17 @@ def naver_crawling(tag):
             'img_url': img_url
         }
         list.append(img)
+        if(len(list) == 6):
+            break;
 
     driver.close()
 
-    return jsonify(list)
+    result = {
+        'tag': tag,
+        'list': list
+    }
+
+    return jsonify(result)
 
 
 @app.route("/location/<keyword>")
