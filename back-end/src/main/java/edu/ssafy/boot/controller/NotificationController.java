@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.ssafy.boot.dto.NotificationVo;
 import edu.ssafy.boot.service.INotificationService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @CrossOrigin(origins = "*")
@@ -100,6 +103,47 @@ public class NotificationController {
 		} catch (RuntimeException e) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("resmsg", "확인 전 카테고리별 알림목록실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	@PutMapping("/updateCheck/{notification_id}")
+	@ApiOperation(value = "알림 확인 체크", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> updateCheck(@PathVariable("notification_id") int notification_id) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		try {
+			boolean update = ser.updateCheck(notification_id);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(update){
+				map.put("resmsg", "체크 성공");
+				resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			}else{
+				map.put("resmsg", "체크 실패");
+				resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			}
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "체크 실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
+
+	@GetMapping("/countUnchecked/{user_id}")
+	@ApiOperation(value = "확인 전 알림 숫자", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> countUnchecked(@PathVariable("user_id") String user_id) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		try {
+			int count = ser.countUnchecked(user_id);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "확인 전 알림숫자성공");
+			map.put("resvalue", count);
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "확인 전 알림숫자실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		return resEntity;

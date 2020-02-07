@@ -12,9 +12,9 @@
 
 	<insert id="insert" parameterType="FollowVo">
 		insert into follow
-			(follower_id, follow_id)
+			(follower_id, follow_id, timestamp)
 		values 
-			(#{follower_id}, #{follow_id})
+			(#{follower_id}, #{follow_id}, now())
 	</insert>
 	
 	<delete id="delete" parameterType="FollowVo">
@@ -24,22 +24,28 @@
 			follow_id = #{follow_id}
 	</delete>
 
-	<select id="followList" parameterType="string" resultType="string">
-		select follow_id from follow
+	<select id="followList" parameterType="string" resultType="UserVo">
+		select u.* from users as u
+		join follow as f
+		on (u.user_id = f.follow_id)
 		where
-			follower_id = #{follower_id}
+			f.follower_id = #{follower_id}
 	</select>
 	
-	<select id="followerList" parameterType="string" resultType="string">
-		select follower_id from follow
+	<select id="followerList" parameterType="string" resultType="UserVo">
+		select u.* from users as u
+		join follow as f
+		on (u.user_id = f.follower_id)
 		where
-			follow_id = #{follow_id}
+			f.follow_id = #{follow_id}
 	</select>
 
-	<select id="followfollowerList" parameterType="string" resultType="string">
-		select follow_id from follow
-		where follow_id in (select follower_id from follow where follow_id = #{user_id})
-		and follower_id = #{user_id};
+	<select id="followfollowerList" parameterType="string" resultType="UserVo">
+		select u.* from users as u
+		join follow as f
+		on (f.follow_id = u.user_id)
+		where f.follow_id in (select follower_id from follow where follow_id = #{user_id})
+		and f.follower_id = #{user_id};
 	</select>
 
 </mapper>

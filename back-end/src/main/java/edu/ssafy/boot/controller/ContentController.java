@@ -122,12 +122,13 @@ public class ContentController {
 		int num = 1;
 		boolean isDone = true;
 		if(content.getImageList().size() == 1 && content.getImageList().get(0).getBase64() == ""){
-			iSer.insertImage(new ImageVo(content.getContent_id(), content.getContent_id()+"-1.png", req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/"+content.getContent_id()+"-1.png", "normal"));
+			iSer.insertImage(new ImageVo(content.getContent_id(), "default.png", req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/"+"default.png", "normal"));
 		}else{
 
 			for (ImageVo image : content.getImageList()) {
+				String ext = image.getBase64().substring(image.getBase64().indexOf("/")+1, image.getBase64().indexOf(";"));
 				byte[] decode = Base64.decodeBase64(image.getBase64().substring(image.getBase64().lastIndexOf(",")));
-				String image_name = content.getContent_id()+"-"+num+".jpg";
+				String image_name = content.getContent_id()+"-"+num+"."+ext;
 				String savePath = realPath+File.separator+image_name;
 				String image_url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/" +image_name;
 				
@@ -227,6 +228,19 @@ public class ContentController {
 		}else{
 			msg.put("resmsg", "게시물 검색 실패");
 		}
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
+
+	@GetMapping("/contentListHashtag/{tag}")
+	@ApiOperation(value = "해시태그 포함 게시물 리스트", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> contentListHashtag(@PathVariable("tag") String tag) throws ServletException, IOException {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		List<ContentVo> list = ser.contentListHashtag(tag);
+		System.out.println(list);
+		msg.put("resmsg", "해시태그 포함 게시물 리스트 출력 성공");
+		msg.put("resValue", list);
 		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
 		return resEntity;
 	}

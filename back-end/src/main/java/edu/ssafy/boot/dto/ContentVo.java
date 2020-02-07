@@ -13,17 +13,28 @@ public class ContentVo {
 	private String hashtag;
 	private List<String> hashtagList;
 	private boolean user_like;
+	private int dislike;
 	private List<ImageVo> imageList;
 	private String location_name;
 	private double lat;
 	private double lng;
+	private String profile_url;
+	private String profile_filter;
 
 	public ContentVo() {
 		super();
 	}
 
+	public int getDislike() {
+		return dislike;
+	}
+
+	public void setDislike(int dislike) {
+		this.dislike = dislike;
+	}
+
 	public ContentVo(int content_id, int share_cid, String content_val, String user_id,
-			String timestamp, int content_like, List<String> hashtagList, List<ImageVo> imageList, boolean user_like) {
+			String timestamp, int content_like, List<String> hashtagList, List<ImageVo> imageList, boolean user_like, int dislike) {
 		super();
 		this.content_id = content_id;
 		this.share_cid = share_cid;
@@ -34,10 +45,11 @@ public class ContentVo {
 		this.hashtagList = hashtagList;
 		this.imageList = imageList;
 		this.user_like = user_like;
+		this.dislike = dislike;
 	}
 
 	public ContentVo(int content_id, String content_title, String content_val, String user_id, String timestamp,
-			String hashtag) {
+			String hashtag, int dislike) {
 		super();
 		this.content_id = content_id;
 		this.content_title = content_title;
@@ -45,10 +57,11 @@ public class ContentVo {
 		this.user_id = user_id;
 		this.timestamp = timestamp;
 		this.hashtag = hashtag;
+		this.dislike = dislike;
 	}
 	
 	public ContentVo(int content_id, String content_val, String user_id, String timestamp,
-			List<String> hashtagList, List<ImageVo> imageList) {
+			List<String> hashtagList, List<ImageVo> imageList, int dislike) {
 		super();
 		this.content_id = content_id;
 		this.content_val = content_val;
@@ -56,21 +69,24 @@ public class ContentVo {
 		this.timestamp = timestamp;
 		this.hashtagList = hashtagList;
 		this.imageList = imageList;
+		this.dislike = dislike;
 	}
 
-	public ContentVo(String content_val, String user_id, List<String> hashtagList, List<ImageVo> imageList) {
+	public ContentVo(String content_val, String user_id, List<String> hashtagList, List<ImageVo> imageList, int dislike) {
 		super();
 		this.content_val = content_val;
 		this.user_id = user_id;
 		this.hashtagList = hashtagList;
 		this.imageList = imageList;
+		this.dislike = dislike;
 	}
 
-	public ContentVo(String content_val, String user_id, List<String> hashtagList, List<ImageVo> imageList, String location_name, double lat, double lng) {
+	public ContentVo(String content_val, String user_id, List<String> hashtagList, int dislike, List<ImageVo> imageList, String location_name, double lat, double lng) {
 		super();
 		this.content_val = content_val;
 		this.user_id = user_id;
 		this.hashtagList = hashtagList;
+		this.dislike = dislike;
 		this.imageList = imageList;
 		this.location_name = location_name;
 		this.lat = lat;
@@ -78,7 +94,7 @@ public class ContentVo {
 	}
 
 	public ContentVo(int content_id, int share_cid, String content_val, String user_id, String timestamp,
-			int content_like, String hashtag) {
+			int content_like, String hashtag, int dislike) {
 		this.content_id = content_id;
 		this.share_cid = share_cid;
 		this.content_val = content_val;
@@ -86,6 +102,7 @@ public class ContentVo {
 		this.timestamp = timestamp;
 		this.content_like = content_like;
 		this.hashtag = hashtag;
+		this.dislike = dislike;
 	}
 
 	public int getContent_id() {
@@ -205,6 +222,22 @@ public class ContentVo {
 
 	public void setLng(double lng) {
 		this.lng = lng;
+	}
+
+	public String getProfile_url() {
+		return profile_url;
+	}
+
+	public void setProfile_url(String profile_url) {
+		this.profile_url = profile_url;
+	}
+
+	public String getProfile_filter() {
+		return profile_filter;
+	}
+
+	public void setProfile_filter(String profile_filter) {
+		this.profile_filter = profile_filter;
 	}
 
 }

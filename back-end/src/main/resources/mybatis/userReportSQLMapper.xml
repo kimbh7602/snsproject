@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssafy.userReport">
+	<insert id="insertReport" parameterType="UserReportVo">
+		insert into user_report
+			(content_id, user_id, report_category, report_val, timestamp)
+		values
+			(#{content_id}, #{user_id}, #{report_category}, #{report_val}, now())
+	</insert>
+
+	<delete id="deleteReport" parameterType="UserReportVo">
+		delete from user_report
+		where content_id = #{content_id}
+		and user_id = #{user_id}
+	</delete>
+
+	<select id="selectMyReport" parameterType="string" resultType="UserReportVo">
+		select * from user_report
+		where user_id = #{user_id}
+	</select>
+
+	<select id="reportContents" parameterType="string" resultType="ContentVo">
+		select * from contents
+		where content_id in (select content_id from user_report where user_id = #{user_id})
+	</select>
+
+	<select id="deleteReported" parameterType="int">
+		delete from user_report
+		where content_id = #{content_id}
+	</select>
+</mapper>

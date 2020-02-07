@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.ssafy.boot.dto.FollowVo;
+import edu.ssafy.boot.dto.UserVo;
 import edu.ssafy.boot.repository.IFollowDAO;
 
 @Service("FollowService")
@@ -28,17 +29,17 @@ public class FollowService implements IFollowService {
 	}
 
 	@Override
-	public List<String> followList(String follower_id) {
+	public List<UserVo> followList(String follower_id) {
 		return dao.followList(follower_id);
 	}
 
 	@Override
-	public List<String> followerList(String follow_id) {
+	public List<UserVo> followerList(String follow_id) {
 		return dao.followerList(follow_id);
 	}
 
 	@Override
-	public List<String> followfollowerList(String user_id) {
+	public List<UserVo> followfollowerList(String user_id) {
 		return dao.followfollowerList(user_id);
 	}
 }

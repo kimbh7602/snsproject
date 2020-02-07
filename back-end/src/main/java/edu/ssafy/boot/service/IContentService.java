@@ -15,4 +15,6 @@ public interface IContentService {
 	public boolean updateContent(ContentVo content);
 	public List<ContentVo> findContentByLocation(LocationVo location);
 	public List<ContentVo> contentUserList(String user_id);
+	public List<String> deleteReportedContents();
+	public List<ContentVo> contentListHashtag(String tag);
 }

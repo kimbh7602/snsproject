@@ -9,15 +9,17 @@
         <div class="site-mobile-menu-body"></div>
     </div>
     <header class="header-bar d-flex d-lg-block align-items-center" data-aos="fade-left">
-        <div class="notification">
-            <i class="icon-bell text-white" style="font-size:1.5em;">
-                <span class="badge" style="font-size:0.5em;">
-                    <em>{{notify}}</em>
-                </span>
-            </i>
+        <div v-show="loginCheck" class="notification">
+            <router-link to="/notification/" class="m-0">
+                <i class="icon-bell text-white" style="font-size:1.5em;">
+                    <span class="badge" style="font-size:0.5em;">
+                        <em>{{notify}}</em>
+                    </span>
+                </i>
+            </router-link>
         </div>
             
-        <div class="notification align-self-center ml-3">
+        <div v-show="loginCheck" class="notification pb-0 ml-3">
             <router-link :to="'/mypage/'+$store.state.user_id" class="m-0">
                 <i class="icon-user-circle text-white" style="font-size:1.9em;"></i>
             </router-link>
@@ -27,17 +29,18 @@
             <router-link v-show="loginCheck" to="/">Shutter</router-link>
             <router-link v-show="!loginCheck" to="/login">Shutter</router-link>
         </div>
-        <div class="site-logo">
-            <input v-show="loginCheck" type="button" class="site-logo btn btn-danger btn-md text-white" @click="goWrite" value="Write" />
-            <input v-show="loginCheck" type="button" class="site-logo btn btn-success btn-md text-white" @click="logout" value="Logout" />
+        <div class="site-logo site-btn">
+            <input v-show="loginCheck" type="button" class="site-logo btn btn-outline-info btn-block text-white" style="margin-bottom:15px;" @click="goWrite" value="Write" />
+            <input v-show="loginCheck" type="button" class="site-logo btn btn-outline-danger btn-block text-white" @click="logout" value="Logout" />
             <!-- <router-link to="/addimage">Write</router-link> -->
         </div>
-        <div class="d-inline-block d-xl-none ml-md-0 ml-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
+        <div class="toggle-div d-inline-block d-xl-none ml-md-0 ml-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
 
         <div class="main-menu">
         <ul class="js-clone-nav">
             <li v-show="loginCheck" class="active"><router-link to="/">Home</router-link></li>
             <!-- <li><router-link to="/bio">Bio</router-link></li> -->
+            <li v-show="loginCheck"><router-link to="/category">Category</router-link></li>
             <li v-show="loginCheck"><router-link to="/blog">Blog</router-link></li>
             <li v-show="loginCheck"><router-link to="/single">Single</router-link></li>
             <!-- <li><router-link to="/register">Register</router-link></li> -->
@@ -49,24 +52,38 @@
             <li v-show="!loginCheck"><router-link to="/register">Register</router-link></li>
             <li v-show="!loginCheck"><router-link to="/password">Password</router-link></li>
         </ul>
-        <ul class="social js-clone-nav">
+        <!-- <ul class="social js-clone-nav">
             <li><a href="#"><span class="icon-facebook"></span></a></li>
             <li><a href="#"><span class="icon-twitter"></span></a></li>
             <li><a href="#"><span class="icon-instagram"></span></a></li>
-        </ul>
+        </ul> -->
         </div>
     </header>
+    <div class="row mobile-div">
+        <div class="col-1"></div>
+        <div class="col-5">
+            <input v-show="loginCheck" type="button" class="site-logo btn btn-outline-info btn-block text-white" style="margin-bottom:15px;" @click="goWrite" value="Write" />
+        </div>
+        <!-- <div class="col-2"></div> -->
+        <div class="col-5">
+            <input v-show="loginCheck" type="button" class="site-logo btn btn-outline-danger btn-block text-white" @click="logout" value="Logout" />
+        </div>
+        <div class="col-1"></div>
+    </div>
+
 </div>
 </template>
 
 <script>
 // import $ from "jquery"
 import store from "../store" 
+import http from '../http-common'
+
 export default {
     name:"sidebar",
     data(){
         return{
-            notify:0,
+            notify: 0,
             // check:false,
         }
     },
@@ -75,26 +92,52 @@ export default {
             this.$router.push("/addimage");
         },
         logout(){
+            // this.$socket.emit('logout', this.$store.state.user_id);
             this.$store.commit("logout");
             document.getElementById('modalBtn').click();
             this.$router.push("/login");
-        }
+        },
+        fetchNoti() {
+            http
+                .get(`/notification/uncheckedList/${this.$store.state.user_id}`)
+                .then(response => {
+                    // console.log(response.data)
+                    this.notify = response.length;
+                })
+                .catch(e => console.log(e))
+      },
     },
     computed: {
         loginCheck: () => {
             return store.state.islogin;
         },
+        
     },
     created() {
-    // this.socket = io('http://192.168.100.41:3000');
-    this.$socket.on('notification', (data) => {
-    //   window.console.log('notification', data, this.$store.state.user_id);
-      if(data.target_user_id == this.$store.state.user_id){
-        this.$snotify.simple('알림을 확인해보세요!', data.category, {
-            icon : '/favicon.ico',
-            // html : '<div>Like!</div><div>알림을 확인해보세요!</div> <input type="button" @click="sendNotification" value="Login" class="btn btn-sm">'
-          });
-      }
+        http.get(`/notification/countUnchecked/${this.$store.state.user_id}`)
+            .then((response) => {
+                this.notify = response.data.resvalue;
+            })
+            .catch(error => {
+                window.console.log(error);
+            })
+        // this.socket = io('http://192.168.100.41:3000');
+        this.$socket.on('notification', (data) => {
+        //   window.console.log('notification', data, this.$store.state.user_id);
+        if(data.target_user_id == this.$store.state.user_id){
+            this.$snotify.simple('알림을 확인해보세요!', data.user_id + "님의 " + data.category+"!", {
+                icon : '/theme/images/'+data.category+'.png',
+                // html : '<div>Like!</div><div>알림을 확인해보세요!</div>'
+            });
+            http.get(`/notification/countUnchecked/${this.$store.state.user_id}`)
+            .then((response) => {
+                this.notify = response.data.resvalue;
+            })
+            .catch(error => {
+                window.console.log(error);
+            })
+        }
+        // this.fetchNoti();
     });
   }
 }
@@ -124,4 +167,32 @@ export default {
   /* text-align:center; */
   color: white;
 }
+.snotifyToast__title {
+  font-size: 17px;
+  }
+  .snotifyToast__body {
+    font-size: 12px;
+  }
+  .mobile-div {
+      display: none;
+  }
+  .mobile-div input {
+      box-shadow: 0px 3px 5px 1px grey;
+  }
+  a {
+      cursor: pointer;
+  }
+
+  .site-btn input {
+      box-shadow: 0px 3px 5px 1px grey;
+  }
+
+  @media (max-width: 991.98px){
+      .site-btn{
+          display: none;
+      }
+      .mobile-div{
+          display: flex;
+      }
+  }
 </style>

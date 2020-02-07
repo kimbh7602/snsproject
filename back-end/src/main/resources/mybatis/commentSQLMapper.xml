@@ -57,7 +57,7 @@
 	<!-- 댓글, 대댓글 공통 끝 -->
 
 	<!-- 댓글, 대댓글 공통 삭제 시작 -->
-	<delete id="deleteComment" parameterType="CommentVo">
+	<delete id="deleteComment" parameterType="int">
 		delete from comments
 		where
 		comment_id = #{comment_id} or

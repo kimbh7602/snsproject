@@ -54,4 +54,9 @@ public class DirectMessageDAOImpl implements IDirectMessageDAO {
     public int directMessageUnReadCnt(int dm_id) {
         return session.selectOne("ssafy.directMessage.unReadCnt", dm_id);
     }
+
+    @Override
+    public void deleteOldMessage() {
+        session.delete("ssafy.directMessage.deleteOldMessage");
+    }
 }

@@ -4,7 +4,7 @@
       <div class="col-md-6 pt-4" data-aos="fade-up">
         <h2 class="text-white mb-4">비밀번호 찾기</h2>
 
-        <div class="row">
+        <div class="row" v-if="!axios_ing">
           <div class="col-md-12">
             <!-- <p class="mb-5">비밀번호를 찾고자 하는 아이디를 입력해 주세요.</p>               -->
             <div class="row">
@@ -61,8 +61,12 @@
             </div>
           </div>
         </div>
-      </div>
 
+        <div class="row" v-else>
+          <img class="col-md-12" src="/theme/images/loading10.gif" />
+        </div>
+
+      </div>
     </div>
   </div>
 </template>
@@ -95,6 +99,7 @@ export default {
       idcheck: false,
       booleanemail: false,
       checkid:"",
+      axios_ing:false,
     }
   },
   methods:{
@@ -117,9 +122,9 @@ export default {
                 document.getElementById('modalBtn').click();
               }
             })
-            .catch(() => {
+            .catch((error) => {
               this.errored = true;
-                alert("error");
+                alert(error);
             })
             .finally(() => (this.loading = false));
       }
@@ -145,22 +150,29 @@ export default {
     },
 
     temppw() {
-      if(this.booleanemail && this.idcheck){
+      if(!this.booleanemail && this.idcheck){
+        this.$store.commit('setModalText', "이메일 확인을 진행해주세요.");
+        document.getElementById('modalBtn').click();        
+      }
+      else if(this.booleanemail && this.idcheck){
+        this.axios_ing=  true;
+
         http
           .post("email/findpassword/" +this.uemail)
           .then((response)=>{
               if (response.data['resmsg'] == "메일 보내기 성공") { 
+                document.getElementById('modalClose-btn').click();
                 this.$store.commit('setModalText', "임시 비밀번호 발급 성공.");
                 document.getElementById('modalBtn').click();
-                this.$router.push("/")
+                this.$router.push("/login")
               } else {
                 this.$store.commit('setModalText', "임시 비밀번호 발급 실패.");
                 document.getElementById('modalBtn').click();
               }
             })
-            .catch(() => {
+            .catch((error) => {
               this.errored = true;
-                alert("error");
+                alert(error);
             })
             .finally(() => (this.loading = false));
       }

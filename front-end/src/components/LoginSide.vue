@@ -31,11 +31,50 @@
     </header>
 </div>
 </template>
+<script>
+// import $ from "jquery"
+import store from "../store" 
+export default {
+    name:"sidebar",
+    data(){
+        return{
+            notify:0,
+            // check:false,
+        }
+    },
+    methods: {
+        goWrite(){
+            this.$router.push("/addimage");
+        },
+        logout(){
+            // this.$socket.emit('logout', this.$store.state.user_id);
+            this.$store.commit("logout");
+            document.getElementById('modalBtn').click();
+            this.$router.push("/login");
+        }
+    },
+    computed: {
+        loginCheck: () => {
+            return store.state.islogin;
+        },
+    },
+    created() {
+    // this.socket = io('http://192.168.100.41:3000');
+    this.$socket.on('notification', (data) => {
+    //   window.console.log('notification', data, this.$store.state.user_id);
+      if(data.target_user_id == this.$store.state.user_id){
+        this.$snotify.simple('알림을 확인해보세요!', data.user_id + "님의 " + data.category+"!", {
+            icon : '/theme/images/'+data.category+'.png',
+            // html : '<div>Like!</div><div>알림을 확인해보세요!</div>'
+          });
+      }
+    });
+  }
+}
+</script>
 
 <style scoped>
 .notification {
-  /* background-color: #555; */
-  /* color: white; */
   text-align: center;
   text-decoration: none;
   padding: 5px 5px;
@@ -58,4 +97,10 @@
   /* text-align:center; */
   color: white;
 }
+.snotifyToast__title {
+  font-size: 17px;
+  }
+  .snotifyToast__body {
+    font-size: 12px;
+  }
 </style>

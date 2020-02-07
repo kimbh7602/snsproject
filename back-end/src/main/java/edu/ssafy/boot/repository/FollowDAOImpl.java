@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import edu.ssafy.boot.dto.FollowVo;
+import edu.ssafy.boot.dto.UserVo;
 
 @Repository("FollowDAOImpl")
 public class FollowDAOImpl implements IFollowDAO {
@@ -35,17 +36,18 @@ public class FollowDAOImpl implements IFollowDAO {
 	}
 
 	@Override
-	public List<String> followList(String follower_id) {
+	public List<UserVo> followList(String follower_id) {
+		
 		return session.selectList("ssafy.follow.followList", follower_id);
 	}
 
 	@Override
-	public List<String> followerList(String follow_id) {
+	public List<UserVo> followerList(String follow_id) {
 		return session.selectList("ssafy.follow.followerList", follow_id);
 	}
 
 	@Override
-	public List<String> followfollowerList(String user_id) {
+	public List<UserVo> followfollowerList(String user_id) {
 		return session.selectList("ssafy.follow.followfollowerList", user_id);
 	}
 }

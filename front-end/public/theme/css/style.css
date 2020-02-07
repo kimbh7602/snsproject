@@ -6,6 +6,19 @@ body {
   font-size: 1rem;
   background: #000; }
 
+/* 공지사항 항상 맨위에 위치 */
+.top-noti{
+  position: sticky;
+  /* display: block; */
+  z-index: 10000;
+  top:0px;
+}
+
+.box-noti{
+  position: absolute;
+  top:50%;
+}
+
 /* 모두선택 색상 변경 */
 ::-moz-selection {
   background: rgb(110, 196, 11);
@@ -437,7 +450,7 @@ h1, h2, h3, h4, h5,
   width: 300px;
   position: fixed;
   right: 0;
-  z-index: 2000;
+  z-index: 200000;
   padding-top: 20px;
   background: #fff;
   height: calc(100vh);
@@ -1181,6 +1194,14 @@ img.postmark{
 	z-index: -1;
 }
 
+.normal img{
+  width:100%;
+  z-index:1
+}
+.juno img{
+  width:100%;
+  z-index: 1;
+}
 
 /* .stamp {
 	width: 50px;

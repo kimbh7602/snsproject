@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.ssafy.boot.dto.ContentVo;
 import edu.ssafy.boot.dto.NotificationVo;
 import edu.ssafy.boot.dto.ScrapVo;
+import edu.ssafy.boot.service.IContentService;
 import edu.ssafy.boot.service.INotificationService;
 import edu.ssafy.boot.service.IScrapService;
 import io.swagger.annotations.ApiOperation;
@@ -38,7 +39,11 @@ public class ScrapController {
 
 	@Autowired
     @Qualifier("NotificationService")
-    INotificationService nSer;
+	INotificationService nSer;
+	
+	@Autowired
+	@Qualifier("ContentService")
+	IContentService cSer;
 
 	@PostMapping("/insertScrap")
 	@ApiOperation(value = "스크랩")
@@ -50,10 +55,14 @@ public class ScrapController {
 			notification.setUser_id(scrap.getUser_id());
 			notification.setTarget_event_id(scrap.getContent_id());
 			notification.setCategory("scrap");
+			ContentVo content = cSer.detail(scrap.getContent_id());
+            notification.setTarget_user_id(content.getUser_id());
 			boolean insertNotification = nSer.insertNotification(notification);
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (insert && insertNotification)
+			if (insert && insertNotification){
 				map.put("resmsg", "스크랩성공");
+				map.put("resValue", notification);
+			}
 			else
 				map.put("resmsg", "1스크랩실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);

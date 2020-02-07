@@ -12,7 +12,7 @@ public interface ICommentDAO {
 
 	public boolean updateComment(CommentVo comment);
 
-	public boolean deleteComment(CommentVo comment);
+	public boolean deleteComment(int comment_id);
 
 	public boolean insertReComment(CommentVo comment);
 

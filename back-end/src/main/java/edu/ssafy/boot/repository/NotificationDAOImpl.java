@@ -8,6 +8,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import edu.ssafy.boot.dto.ContentVo;
+import edu.ssafy.boot.dto.ImageVo;
 import edu.ssafy.boot.dto.NotificationVo;
 
 @Repository("NotificationDAOImpl")
@@ -29,6 +31,14 @@ public class NotificationDAOImpl implements INotificationDAO {
     @Override
     public List<NotificationVo> selectList(String user_id) {
         List<NotificationVo> notificationList = session.selectList("ssafy.notification.selectList", user_id);
+        for (NotificationVo notificationVo : notificationList) {
+            if(notificationVo.getCategory().equals("like") || notificationVo.getCategory().equals("scrap") || notificationVo.getCategory().equals("report")){
+                ContentVo content = session.selectOne("ssafy.content.selectOne", notificationVo.getTarget_event_id());
+                List<ImageVo> imageList = session.selectList("ssafy.image.imageList", notificationVo.getTarget_event_id());
+                content.setImageList(imageList);
+                notificationVo.setContent(content);
+            }
+        }
         // System.out.println("123");
         return notificationList;
     }
@@ -36,6 +46,14 @@ public class NotificationDAOImpl implements INotificationDAO {
     @Override
     public List<NotificationVo> selectUncheckedList(String user_id) {
         List<NotificationVo> notificationList = session.selectList("ssafy.notification.selectUnchecked", user_id);
+        for (NotificationVo notificationVo : notificationList) {
+            if(notificationVo.getCategory().equals("like") || notificationVo.getCategory().equals("scrap") || notificationVo.getCategory().equals("report")){
+                ContentVo content = session.selectOne("ssafy.content.selectOne", notificationVo.getTarget_event_id());
+                List<ImageVo> imageList = session.selectList("ssafy.image.imageList", notificationVo.getTarget_event_id());
+                content.setImageList(imageList);
+                notificationVo.setContent(content);
+            }
+        }
         return notificationList;
     }
 
@@ -45,6 +63,14 @@ public class NotificationDAOImpl implements INotificationDAO {
         map.put("user_id", user_id);
         map.put("category", category);
         List<NotificationVo> notificationList = session.selectList("ssafy.notification.selectCategory", map);
+        for (NotificationVo notificationVo : notificationList) {
+            if(notificationVo.getCategory().equals("like") || notificationVo.getCategory().equals("scrap") || notificationVo.getCategory().equals("report")){
+                ContentVo content = session.selectOne("ssafy.content.selectOne", notificationVo.getTarget_event_id());
+                List<ImageVo> imageList = session.selectList("ssafy.image.imageList", notificationVo.getTarget_event_id());
+                content.setImageList(imageList);
+                notificationVo.setContent(content);
+            }
+        }
         return notificationList;
     }
 
@@ -54,6 +80,14 @@ public class NotificationDAOImpl implements INotificationDAO {
         map.put("user_id", user_id);
         map.put("category", category);
         List<NotificationVo> notificationList = session.selectList("ssafy.notification.selectUncheckedCategory", map);
+        for (NotificationVo notificationVo : notificationList) {
+            if(notificationVo.getCategory().equals("like") || notificationVo.getCategory().equals("scrap") || notificationVo.getCategory().equals("report")){
+                ContentVo content = session.selectOne("ssafy.content.selectOne", notificationVo.getTarget_event_id());
+                List<ImageVo> imageList = session.selectList("ssafy.image.imageList", notificationVo.getTarget_event_id());
+                content.setImageList(imageList);
+                notificationVo.setContent(content);
+            }
+        }
         return notificationList;
     }
 
@@ -118,6 +152,12 @@ public class NotificationDAOImpl implements INotificationDAO {
         }else{
             return false;
         }
+    }
+
+    @Override
+    public int countUnchecked(String user_id) {
+        int count = session.selectOne("ssafy.notification.countUnchecked", user_id);
+        return count;
     }
 
     

@@ -51,8 +51,8 @@ public class CommentDAOImpl implements ICommentDAO {
 	}
 
 	@Override
-	public boolean deleteComment(CommentVo comment) {
-		int delete = session.delete("ssafy.comment.deleteComment", comment);
+	public boolean deleteComment(int comment_id) {
+		int delete = session.delete("ssafy.comment.deleteComment", comment_id);
 		if (delete > 0) {
 			return true;
 		} else {

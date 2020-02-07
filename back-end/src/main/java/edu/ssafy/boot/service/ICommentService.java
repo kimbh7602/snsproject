@@ -13,7 +13,7 @@ public interface ICommentService {
 
 	public boolean updateComments(CommentVo comment);
 
-	public boolean deleteComments(CommentVo comment);
+	public boolean deleteComments(int comment_id);
 
 	public boolean insertReComment(CommentVo comment);
 

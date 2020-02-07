@@ -128,6 +128,7 @@ import http from '../http-common';
 import axios from 'axios'
 import $ from "jquery"
 export default {
+    props:['location_name', 'lat', 'lng'],
     data() {
         return {
             contents: null,
@@ -247,6 +248,28 @@ export default {
     },
     mounted(){
         $('html').scrollTop(0);
+        if(this.location_name != undefined){
+            http.post("/content/findByLocation",{
+              lat: this.lat,
+              lng: this.lng,
+              dist: this.dist
+            })
+            .then((response)=>{
+                this.contents = response.data.resValue;
+                window.console.log(this.contents);
+                this.searchKeyword = this.location_name;
+                this.isLocation = true;
+                this.isLocationSelect = true;
+                this.selectedLocation = {
+                    position:{
+                        lat: this.lat,
+                        lng: this.lng,
+
+                    },
+                    name: this.location_name
+                }
+            })
+        }
     }
 }
 </script>

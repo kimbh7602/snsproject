@@ -37,4 +37,14 @@
 		select * from content_image
 		where content_id = #{content_id}
 	</select>
+
+	<delete id="deleteReported" parameterType="int">
+		delete from content_image
+		where content_id = #{content_id}
+	</delete>
+
+	<select id="selectImageNames" parameterType="int" resultType="string">
+		select image_name from content_image
+		where content_id = #{content_id}
+	</select>
 </mapper>

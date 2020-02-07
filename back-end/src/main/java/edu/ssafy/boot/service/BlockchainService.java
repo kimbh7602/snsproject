@@ -34,7 +34,7 @@ public class BlockchainService implements IBlockchainService {
 	public void addBlock(BlockVo blk) {
 		BlockVo newBlock = blk;
 		newBlock.setPrehash(chain.get(chain.size() - 1).getHash());
-//		newBlock.computeHash();
+		newBlock.computeHash();
 		this.chain.add(newBlock);
 	}
 	

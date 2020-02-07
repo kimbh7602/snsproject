@@ -2,15 +2,14 @@
     <div class="container-fluid photos">
       <div class="row justify-content-center">
         
-        <div class="col-md-6 pt-4" data-aos="fade-up">
+        <div class="col-6 pt-4" data-aos="fade-up">
           <h2 class="text-white mb-4">Register</h2>
           
 
           <div class="row">
-            <div class="col-md-12">
-              <p class="mb-5">Lorem ipsum dolor sit amet, consectetur <a href="#">adipisicing</a> elit.</p>              
+            <div class="col-12">
               <div class="row">
-                <div class="col-md-12">                
+                <div class="col-12">                
                   <form action="" method="post" @submit.prevent="regist">
                     <div style="display:none">
                         <input type="submit" onclick="return false;" />
@@ -19,19 +18,19 @@
                     <!-- image -->
                     <input ref="fileInput" type="file" accept="image/*" style="display:none;" name="file" id="file" class="inputfile" @dragover.prevent @dragenter.prevent @drop.prevent="dragupload" v-on:change="fileUpload"/>
                     <div class="row form-group">
-                      <div class="col-md-12">
+                      <div class="col-12">
                         <label class="text-white" for="uid">Profile</label>
                         <div class="d-flex bd-highlight">
-                          <div class="w-25 bd-highlight">
-                            <div v-if="!this.imgs" class="selected-image" style="margin-bottom:0px; border:2px solid white;" @dragover.prevent @dragenter.prevent @drop.prevent="dragupload" v-on:change="fileUpload">
+                          <div class="col-12 bd-highlight">
+                            <div v-if="!this.imgs" class="col-12 selected-image" style="margin-bottom:0px; border:2px solid white;" @dragover.prevent @dragenter.prevent @drop.prevent="dragupload" v-on:change="fileUpload"  @click="$refs.fileInput.click()" >
                               <div style="height:35%"></div>
-                              <div @click="$refs.fileInput.click()" style="margin:auto; width:20%; height:35%; background-size:contain; background-repeat:no-repeat; background-image:url('./theme/images/plus.png')">
+                              <div style="margin:auto; width:20%; height:35%; background-size:contain; background-repeat:no-repeat; background-image:url('./theme/images/plus.png')">
                               </div>
                               <!-- <span>이미지를 drag&drop하거나 +를 클릭하여 추가해주세요.</span> -->
                             </div>
 
                             <div v-else @click="$refs.fileInput.click()" :class="imginfo.filter" id="img-select">
-                              <img :src = imginfo.base64 class="img-fluid" style="height:100px;">
+                              <img :src = imginfo.base64 class="img-fluid" style="height:30vw;">
                             </div>
                           </div>
                         </div>
@@ -181,7 +180,7 @@
         border-width: 1px;
     }
     .selected-image{
-      height:100px;
+      height:30vw;
       background-size: cover;
     }
 </style>
@@ -277,9 +276,9 @@ export default {
                     this.idOk = true;
                   }
                 })
-                .catch(() => {
+                .catch((error) => {
                   this.errored = true;
-                    alert("error");
+                    alert(error);
                 })
                 .finally(() => (this.loading = false));
           }
@@ -313,9 +312,9 @@ export default {
                     document.getElementById('modalBtn').click();
                   }
                 })
-                .catch(() => {
+                .catch((error) => {
                   this.errored = true;
-                    alert("error");
+                    alert(error);
                 })
                 .finally(() => (this.loading = false));
           }
@@ -437,7 +436,7 @@ export default {
             this.regimgs.push(this.imginfo);
             // EventBus.$emit("imglink", { image: this.image });
             this.$router.push({
-              name: 'imagefilter', 
+              name: 'editing', 
               params: {
                 imgs: this.regimgs,
                 prevpage: "register",
@@ -496,9 +495,9 @@ export default {
                     document.getElementById('modalBtn').click();
                   }
                 })
-                .catch(() => {
+                .catch((error) => {
                     this.errored = true;
-                    alert("error");
+                    alert(error);
                 })
                 .finally(() => (this.loading = false));
           }

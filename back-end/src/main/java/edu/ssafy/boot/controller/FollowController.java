@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ssafy.boot.dto.FollowVo;
 import edu.ssafy.boot.dto.NotificationVo;
+import edu.ssafy.boot.dto.UserVo;
 import edu.ssafy.boot.service.IFollowService;
 import edu.ssafy.boot.service.INotificationService;
 import io.swagger.annotations.ApiOperation;
@@ -49,8 +50,10 @@ public class FollowController {
 			notification.setCategory("follow");
 			boolean insert = nSer.insertNotification(notification);
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (followres && insert)
+			if (followres && insert){
 				map.put("resmsg", "팔로우성공");
+				map.put("resValue", notification);
+			}
 			else
 				map.put("resmsg", "1팔로우실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
@@ -90,7 +93,7 @@ public class FollowController {
 	private @ResponseBody ResponseEntity<Map<String, Object>> followList(@PathVariable("follower_id") String follower_id) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
-			List<String> followList = ser.followList(follower_id);
+			List<UserVo> followList = ser.followList(follower_id);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("resmsg", "팔로우목록성공");
 			map.put("resvalue", followList);
@@ -109,7 +112,7 @@ public class FollowController {
 	private @ResponseBody ResponseEntity<Map<String, Object>> followerList(@PathVariable("follow_id") String follow_id) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
-			List<String> followerList = ser.followerList(follow_id);
+			List<UserVo> followerList = ser.followerList(follow_id);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("resmsg", "팔로워목록성공");
 			map.put("resvalue", followerList);
@@ -128,7 +131,7 @@ public class FollowController {
 	private @ResponseBody ResponseEntity<Map<String, Object>> followfollowerList(@PathVariable("user_id") String user_id) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
-			List<String> followfollowerList = ser.followfollowerList(user_id);
+			List<UserVo> followfollowerList = ser.followfollowerList(user_id);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("resmsg", "팔로우팔로워목록성공");
 			map.put("resvalue", followfollowerList);

@@ -62,7 +62,7 @@ public class NoticeService implements INoticeService {
 
     @Override
     public List<NoticeVo> selectNoticeNow() {
-        List<NoticeDBVo> noticeDBList = dao.selectNoticeList();
+        List<NoticeDBVo> noticeDBList = dao.selectNoticeNow();
         List<NoticeVo> noticeList = new ArrayList<NoticeVo>();
         for (NoticeDBVo notice : noticeDBList) {
             noticeList.add(new NoticeVo(notice.getCalendarId(), notice.getCategory(), notice.getId(), notice.getTitle()

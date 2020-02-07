@@ -1,10 +1,9 @@
 <template>
-  <div class="offset-md-2 col-md-8" data-aos="fade-up">
-    <div class="offset-md-1 col-md-10">
-    <div style="height:10px;"></div>
-    <div :class="filterType" id="img-select" class="img-fluid" style="text-align:center">
-          <img :src = imgs[imgs.length-1].base64 class="img-fluid">
-    </div>
+  <div class="offset-3 col-6" data-aos="fade-up">
+    <div class="col-12">
+      <div :class="filterType" id="img-select" class="img-fluid" style="text-align:center">
+            <img :src = imgs[imgs.length-1].base64 class="img-fluid">
+      </div>
       <div class="all-scroll pos-relative mt-50">
           <h5 class="mb-50"><b>Filters</b></h5>                                            
           <div class="swiper-scrollbar"></div>
@@ -13,7 +12,7 @@
                                     data-swiper-breakpoints="true" data-scrollbar="true" data-swiper-loop="true"
                                     data-swpr-responsive="[1, 2, 1, 2]">
               <div class="swiper-wrapper">
-                  <div class="swiper-slide" v-for="filter in filters" :key="filter.name" style="height:300px;" @click="selectFilter(filter.name)">
+                  <div class="swiper-slide" v-for="filter in filters" :key="filter.name" @click="selectFilter(filter.name)">
                     <p class="text-white">{{filter.name}}</p>
                     <div :class="filter.name" class="img-fluid">
                       <img :src = imgs[imgs.length-1].base64 class="img-fluid">
@@ -35,7 +34,7 @@
           <div v-if="prevpage=='addimage'" class="col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:right;">
             <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
           </div>
-           <div v-else-if="prevpage=='useredit'" class="col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:right;">
+           <div v-else-if="prevpage=='useredit'" class="offset-4 col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:right;">
             <input type="button" value="다음" @click="goNextEdit" class="btn btn-success btn-md text-white">
           </div>
           <div v-else class="offset-4 col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:right;">
@@ -86,7 +85,7 @@ export default {
       this.caption = "";
       this.filterType = "normal";
       this.step = 1;
-      this.$router.go(-1);
+      this.$router.push('/addimage');
     },
     goReg() {
       this.image = "";
@@ -154,6 +153,10 @@ export default {
 <style>
 .normal img{
   width:100%;
-  z-index:1
+  z-index:1;
+}
+.juno img{
+  width:100%;
+  z-index: 1;
 }
 </style>

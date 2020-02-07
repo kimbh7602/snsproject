@@ -17,4 +17,6 @@ public interface IUserService {
 	public List<UserVo> searchByInterest(List<String> list);
 	public List<UserVo> userList();
 	public List<WordCloudVo> wordList();
+	public String usertoday();
+	public int totalcontents(int month);
 }

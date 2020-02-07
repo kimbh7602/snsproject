@@ -11,4 +11,5 @@ public interface IDirectMessageService {
     public List<DirectMessageVo> directMessageList(UserDmVo userDm);
     public boolean directMessageReadCheck(UserDmVo userDm);
     public int directMessageUnReadCnt(int dm_id);
+    public void deleteOldMessage();
 }

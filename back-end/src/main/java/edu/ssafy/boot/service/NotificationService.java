@@ -66,4 +66,9 @@ public class NotificationService implements INotificationService {
         return dao.deleteComment(user_id, target_id, comment_id);
     }
 
+    @Override
+    public int countUnchecked(String user_id) {
+        return dao.countUnchecked(user_id);
+    }
+
 }

@@ -15,7 +15,7 @@
 		where user_id = #{user_id}
 	</update>
 	
-	<select id="info" parameterType="string" resultType="Uservo">
+	<select id="info" parameterType="string" resultType="UserVo">
 		select * from users
 		where
 			user_id = #{user_id}
@@ -57,11 +57,13 @@
 	</update>
 
 	<update id="updateUserStatus">
-		update users
-		set
-			status = false
-		where
-			datediff(now(), timestamp) > 30
+		<![CDATA[ 
+			update users
+			set
+				status = false
+			where
+				datediff(now(), timestamp) > 30
+		]]>
 	</update>
 
 	<update id="updateUserStatusBack" parameterType="string">
@@ -96,4 +98,17 @@
 	<select id="interest" resultType="string">
 		select interest from users
 	</select>
+	
+	<select id="todayvisit" resultType="string">
+		select count(*)
+		from users
+		where DATE(timestamp) = DATE(NOW());
+	</select>
+	
+	<select id="totalcontents" resultType="int" parameterType="Integer">
+		select count(*) 
+		from contents 
+		where month(timestamp)=#{month}
+	</select>
+	
 </mapper>

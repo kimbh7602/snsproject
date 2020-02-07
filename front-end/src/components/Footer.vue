@@ -1,5 +1,5 @@
 <template>
-    <div class="row justify-content-center">
+    <div class="col-12 row justify-content-center">
         <div class="col-md-12 text-center py-5">
           <p>
             <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->

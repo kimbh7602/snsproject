@@ -57,8 +57,10 @@ public class UserLikeController {
             notification.setTarget_user_id(content.getUser_id());
             boolean insert = nSer.insertNotification(notification);
             Map<String, Object> map = new HashMap<String, Object>();
-            if (like && insert)
+            if (like && insert){
                 map.put("resmsg", "좋아요성공");
+                map.put("resValue", notification);
+            }
             else
                 map.put("resmsg", "1좋아요실패");
             resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);

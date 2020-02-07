@@ -22,6 +22,12 @@ public class CommentVo {
 		this.comment_val = comment_val;
 	}
 	
+	public CommentVo(int comment_id, int content_id, String user_id) {
+		this.comment_id = comment_id;
+		this.content_id = content_id;
+		this.user_id = user_id;
+	}
+	
 //	public CommentVo(int comment_id, int content_id, int re_comment_id, String user_id, String comment_val) {
 //		super();
 //		this.comment_id = comment_id;

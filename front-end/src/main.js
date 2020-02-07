@@ -8,8 +8,9 @@ import './plugins/socketPlugin';
 import store from './store';
 import * as VueGoogleMaps from "vue2-google-maps";
 import Snotify from 'vue-snotify';
-import 'vue-snotify/styles/simple.css';
-// import vuetify from './plugins/vuetify';
+import 'vue-snotify/styles/material.css';
+import vuetify from '@/plugins/vuetify'
+
 
 Vue.config.productionTip = false
 Vue.prototype.$EventBus = new Vue();
@@ -18,6 +19,7 @@ Vue.use(Snotify, {
   toast: {
     timeout: 2000,
     closeOnClick: true,
+    titleMaxLength: 30,
   }
 });
 
@@ -41,7 +43,7 @@ new Vue({
   //   this.swiper = new window.Swiper('.swiper-container',{
   //   })
   // },
-
+  vuetify,
   router,
   store,
   // chatStore,

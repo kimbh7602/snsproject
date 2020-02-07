@@ -24,7 +24,7 @@
                                                 <tr v-for="user in alluser" :key="user.user_id">
                                                     <td>{{user.user_id}}</td>
                                                     <td>{{user.timestamp}}</td>
-                                                    <td><input type="button" value="삭제" @click="del(user)" /></td>
+                                                    <td><input type="button" class="site-logo btn btn-danger btn-md text-white" value="삭제" @click="del(user)" /></td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -68,34 +68,39 @@
                     if (response.data['resmsg'] == "조회성공") {
                         this.alluser = response.data['resValue'];
                     } else {
-                        alert("조회실패");
+                        this.$store.commit('setModalText', "회원조회 실패!");
+                        document.getElementById('modalBtn').click();
                         this.$router.push("/");
                     }
                 })
-                .catch(() => {
+                .catch((error) => {
                     this.errored = true;
-                    alert("error");
+                    alert(error);
                 })
                 .finally(() => (this.loading = false));
         },
         methods: {
             del(tmp) {
                 if (tmp.user_id == this.uid) {
-                    alert("본인은 삭제할 수 없습니다.")
+                    this.$store.commit('setModalText', "본인은 삭제할 수 없습니다.");
+                    document.getElementById('modalBtn').click();
                 } else {
-
                     http
                         .delete("user/delete/" + tmp.user_id)
                         .then(response => {
-                            if (response.data['resmsg'] == "삭제성공")
-                                alert("회원삭제 성공!");
-                            else
-                                alert("회원삭제 실패!");
+                            if (response.data['resmsg'] == "삭제성공"){
+                                this.$store.commit('setModalText', "회원삭제 성공!");
+                                document.getElementById('modalBtn').click();
+                            }
+                            else{
+                                this.$store.commit('setModalText', "회원삭제 실패!");
+                                document.getElementById('modalBtn').click();
+                            }
                             this.$router.push("/");
                         })
-                        .catch(() => {
+                        .catch((error) => {
                             this.errored = true;
-                            alert("error");
+                            alert(error);
                         })
                         .finally(() => (this.loading = false));
                 }

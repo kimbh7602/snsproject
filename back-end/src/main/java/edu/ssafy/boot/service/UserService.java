@@ -2,7 +2,6 @@ package edu.ssafy.boot.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -150,6 +149,11 @@ public class UserService implements IUserService {
 	public List<UserVo> userList() {
 		return dao.userList();
 	}
+	
+	@Override
+	public String usertoday() {
+		return dao.usertoday();
+	}
 
 	@Override
 	public List<WordCloudVo> wordList() {
@@ -177,5 +181,10 @@ public class UserService implements IUserService {
 		}
 
 		return wordList;
+	}
+	
+	@Override
+	public int totalcontents(int month) {
+		return dao.totalcontents(month);
 	}
 }

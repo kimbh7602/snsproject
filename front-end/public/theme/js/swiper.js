@@ -87,7 +87,7 @@ $(document).ready(function(){
             scrollbarSnapOnRelease: false,
             // Keyboard Mousewheel
             keyboardControl: false,
-            mousewheelControl: false,
+            mousewheelControl: true,
             mousewheelReleaseOnEdges: false,
             mousewheelInvert: false,
             mousewheelForceToAxis: false,
@@ -2379,6 +2379,7 @@ $(document).ready(function(){
                 if (index < slides.length && index >= slides.length - s.loopedSlides) prependSlides.push(el);
                 slide.attr('data-swiper-slide-index', index);
             });
+            /* 이부분 때문에 루프돌때 추가됨 */
             for (i = 0; i < appendSlides.length; i++) {
                 s.wrapper.append($(appendSlides[i].cloneNode(true)).addClass(s.params.slideDuplicateClass));
             }

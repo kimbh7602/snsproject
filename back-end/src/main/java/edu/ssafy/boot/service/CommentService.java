@@ -32,8 +32,8 @@ public class CommentService implements ICommentService {
 	}
 
 	@Override
-	public boolean deleteComments(CommentVo comment) {
-		return dao.deleteComment(comment);
+	public boolean deleteComments(int comment_id) {
+		return dao.deleteComment(comment_id);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package edu.ssafy.boot.service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,13 +31,20 @@ public class ContentService implements IContentService {
 			}
 			
 		});
-
 		return contentList;
 	}
 
 	@Override
 	public ContentVo detail(int content_id) {
-		return dao.detail(content_id);
+		ContentVo content = dao.detail(content_id);
+		String hashtag = content.getHashtag();
+		List<String> hashtagList = new ArrayList<String>();
+		String[] arr = hashtag.split(" ");
+		for (String string : arr) {
+			hashtagList.add(string);
+		}
+		content.setHashtagList(hashtagList);
+		return content;
 	}
 
 	@Override
@@ -85,6 +93,26 @@ public class ContentService implements IContentService {
 	public List<ContentVo> contentUserList(String user_id) {
 		List<ContentVo> contentList = dao.contentUserList(user_id);
 		
+		contentList.sort(new Comparator<ContentVo>() {
+
+			@Override
+			public int compare(ContentVo o1, ContentVo o2) {
+				return o2.getTimestamp().compareTo(o1.getTimestamp());
+			}
+			
+		});
+
+		return contentList;
+	}
+
+	@Override
+	public List<String> deleteReportedContents() {
+		return dao.deleteReportedContents();
+	}
+
+	@Override
+	public List<ContentVo> contentListHashtag(String tag) {
+		List<ContentVo> contentList = dao.contentListHashtag(tag);
 		contentList.sort(new Comparator<ContentVo>() {
 
 			@Override

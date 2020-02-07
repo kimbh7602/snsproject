@@ -209,15 +209,19 @@ export default {
                     lng:this.selectedLocation.position.lng
                   })
                   .then(response => {
-                    if (response.data['resmsg'] == "게시물 추가 성공")
-                        alert("등록 성공!");
-                    else
-                        alert("등록 실패!");
+                    if (response.data['resmsg'] == "게시물 추가 성공"){
+                        this.$store.commit('setModalText', "등록 성공!");
+                        document.getElementById('modalBtn').click();
+                    }
+                    else{
+                        this.$store.commit('setModalText', "등록 실패!");
+                        document.getElementById('modalBtn').click();
+                    }
                     this.$router.push("/");
                   })
-                  .catch(() => {
+                  .catch((error) => {
                       this.errored = true;
-                      alert("error");
+                      alert(error);
                   })
                   .finally(() => (this.loading = false));
             }else if(this.imgs[0].base64==""&&this.intro==""){
@@ -233,15 +237,19 @@ export default {
                     imageList:this.imgs
                   })
                   .then(response => {
-                    if (response.data['resmsg'] == "게시물 추가 성공")
-                        alert("등록 성공!");
-                    else
-                        alert("등록 실패!");
+                    if (response.data['resmsg'] == "게시물 추가 성공"){
+                        this.$store.commit('setModalText', "등록 성공!");
+                        document.getElementById('modalBtn').click();
+                    }
+                    else{
+                        this.$store.commit('setModalText', "등록 실패!");
+                        document.getElementById('modalBtn').click();
+                    }
                     this.$router.push("/");
                   })
-                  .catch(() => {
+                  .catch((error) => {
                       this.errored = true;
-                      alert("error");
+                      alert(error);
                   })
                   .finally(() => (this.loading = false));
 
@@ -343,6 +351,6 @@ export default {
 <style>
 .normal img{
   width:100%;
-  z-index:1
+  z-index:1;
 }
 </style>

@@ -9,6 +9,8 @@ public class NotificationVo {
     private boolean is_checked;
     private int target_event_id;
     private ContentVo content;
+    private String profile_url;
+	private String profile_filter;
 
     public NotificationVo() {
     }
@@ -22,6 +24,19 @@ public class NotificationVo {
         this.timestamp = timestamp;
         this.is_checked = is_checked;
         this.target_event_id = target_event_id;
+    }
+
+    public NotificationVo(int notification_id, String user_id, String target_user_id, String category, String timestamp,
+            boolean is_checked, int target_event_id, String profile_url, String profile_filter) {
+        this.notification_id = notification_id;
+        this.user_id = user_id;
+        this.target_user_id = target_user_id;
+        this.category = category;
+        this.timestamp = timestamp;
+        this.is_checked = is_checked;
+        this.target_event_id = target_event_id;
+        this.profile_url = profile_url;
+        this.profile_filter = profile_filter;
     }
 
     public int getNotification_id() {
@@ -88,11 +103,30 @@ public class NotificationVo {
         this.content = content;
     }
 
+    
+
+    public String getProfile_url() {
+        return profile_url;
+    }
+
+    public void setProfile_url(String profile_url) {
+        this.profile_url = profile_url;
+    }
+
+    public String getProfile_filter() {
+        return profile_filter;
+    }
+
+    public void setProfile_filter(String profile_filter) {
+        this.profile_filter = profile_filter;
+    }
+
     @Override
     public String toString() {
         return "NotificationVo [category=" + category + ", content=" + content + ", is_checked=" + is_checked
-                + ", notification_id=" + notification_id + ", target_event_id=" + target_event_id + ", target_user_id="
-                + target_user_id + ", timestamp=" + timestamp + ", user_id=" + user_id + "]";
+                + ", notification_id=" + notification_id + ", profile_filter=" + profile_filter + ", profile_url="
+                + profile_url + ", target_event_id=" + target_event_id + ", target_user_id=" + target_user_id
+                + ", timestamp=" + timestamp + ", user_id=" + user_id + "]";
     }
 
     

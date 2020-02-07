@@ -22,6 +22,15 @@
             other_id = #{user_id}
     </select>
 
+    <select id="userDmUserList" parameterType="string" resultType="UserVo">
+        select u.* from users as u
+        join user_dm as d
+        on(d.user_id = u.user_id or d.other_id = u.user_id)
+        where 
+            d.user_id = #{user_id} or
+            d.other_id = #{user_id}
+    </select>
+
     <select id="allDmList" resultType="UserDmVo">
         select * from user_dm
     </select>

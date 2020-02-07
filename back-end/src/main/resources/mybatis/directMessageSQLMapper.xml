@@ -36,4 +36,10 @@
             read_check = false
     </select>
 
+    <delete id="deleteOldMessage">
+        <![CDATA[ 
+            delete from direct_message
+            where datediff(now(), timestamp) > 30
+        ]]>
+    </delete>
 </mapper>

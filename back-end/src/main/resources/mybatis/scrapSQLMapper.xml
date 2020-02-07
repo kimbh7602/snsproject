@@ -12,9 +12,9 @@
 
 	<insert id="insert" parameterType="ScrapVo">
 		insert into scraps
-			(content_id, user_id)
+			(content_id, user_id, timestamp)
 		values
-			(#{content_id}, #{user_id})
+			(#{content_id}, #{user_id}, now())
 	</insert>
 
 	<delete id="delete" parameterType="ScrapVo">
@@ -29,4 +29,9 @@
 		where 
 			content_id in (select content_id from scraps where user_id = #{user_id})
 	</select>
+
+	<delete id="deleteReported" parameterType="int">
+		delete from scraps
+		where content_id = #{content_id}
+	</delete>
 </mapper>

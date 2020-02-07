@@ -72,7 +72,8 @@
       },
       confirm() {
         if (this.upw === "") {
-          alert("비밀번호를 입력하세요")
+          this.$store.commit('setModalText', "비밀번호를 입력하세요");
+          document.getElementById('modalBtn').click();
         } else {
           http
             .get("/user/pwconfirm/" + this.upw + "," + this.uid)
@@ -82,16 +83,18 @@
                   name:'useredit',
                   params:{
                     oldpw:this.upw,
+                    prevpage: "confirm",
                   }
                 });
               } else {
-                alert("비밀번호를 확인하세요");
+                this.$store.commit('setModalText', "비밀번호를 확인하세요");
+                document.getElementById('modalBtn').click();
                 this.$router.push("/");
               }
             })
-            .catch(() => {
+            .catch((error) => {
               this.errored = true;
-              alert("error");
+              alert(error);
             })
             .finally(() => (this.loading = false));
 

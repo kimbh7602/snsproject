@@ -2,13 +2,9 @@
     <div class="container-fluid photos">
         <div class="row justify-content-center">
 
-            <div class="col-md-6 pt-4" data-aos="fade-up">
-                <h2 class="text-white mb-4">AdminLog</h2>
-
-
+            <div class="col-md-6" >
                 <div class="row">
                     <div class="col-md-12">
-                        <p class="mb-5">Lorem ipsum dolor sit amet, consectetur <a href="#">adipisicing</a> log.</p>
                         <div class="row">
                             <div class="col-md-12">
                                 <form action="" method="post" @submit.prevent="confirm">
@@ -45,11 +41,11 @@
                                     </div>
 
                                 </form>
-                                <div v-if='this.trust===trust'>
-                                    신뢰
+                                <div v-if='this.trust===true' style="height: 2px; background-color:green" >
+                                    
                                 </div>
-                                <div v-else>
-                                    신뢰안됨
+                                <div v-else  style="height: 2px; background-color:red">
+                                    블록 문제발생
                                 </div>
                             </div>
 
@@ -70,7 +66,7 @@
 
 <script>
     import http from "../http-common"
-    import $ from "jquery"
+    
     export default {
         data() {
             return {
@@ -121,7 +117,6 @@
             }
         },
         mounted() {
-            $('html').scrollTop(0);
             var tmp;
             http
                 .get("admin/info")
@@ -133,12 +128,12 @@
                     }
                 })
             http
-            .get("admin/trust")
-            .then(response => {
-                if (response.data['resmsg'] == "신뢰") {
-                    this.trust=true;
-                }
-            })
+                .get("admin/trust")
+                .then(response => {
+                    if (response.data['resmsg'] == "신뢰") {
+                        this.trust=true;
+                    }
+                })
         }
     }
 </script>

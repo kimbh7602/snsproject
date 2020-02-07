@@ -5,13 +5,13 @@
         <div class="col-md-8 pt-4">
             <div class="row mb-5" data-aos="fade-up">
                 <div class="col-12">
-                    <h2 class="text-white mb-4 text-center">Chating</h2>
+                    <h2 class="text-white mb-4 text-center">Direct Message</h2>
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-12" data-aos="fade-up">
-                    <p class="mb-5">Lorem ipsum dolor sit amet, consectetur <a @click="sendNotification" href="#">adipisicing</a> elit. Ipsa explicabo quasi cum, laudantium neque at veniam itaque atque <a href="#">necessitatibus</a> temporibus! Beatae sit soluta magni neque autem, suscipit dolorem, quo alias.</p>              
+                    <p class="mb-5"></p>              
                     <div class="row">
                         <!-- chatinglist -->
                         <div class="col-md-4">
@@ -21,7 +21,7 @@
                             
                             <div class="list-group">
                               <virtual-list :size="70" :remain="8" v-if="check">
-                                  <a v-for="(userDm, index) in fetchedUserDmList" :key="`userDm${index}`" :value="userDm.dm_id" @click="selectUserDm(userDm);open();" class="list-group-item list-group-item-action">
+                                  <a v-for="(userDm, index) in fetchedUserDmList" :key="`userDm${index}`" :value="`userDm${index}`" @click="selectUserDm(userDm);" class="m-0 list-group-item list-group-item-action">
                                       <div class="row pl-2">
                                           <div class="col-md-2 d-flex justify-content-center align-self-center">
                                               <h1>🦱</h1>
@@ -41,14 +41,14 @@
                                   </a>
                               </virtual-list>
                               <virtual-list :size="70" :remain="8" v-else>
-                                  <a v-for="(follow, index) in fetchedFollowList" :key="index" class="list-group-item list-group-item-action">
+                                  <a v-for="(follow, index) in fetchedFollowList" :key="index" class="m-0 list-group-item list-group-item-action">
                                     <div class="row pl-2">
                                       <div class="col-md-2 d-flex justify-content-center ">
                                         <h1 class="m-0">🦱</h1>
                                       </div>
                                       <div class="d-flex col-md-10 justify-content-between align-self-center">
                                         <p class="mb-0 ml-2">{{ follow }}</p>
-                                        <button class="btn btn-sm btn-info" @click="insertUserDm(follow)">선택</button>
+                                        <button class="btn btn-sm btn-info" @click="insertUserDm(follow);">선택</button>
                                       </div>
                                     </div>
                                   </a>
@@ -96,11 +96,12 @@ export default {
   data() {
     return {
         temp: [],
-        userId: '',
+        userId: this.$store.state.user_id,
         check: true,
         check2: false,
         userDm: {},
-        socket: null
+        socket: null,
+        targetDm: this.$store.state.targetDm
     }
   },
   computed: {
@@ -111,13 +112,6 @@ export default {
       'fetchedUnReadCnt'
     ]),
   },
-  // watch: {
-  //   fetchedDirectMessageList: {
-  //       handler() {
-  //           this.selectUserDm(this.userDm);
-  //       }
-  //   },
-  // },
   methods: {
     ...mapMutations([
       'PUSH_MSG_DATA'
@@ -134,6 +128,7 @@ export default {
       }
       this.$store.dispatch('FETCH_DIRECTMESSAGELIST', this.userDm);
       // this.$joinRoom(this.userDm);
+      this.check2 = true;
       return false;
       // this.computedChatings.forEach(chat => {
       //   if (chat.dm_id === chating.dm_id) {
@@ -144,9 +139,6 @@ export default {
     add() {
         this.check = !this.check;
     },
-    open() {
-        this.check2 = true;
-    },
     close() {
         this.check2 = false;
     },
@@ -155,40 +147,28 @@ export default {
         user_id: this.userId,
         other_id: follow,
       };
+      this.fetchedUserDmList.push(userDm);
+      // console.log(this.fetchedUserDmList, userDm);
       this.$store.dispatch('INSERT_USERDM', userDm);
-      this.check = true;
-      // this.chatings.push({
-      //   dm_id: 3,
-      //   user_id: this.userId,
-      //   other_id: friend,
-      //   recent_message: '',
-      //   timestamp: '3:00',
-      //   cnt: 0
-      // });
-      // this.selectChating(chating);
     },
     insertDirectMessage(message) {
-        // 소켓으로 메시지 전송
-        // this.$sendMessage(message);
+      // 소켓으로 메시지 전송
+      // this.$sendMessage(message);
 
-        this.socket.emit('chat', message);
-        // window.console.log(message);
+      this.socket.emit('chat', message);
+      // window.console.log(message);
 
-        this.$store.dispatch('INSERT_DIRECTMESSAGE', message);
-        this.$store.dispatch('UPDATE_RECENTMESSAGE', message);
+      this.$store.dispatch('INSERT_DIRECTMESSAGE', message);
+      this.$store.dispatch('UPDATE_RECENTMESSAGE', message);
 
     },
-    // scrollToEnd() {
-    //   var container = this.$el.querySelector("#container");
-    //   container.scrollTop = container.scrollHeight;
-    // },
     sendNotification(){
-      this.$socket.emit('notification', {
-        user_id: 'kimbh',
-        target_user_id: 'kimbh1',
-        category: 'like'
-      });
-    }
+      // this.$socket.emit('notification', {
+      //   user_id: 'kimbh',
+      //   target_user_id: 'kimbh1',
+      //   category: 'like'
+      // });
+    },
   },
 
   // beforeCreate() {
@@ -253,9 +233,14 @@ export default {
 
     this.$store.dispatch('FETCH_FOLLOWLIST', this.userId);
     this.$store.dispatch('FETCH_USERDMLIST', this.userId);
-    
   },
-
+  created() {
+    // 선택한 유저가 있을 때
+    if (this.targetDm) {
+      this.selectUserDm(this.targetDm);
+      console.log(this.targetDm)
+    }
+  },
   beforeDestroy(){
     this.socket.emit('disconnectEvt', function(){});
     // this.$socket = io('http://192.168.100.41:3000');

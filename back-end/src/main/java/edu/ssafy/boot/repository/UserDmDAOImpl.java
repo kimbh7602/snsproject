@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import edu.ssafy.boot.dto.DirectMessageVo;
 import edu.ssafy.boot.dto.UserDmVo;
+import edu.ssafy.boot.dto.UserVo;
 
 @Repository("UserDmDAOImpl")
 public class UserDmDAOImpl implements IUserDmDAO {
@@ -47,7 +48,17 @@ public class UserDmDAOImpl implements IUserDmDAO {
 
     @Override
     public List<UserDmVo> userDmList(String user_id) {
-        return session.selectList("ssafy.userDm.userDmList", user_id);
+        List<UserDmVo> userDmList = session.selectList("ssafy.userDm.userDmList", user_id);
+        for (UserDmVo userDmVo : userDmList) {
+            UserVo user = null;
+            if(userDmVo.getOther_id().equals(user_id)){
+                user = session.selectOne("ssafy.user.info", userDmVo.getUser_id());
+            }else{
+                user = session.selectOne("ssafy.user.info", userDmVo.getOther_id());
+            }
+            userDmVo.setUser(user);
+        }
+        return userDmList;
     }
 
     @Override

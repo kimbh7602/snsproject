@@ -23,4 +23,8 @@
 			content_id in (select content_id from user_like where user_id = #{user_id})
 	</select>
 
+	<delete id="deleteReported" parameterType="int">
+		delete from user_like
+		where content_id = #{content_id}
+	</delete>
 </mapper>

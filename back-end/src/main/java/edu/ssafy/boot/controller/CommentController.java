@@ -67,7 +67,7 @@ public class CommentController {
 	private @ResponseBody ResponseEntity<Map<String, Object>> insertReComment(@RequestBody CommentVo comment) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		Map<String, Object> msg = new HashMap<String, Object>();
-		boolean resComment = ser.insertReComment(comment);
+		boolean resComment = ser.insertReComment(comment);	
 		if (resComment) {
 			msg.put("resmsg", "대댓글 추가 성공");
 		} else {
@@ -100,18 +100,18 @@ public class CommentController {
 		return resEntity;
 	}
 
-	@DeleteMapping("/deleteComment")
+	@DeleteMapping("/deleteComment/{comment_id}")
 	@ApiOperation(value = "댓글 삭제")
-	private ResponseEntity<Map<String, Object>> delete(@RequestBody CommentVo comment) {
+	private ResponseEntity<Map<String, Object>> delete(@PathVariable("comment_id") int comment_id) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
-			boolean res = ser.deleteComments(comment);
+			boolean res = ser.deleteComments(comment_id);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (res) {
-				map.put("resmsg", "삭제성공");
+				map.put("resmsg", "댓글 삭제성공");
 				map.put("resvalue", res);
 			} else {
-				map.put("resmsg", "삭제실패");
+				map.put("resmsg", "댓글 삭제실패");
 			}
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (RuntimeException e) {
