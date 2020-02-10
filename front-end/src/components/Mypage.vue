@@ -9,8 +9,8 @@
 
                 <h4 class="text-white">{{userId}}</h4>
                 <div v-if="userId != myId">
-                    <span v-if="myId != userId && myFollowList.includes(userId)" @click="deleteFollow(userId)"  class="btn btn-outline-primary">팔로잉</span>
-                    <span v-if="myId != userId && !myFollowList.includes(userId)" @click="insertFollow(userId)" class="btn btn-primary">팔로우</span>
+                    <span v-if="myId != userId && myFollowList.includes(userId)" @click="targetUser = userInfo" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary">팔로잉</span>
+                    <span v-if="myId != userId && !myFollowList.includes(userId)" @click="insertFollow(userInfo)" class="btn btn-primary">팔로우</span>
                     <span @click="goChating()" v-if="myId != userId" class="btn btn-outline-light ml-2" style="width: 72px;"><i class="icon-send"></i></span>
                 </div>
                 <div v-else>
@@ -70,14 +70,14 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div v-for="(follower, index) in fetchedFollowerList" :key="`follow${index}`" class="d-flex align-items-center justify-content-between mb-3">
-                            <a :href="`/mypage/${follower}`" class="text-dark d-flex m-0 align-items-center">
+                        <div v-for="(follower, index) in fetchedFollowerList" :key="`follower${index}`" class="d-flex align-items-center justify-content-between mb-3">
+                            <a :href="`/mypage/${follower.user_id}`" class="text-dark d-flex m-0 align-items-center">
                                 <img class="rounded-circle mr-3" width="40px" height="40px" style="object-fit: cover;" :src="follower.profile_url || 'https://t1.daumcdn.net/qna/image/1542632018000000528'">
                                 {{follower.user_id}}
                             </a>
                             <!-- <router-link :to="'/mypage/'+follower" class="d-flex text-dark" @click="fetchUserInfo(follower); "><i class="icon-user-circle mr-2" style="font-size:1.9em;"></i> {{follower}}</router-link> -->
-                            <span v-if="myId != follower && myFollowList.includes(follower)" @click="deleteFollow(follower)" class="btn btn-outline-primary btn-sm">팔로잉</span> 
-                            <span v-if="myId != follower && !myFollowList.includes(follower)" class="ml-3 btn btn-primary btn-sm" @click="insertFollow(follower)">팔로우</span>
+                            <span v-if="myId != follower.user_id && myFollowList.includes(follower.user_id)" @click="targetUser = follower" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary btn-sm">팔로잉</span> 
+                            <span v-if="myId != follower.user_id && !myFollowList.includes(follower.user_id)" class="ml-3 btn btn-primary btn-sm" @click="insertFollow(follower)">팔로우</span>
                         </div>
                     </div>
                 </div>
@@ -95,13 +95,13 @@
                     </div>
                     <div class="modal-body">
                         <div v-for="(follow, index) in fetchedFollowList" :key="`follow${index}`" class="d-flex align-items-center justify-content-between mb-3">
-                             <a :href="`/mypage/${follow}`" class="text-dark d-flex m-0 align-items-center">
+                             <a :href="`/mypage/${follow.user_id}`" class="text-dark d-flex m-0 align-items-center">
                                 <img class="rounded-circle mr-3" width="40px" height="40px" style="object-fit: cover;" :src="follow.profile_url || 'https://t1.daumcdn.net/qna/image/1542632018000000528'">
                                 {{follow.user_id}}
                             </a>
                             <!-- <router-link :to="'/mypage/'+follow" class="d-flex text-dark" @click="fetchUserInfo(follow)"><i class="icon-user-circle mr-2" style="font-size:1.9em;"></i> {{follow}}</router-link> -->
-                            <span v-if="myId != follow && myFollowList.includes(follow)" @click="this.targetUser = follow" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary btn-sm">팔로잉</span> 
-                            <span v-if="myId != follow && !myFollowList.includes(follow)" class="ml-3 btn btn-primary btn-sm" @click="insertFollow(follow)">팔로우</span>
+                            <span v-if="myId != follow.user_id && myFollowList.includes(follow.user_id)" @click="targetUser = follow" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary btn-sm">팔로잉</span> 
+                            <span v-if="myId != follow.user_id && !myFollowList.includes(follow.user_id)" class="ml-3 btn btn-primary btn-sm" @click="insertFollow(follow)">팔로우</span>
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                 </div>
                 <div class="modal-footer p-2">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary btn-sm" @click="deleteFollow(targetUser)">확인</button>
+                    <button type="button" class="btn btn-primary btn-sm" @click="deleteFollow(targetUser)" data-dismiss="modal">확인</button>
                 </div>
                 </div>
             </div>
@@ -140,6 +140,7 @@ export default {
             myId: this.$store.state.user_id,
             // userId: this.$route.params.userId,
             myFollowList: [],
+            myInfo: {},
             userInfo: {},
             userContent: [],
             userScrap: [],
@@ -157,38 +158,49 @@ export default {
         
     },
     methods: {
-        insertFollow(id) {
+        insertFollow(user) {
             // this.$store.dispatch('INSERT_FOLLOW', {follower_id: this.myId, follow_id: id});
             http
-                .post("/follow/insertFollow", {follower_id: this.myId, follow_id: id})
+                .post("/follow/insertFollow", {follower_id: this.myId, follow_id: user.user_id})
+                .then(response => {
+                    this.$socket.emit('notification', {
+                        user_id: response.data.resValue.user_id,    
+                        target_user_id: response.data.resValue.target_user_id,
+                        category: response.data.resValue.category,
+                        flag: true
+                    });
+                })
+                .catch(e => console.log(e))
+            this.myFollowList.push(user.user_id);
+
+            if (this.myId == this.userId) {
+                this.fetchedFollowList.push(user);
+            }
+            else if (user.user_id == this.userId) {
+                this.fetchedFollowerList.push(this.myInfo);
+            }
+        },
+        deleteFollow(user) {
+            http
+                .delete("/follow/deleteFollow", {data: {follower_id: this.myId, follow_id: user.user_id}})
                 .then(response => {
                     this.$socket.emit('notification', {
                         user_id: response.data.resValue.user_id,
                         target_user_id: response.data.resValue.target_user_id,
-                        category: response.data.resValue.category
+                        category: response.data.resValue.category,
+                        flag: false
                     });
                 })
                 .catch(e => console.log(e))
-            this.myFollowList.push(id);
-
-            if (this.myId == this.userId) {
-                this.fetchedFollowList.push(id);
-            }
-            else if (id == this.userId) {
-                this.fetchedFollowerList.push(this.myId);
-            }
-        },
-        deleteFollow(id) {
-            this.$store.dispatch('DELETE_FOLLOW', {data: {follower_id: this.myId, follow_id: id}});
-            const idx = this.myFollowList.indexOf(id);
+            const idx = this.myFollowList.indexOf(user.user_id);
             if (idx > -1) this.myFollowList.splice(idx, 1);
 
             if (this.myId == this.userId) {
-                const idx2 = this.fetchedFollowList.indexOf(id);
-                if (idx2 > -1) this.fetchedFollowList.splice(idx2, 1);
+                const idx2 = this.fetchedFollowList.indexOf(user);
+                if (idx2 > -1) this.fetchedFollowList.splice(idx2, 1);  
             }
-            else if (id == this.userId) {
-                const idx2 = this.fetchedFollowerList.indexOf(this.myId);
+            else if (user.user_id == this.userId) {
+                const idx2 = this.fetchedFollowerList.indexOf(this.myInfo);
                 if (idx > -1) this.fetchedFollowerList.splice(idx2, 1);
             }
         },
@@ -196,8 +208,17 @@ export default {
             http
                 .get(`/follow/followList/${this.myId}`)
                 .then(response => {
-                    this.myFollowList = response.data.resvalue;
-                    console.log(this.myFollowList)
+                    response.data.resvalue.forEach(user => {
+                        this.myFollowList.push(user.user_id)
+                    })
+                })
+                .catch(e => console.log(e))
+        },
+        fetchMyInfo(id) {
+            http
+                .get(`user/info/${id}`)
+                .then(response => {
+                    this.myInfo = response.data.resvalue;
                 })
                 .catch(e => console.log(e))
         },
@@ -278,10 +299,13 @@ export default {
         },
         goChating() {
             if (this.possible) {
+                
                 const userDm = {
                     user_id: this.myId,
                     other_id: this.userId,
+                    user: this.userInfo
                 };
+                console.log(this.userInfo)
                 this.insertUserDm(userDm);
                 // this.$store.commit('SET_TARGETDM', this.targetUserDm);
             } else {
@@ -293,10 +317,10 @@ export default {
         },
     },
     created() {
-        window.console.log(this.userId);
         this.$store.dispatch('FETCH_FOLLOWLIST', this.userId);
         this.$store.dispatch('FETCH_FOLLOWERLIST', this.userId);
         this.fetchMyFollowList();
+        this.fetchMyInfo(this.myId);
         this.fetchUserInfo(this.userId);
         this.fetchUserContent(this.userId);
         this.fetchUserScrap(this.userId);

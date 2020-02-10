@@ -84,38 +84,70 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="contents == null" style="text-align:center;">
+                <div v-if="Items == null" style="text-align:center;">
                     검색 결과가 없습니다.
                 </div>
                 <div v-else class="container-fluid photos">
                     <div class="row align-items-stretch">
-                            
-                            <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up"  v-for="content in contents" :key="content.content_id">
-                                <div class="d-block photo-item">
-                                    <img :src="content.imageList[0].image_url" alt="Image" class="img-fluid my-0">
-                                    <div class="photo-text-more">
-                                        <h3 class="heading mx-2 ellipsis" v-on:click="goDetail()">{{content.content_val}}</h3>
-                                        <!-- <span class="meta">
-                                        <div class="mb-3 my-3 d-flex justify-content-around size">
-                                            <div v-on:click="clickHeart()">
-                                            <i class="icon-heart" v-if="like"></i>
-                                            <i class="icon-heart-o" v-else></i>
-                                            </div>
-                                            <div v-on:click="clickFollow()">
-                                            <i class="icon-check" v-if="follow"></i>
-                                            <i class="icon-user-plus" v-else></i>
-                                            </div>
-                                            <div v-on:click="clickBell()">
-                                            <i class="icon-bell" v-if="bell"></i>
-                                            <i class="icon-bell-o" v-else></i>
-                                            </div>
-                                        </div>
-                                        </span> -->
-                                    </div>
+                        <div class="col-6 col-md-6 col-lg-4" style="padding: 10px 10px" v-for="item in Items" :key="item.id">
+                        <div class="d-block photo-item">
+                            <div class="polaroid">
+                                <div v-on:click="goDetail(item.content_id)" :class="item.imageList[0].filter" class="" style="width:100%; height:300px">
+                                <img :src="item.imageList[0].image_url" style="box-shadow: 3px 3px 3px;" alt="Image"/>
+                                <!-- <div style="text-align:right;">from {{item.user_id}}</div> -->
                                 </div>
                             </div>
+                            <!-- -->
+                            <div class="photo-text-more">
+                                <!-- <div class="" data-aos="fade-up"> -->
+                                <div class="">
+                                <div class="d-block photo-item">
+                                    <div class="postcard">
+                                    <div class="content">
+                                        <!-- 우표 -->
+                                        <div v-on:click="goDetail(item.content_id)">
+                                        <div class="stamp-cover" style="background:black; height:52px; width:52px;">
+                                            <div class="stamp" style=" margin:1px; float:right; background-color:white; height:50px; width:50px;">
+                                            </div>
+                                        </div>
+                                        <div v-if="item.profile_url != null" style="width:37px;height:37px" class="stamp-img" :class="item.profile_filter">
+                                            <img :src="item.profile_url" style="width:37px;height:37px; background: none;" />
+                                        </div>
+                                        <div v-else>
+                                            <img src="../../public/theme/images/ai.jpg" style="width:37px;height:37px;" class="stamp-img"/>
+                                        </div>
+                                        <img src="../../public/theme/images/stamp1.png" style="width:45px;height:45px;" alt="Postage mark" class="postmark">
+                                        <!-- 끝 -->
+                                        <div class="mail-title offset-1 col-9" style="text-align:left;"><p style="color:black; font-size:2em; font-family: loveson;">Dear {{uid}}</p></div>
+                                        <div class="mail-message offset-2 col-8 ellipsis" style="color:black; font-family: loveson; word-break:break-all;text-align:left;">{{item.content_val}}</div>
+                                        <div class="col-11 col-offset-1" style="color:black; font-family: loveson; word-break:break-all;text-align:right;">from {{item.user_id}}</div>
+                                        </div>
+                                        <div class="mb-3 my-3 d-flex justify-content-around size content-button">
+                                        <div @click="clickHeart(item.content_id)">
+                                            <i class="icon-heart" v-if="item.user_like"></i>
+                                            <i class="icon-heart-o" v-else></i>
+                                        </div>
+                                        <div v-on:click="clickFollow()">
+                                            <i class="icon-check" v-if="follow"></i>
+                                            <i class="icon-user-plus" v-else></i>
+                                        </div>
+                                        <div v-on:click="clickBell()">
+                                            <i class="icon-bell" v-if="bell"></i>
+                                            <i class="icon-bell-o" v-else></i>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="text-white text-center" v-if="this.contentErrorMsg">
+                        <h5>{{this.contentErrorMsg}}</h5>
+                    </div>
+                    </div>
                 
             </div>
 
@@ -131,7 +163,7 @@ export default {
     props:['location_name', 'lat', 'lng'],
     data() {
         return {
-            contents: null,
+            Items: null,
             isLocation:false,
             isLocationSelect:false,
             searchKeyword:"",
@@ -235,10 +267,41 @@ export default {
               dist: this.dist
           })
           .then((response)=>{
-              this.contents = response.data.resValue;
+              for (var i = 0; i < response.data.resValue.length; i++) {
+                for (var j = 0; j < this.contentIds.length; j++) {
+                    if (response.data.resValue[i].content_id == this.contentIds[j].con_id) {
+                    response.data.resValue[i].user_like = true
+                    }
+                }
+                }
+              this.Items = response.data.resValue;
 
           })
-      }
+      },
+
+      getLike() {
+      this.uid = this.$store.state.user_id
+      http
+        .get('/userLike/userLikeList/' + this.uid)
+        .then((res) => {
+          for (var i = 0; i < res.data.resvalue.length; i++) {
+            this.contentIds.push({
+              con_id: res.data.resvalue[i].content_id
+            })
+          }
+        })
+        .catch(()=>{
+          this.errored = true;
+        })
+      },
+      goDetail: function(con_id) {
+      this.$router.push({
+        name: 'bio',
+        params: {
+          cid: con_id
+        }
+      })
+    },
     },
     computed: {
 
@@ -247,6 +310,7 @@ export default {
         
     },
     mounted(){
+        this.getLike();
         $('html').scrollTop(0);
         if(this.location_name != undefined){
             http.post("/content/findByLocation",{
@@ -255,8 +319,8 @@ export default {
               dist: this.dist
             })
             .then((response)=>{
-                this.contents = response.data.resValue;
-                window.console.log(this.contents);
+                this.Items = response.data.resValue;
+                window.console.log(this.Items);
                 this.searchKeyword = this.location_name;
                 this.isLocation = true;
                 this.isLocationSelect = true;

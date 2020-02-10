@@ -216,7 +216,8 @@ export default {
                 this.$socket.emit('notification', {
                   user_id: response.data.resValue.user_id,
                   target_user_id: response.data.resValue.target_user_id,
-                  category: response.data.resValue.category
+                  category: response.data.resValue.category,
+                  flag: true,
                 });
               })
               .catch(()=>{
@@ -231,6 +232,14 @@ export default {
                   timestamp: this.Items[idx].timestamp,
                   user_id: this.uid
                 }
+              })
+              .then((response) =>{
+                this.$socket.emit('notification', {
+                  user_id: response.data.resValue.user_id,
+                  target_user_id: response.data.resValue.target_user_id,
+                  category: response.data.resValue.category,
+                  flag: false,
+                });
               })
               .catch(()=>{
                 this.errored = true;

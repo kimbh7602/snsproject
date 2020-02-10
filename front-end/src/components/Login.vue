@@ -3,8 +3,15 @@
   <div class="offset-md-2 col-md-8" data-aos="fade-up">
     <div style="display:none" class="dummy" />
     <div class="offset-md-1 col-md-10">
-    <div style="height:10px;"></div>
-    <div class="logo-image" style="background-image: url('./theme/images/mainpage.jpg') ">
+    <!-- <div class="logo-image" style="background-image: url('./theme/images/mainpage.jpg') "> -->
+    <div style="text-align:center; padding-bottom:10%;">
+      <!-- <img src='../../public/theme/images/mail_512px.png' style="height:25%;width:25%;"/> -->
+      <!-- <div style="position:absolute; left:140px; top:2px;"> -->
+        <h1 class="logo_name text-white" data-aos="fade-up" data-aos-duration=90000 data-aos-delay=700>떠</h1>
+        <h1 class="logo_name text-white" data-aos="fade-up" data-aos-duration=90000 data-aos-delay=1400>올</h1>
+        <h1 class="logo_name text-white" data-aos="fade-up" data-aos-duration=90000 data-aos-delay=2100>리</h1>
+        <h1 class="logo_name text-white" data-aos="fade-up" data-aos-duration=90000 data-aos-delay=2800>다</h1>
+      <!-- </div> -->
     </div>
 
     <label class="text-white" for="user_id">ID</label>
@@ -117,5 +124,31 @@ import $ from "jquery"
 .logo-image{
     height:500px;
     background-size: cover;
+}
+.logo_name{
+  font-size:8rem;
+  display:inline-block;
+  font-family: hand_mail;
+
+}
+@media(max-width:429px){
+  .logo_name{
+    font-size:5rem;
+  }
+}
+@media(min-width:992px){
+  .logo_name{
+    font-size:6rem;
+  }
+}
+@media(max-width:1124px){
+  .logo_name{
+    font-size:6rem;
+  }
+}
+@media(min-width:1125px){
+  .logo_name{
+    font-size:8rem;
+  }
 }
 </style>

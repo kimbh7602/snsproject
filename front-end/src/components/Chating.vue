@@ -2,7 +2,7 @@
   <div class="container-fluid photos">
       <div class="row justify-content-center">
 
-        <div class="col-md-8 pt-4">
+        <div class="col-md-8 pt-4 px-0">
             <div class="row mb-5" data-aos="fade-up">
                 <div class="col-12">
                     <h2 class="text-white mb-4 text-center">Direct Message</h2>
@@ -11,57 +11,57 @@
             
             <div class="row">
                 <div class="col-md-12" data-aos="fade-up">
-                    <p class="mb-5"></p>              
                     <div class="row">
                         <!-- chatinglist -->
-                        <div class="col-md-4">
-                            <div class="bg-danger">
+                        <div class="col-md-4 p-0 pr-3">
+                            <div class="bg-danger d-flex justify-content-between align-items-center text-light">
                                 <h5 class="text-white p-3">List</h5>
+                                <i v-if="check" @click="add" class="icon-plus m-3" style="font-size:1.5em;"></i>
+                                <i v-else @click="add" class="icon-minus m-3" style="font-size:1.5em;"></i>
                             </div>
                             
                             <div class="list-group">
-                              <virtual-list :size="70" :remain="8" v-if="check">
+                              <virtual-list :size="80" :remain="8" v-if="check">
                                   <a v-for="(userDm, index) in fetchedUserDmList" :key="`userDm${index}`" :value="`userDm${index}`" @click="selectUserDm(userDm);" class="m-0 list-group-item list-group-item-action">
                                       <div class="row pl-2">
-                                          <div class="col-md-2 d-flex justify-content-center align-self-center">
-                                              <h1>🦱</h1>
+                                          <div class="col-2 d-flex justify-content-center align-self-center">
+                                            <img class="rounded-circle ml-2" width="50px" height="50px" style="object-fit: cover;" :src="userDm.user.profile_url || 'https://t1.daumcdn.net/qna/image/1542632018000000528'" alt="">
                                           </div>
-                                          <div class="col-md-10">
+                                          <div class="col-8">
                                               <div class="d-flex w-100 justify-content-between">
                                                   <p v-if="userId == userDm.user_id" class="mb-0 ml-2">{{ userDm.other_id }}</p>
                                                   <p v-else class="mb-0 ml-2">{{ userDm.user_id }}</p>
                                                   <small>{{ userDm.timestamp }}</small>
                                               </div>
-                                              <div class="d-flex justify-content-between">
-                                                  <small>{{ userDm.recent_message }}</small>
+                                              <div class="d-flex justify-content-between ml-2" style="position: relative; height:20px; overflow: hidden;">
+                                                  <small v-if="userDm.recent_message != null" style="position: absolute; word-break:break-all;">{{ userDm.recent_message}}</small>
                                                   <span class="badge badge-primary badge-pill align-self-center" v-if="fetchedUnReadCnt.cnt > 0"> {{ userDm.cnt }}</span>
                                               </div>
                                           </div>
+                                          <div class="col-1"><span @click="deleteUserDm(userDm.dm_id)"><i class="icon-trash-o"></i></span></div>
                                       </div>
                                   </a>
                               </virtual-list>
                               <virtual-list :size="70" :remain="8" v-else>
                                   <a v-for="(follow, index) in fetchedFollowList" :key="index" class="m-0 list-group-item list-group-item-action">
                                     <div class="row pl-2">
-                                      <div class="col-md-2 d-flex justify-content-center ">
-                                        <h1 class="m-0">🦱</h1>
+                                      <div class="col-md-2 d-flex justify-content-center p-0">
+                                        <img class="rounded-circle ml-2" width="50px" height="50px" style="object-fit: cover;" :src="follow.profile_url || 'https://t1.daumcdn.net/qna/image/1542632018000000528'" alt=""> 
                                       </div>
                                       <div class="d-flex col-md-10 justify-content-between align-self-center">
-                                        <p class="mb-0 ml-2">{{ follow }}</p>
+                                        <p class="mb-0 ml-2">{{ follow.user_id }}</p>
                                         <button class="btn btn-sm btn-info" @click="insertUserDm(follow);">선택</button>
                                       </div>
                                     </div>
                                   </a>
                               </virtual-list>
-                              <h3 v-if="check" @click="add">➕</h3>
-                              <h3 v-else @click="add">➖</h3>
                             </div>
                         </div>
                         <!-- chating -->
                         <div v-show="check2" class="card col-md-8 p-0">
                             <!-- header -->
                             <div class="card-header bg-light d-flex justify-content-between align-items-center" style="height: 60px;">
-                                <h4 class="text-dark mt-1 mx-auto">{{ userDm.other_id }} </h4><span @click="close">✖</span>
+                                <h4 class="text-dark mt-1 mx-auto">{{ userDm.other_id }} </h4><span @click="close"><i class="icon-close" style="font-size:1.5em;"></i></span>
                             </div>
 
                             <!-- body -->
@@ -84,7 +84,7 @@ import MessageList from './MessageList.vue';
 import MessageForm from './MessageForm.vue';
 import { mapGetters, mapMutations } from 'vuex';
 import io from 'socket.io-client';
-// import http from "../http-common"
+import http from "../http-common.js";
 
 export default {
     
@@ -169,6 +169,15 @@ export default {
       //   category: 'like'
       // });
     },
+    deleteUserDm(id) {
+      // console.log(id)
+      http
+        .delete(`/userDm/deleteUserDm/${id}`)
+        .then(response => {
+          return response
+        })
+        .catch(e => console.log(e))
+    }
   },
 
   // beforeCreate() {

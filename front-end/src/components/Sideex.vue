@@ -8,7 +8,7 @@
         </div>
         <div class="site-mobile-menu-body"></div>
     </div>
-    <header class="header-bar d-flex d-lg-block align-items-center" data-aos="fade-left">
+    <header class="header-bar d-flex d-lg-block align-items-center" data-aos="fade-left" style="overflow:hidden;">
         <div v-show="loginCheck" class="notification">
             <router-link to="/notification/" class="m-0">
                 <i class="icon-bell text-white" style="font-size:1.5em;">
@@ -26,10 +26,10 @@
         </div>
         
         <div class="site-logo" style="margin-left:3%;">
-            <router-link v-show="loginCheck" to="/">Shutter</router-link>
-            <router-link v-show="!loginCheck" to="/login">Shutter</router-link>
+            <router-link style="font-family: hand_mail; font-size:2.5em" v-show="loginCheck" to="/">떠올리다</router-link>
+            <!-- <router-link style="font-family: hand_mail; font-size:2.5em" v-show="!loginCheck" to="/login">떠올리다</router-link> -->
         </div>
-        <div class="site-logo site-btn">
+        <div v-if="loginCheck" class="site-logo site-btn">
             <input v-show="loginCheck" type="button" class="site-logo btn btn-outline-info btn-block text-white" style="margin-bottom:15px;" @click="goWrite" value="Write" />
             <input v-show="loginCheck" type="button" class="site-logo btn btn-outline-danger btn-block text-white" @click="logout" value="Logout" />
             <!-- <router-link to="/addimage">Write</router-link> -->
@@ -38,19 +38,21 @@
 
         <div class="main-menu">
         <ul class="js-clone-nav">
-            <li v-show="loginCheck" class="active"><router-link to="/">Home</router-link></li>
+            <li v-show="loginCheck" class="active"><router-link to="/">Home  <i class="icon-home text-white" style="font-size:1.3em;"></i></router-link></li>
             <!-- <li><router-link to="/bio">Bio</router-link></li> -->
-            <li v-show="loginCheck"><router-link to="/category">Category</router-link></li>
-            <li v-show="loginCheck"><router-link to="/blog">Blog</router-link></li>
-            <li v-show="loginCheck"><router-link to="/single">Single</router-link></li>
+            <!-- <li v-show="loginCheck"><router-link to="/category">Category</router-link></li> -->
+            <!-- <li v-show="loginCheck"><router-link to="/blog">Blog</router-link></li> -->
+            <!-- <li v-show="loginCheck"><router-link to="/single">Single</router-link></li> -->
             <!-- <li><router-link to="/register">Register</router-link></li> -->
             <!-- <li><router-link to="/password">Password</router-link></li> -->
-            <li v-show="loginCheck"><router-link to="/chating">Chating</router-link></li>
-            <li v-show="loginCheck"><router-link to="/addimage">Write</router-link></li>
-            <li v-show="loginCheck"><router-link to="/findfriend">Find a Friend</router-link></li>
-            <li v-show="!loginCheck" class="active"><router-link to="/login">Home</router-link></li>
-            <li v-show="!loginCheck"><router-link to="/register">Register</router-link></li>
-            <li v-show="!loginCheck"><router-link to="/password">Password</router-link></li>
+            <li v-show="AdminCheck"><router-link to="/admin">Admin  <i class="icon-info-circle text-white" style="font-size:1.3em;"></i></router-link></li>
+            <li v-show="loginCheck"><router-link :to="'/mypage/'+$store.state.user_id">MyPage  <i class="icon-user-circle text-white" style="font-size:1.3em;"></i></router-link></li>
+            <li v-show="loginCheck"><router-link to="/chating">Chatting  <i class="icon-paper-plane-o text-white" style="font-size:1.3em;"></i></router-link></li>
+            <li v-show="loginCheck"><router-link to="/addimage">Write  <i class="icon-camera-retro text-white" style="font-size:1.3em;"></i></router-link></li>
+            <li v-show="loginCheck"><router-link to="/findfriend">Find a Friend  <i class="icon-binoculars text-white" style="font-size:1.3em;"></i></router-link></li>
+            <li style="padding-top:50%;" v-show="!loginCheck" class="active"><router-link to="/login">Home  <i class="icon-home text-white" style="font-size:1.3em;"></i></router-link></li>
+            <li v-show="!loginCheck"><router-link to="/register">Register  <i class="icon-address-card text-white" style="font-size:1.3em;"></i></router-link></li>
+            <li v-show="!loginCheck"><router-link to="/password">Password  <i class="icon-keyboard-o text-white" style="font-size:1.3em;"></i></router-link></li>
         </ul>
         <!-- <ul class="social js-clone-nav">
             <li><a href="#"><span class="icon-facebook"></span></a></li>
@@ -59,7 +61,7 @@
         </ul> -->
         </div>
     </header>
-    <div class="row mobile-div">
+    <div v-if="loginCheck" class="row mobile-div">
         <div class="col-1"></div>
         <div class="col-5">
             <input v-show="loginCheck" type="button" class="site-logo btn btn-outline-info btn-block text-white" style="margin-bottom:15px;" @click="goWrite" value="Write" />
@@ -94,6 +96,7 @@ export default {
         logout(){
             // this.$socket.emit('logout', this.$store.state.user_id);
             this.$store.commit("logout");
+            this.isAdmin=false;
             document.getElementById('modalBtn').click();
             this.$router.push("/login");
         },
@@ -111,7 +114,9 @@ export default {
         loginCheck: () => {
             return store.state.islogin;
         },
-        
+        AdminCheck: () => {
+            return store.state.isadmin;
+        },
     },
     created() {
         http.get(`/notification/countUnchecked/${this.$store.state.user_id}`)
@@ -125,10 +130,12 @@ export default {
         this.$socket.on('notification', (data) => {
         //   window.console.log('notification', data, this.$store.state.user_id);
         if(data.target_user_id == this.$store.state.user_id){
-            this.$snotify.simple('알림을 확인해보세요!', data.user_id + "님의 " + data.category+"!", {
-                icon : '/theme/images/'+data.category+'.png',
-                // html : '<div>Like!</div><div>알림을 확인해보세요!</div>'
-            });
+            if(data.flag){
+                this.$snotify.simple('알림을 확인해보세요!', data.user_id + "님의 " + data.category+"!", {
+                    icon : '/theme/images/'+data.category+'.png',
+                    // html : '<div>Like!</div><div>알림을 확인해보세요!</div>'
+                });
+            }
             http.get(`/notification/countUnchecked/${this.$store.state.user_id}`)
             .then((response) => {
                 this.notify = response.data.resvalue;

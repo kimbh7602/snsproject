@@ -613,7 +613,7 @@ h1, h2, h3, h4, h5,
         margin-right: auto;
         margin-bottom: 0; } }
     .header-bar .site-logo a {
-      font-size: 20px;
+      font-size: 25px;
       color: #fff;
       text-transform: uppercase;
       font-weight: bold; }
@@ -810,9 +810,9 @@ transition: background-color 5000s ease-in-out 0s;
   /* font-size: 9vw;
   line-height: 9vw; */
   text-shadow: 0 0 3vw #F40A35;
-  animation: neon 1s ease infinite;
-  -moz-animation: neon 1s ease infinite;
-  -webkit-animation: neon 1s ease infinite;
+  animation: neon 3s ease infinite;
+  -moz-animation: neon 3s ease infinite;
+  -webkit-animation: neon 3s ease infinite;
 }
 
 @keyframes neon {
@@ -870,6 +870,28 @@ transition: background-color 5000s ease-in-out 0s;
   font-weight: bolder;
   font-style: bolder;
 }
+
+/* 손글씨2 */
+
+@font-face {
+  font-family: 'NanumSonPyeonJiCe';
+  src: url('../fonts/sonpyeonji/NanumSonPyeonJiCe.svg#NanumSonPyeonJiCe') format('svg'),
+       url('../fonts/sonpyeonji/NanumSonPyeonJiCe.ttf') format('truetype'),
+       url('../fonts/sonpyeonji/NanumSonPyeonJiCe.woff') format('woff');
+  font-weight: bolder;
+  font-style: bolder;
+}
+
+@font-face {
+  font-family: 'hand_mail';
+  src: url('../fonts/sonpyeonji/hand_mail.eot');
+  src: url('../fonts/sonpyeonji/hand_mail.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/sonpyeonji/hand_mail.woff2') format('woff2');
+  font-weight: bolder;
+  font-style: bolder;
+}
+
+
 
 
 
