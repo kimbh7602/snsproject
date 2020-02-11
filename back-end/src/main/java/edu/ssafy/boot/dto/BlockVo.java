@@ -3,8 +3,10 @@ package edu.ssafy.boot.dto;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Locale;
 
 public class BlockVo {
 
@@ -13,10 +15,15 @@ public class BlockVo {
 	private LogVo data;
 	private String Timestamp;
 
-	public BlockVo(LogVo data, String Timestamp) {
+	public BlockVo(LogVo data) {
 		this.hash = computeHash();
 		this.data = data;
-		this.Timestamp = Timestamp;
+		
+		SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy.MM.dd HH:mm:ss", Locale.KOREA );
+		Date currentTime = new Date();
+		String dTime = formatter.format ( currentTime );
+		this.Timestamp = dTime;
+	
 	}
 
 	// 블록데이터 해쉬함수변환

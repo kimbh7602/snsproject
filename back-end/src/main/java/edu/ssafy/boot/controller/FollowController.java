@@ -72,10 +72,16 @@ public class FollowController {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			boolean followres = ser.unfollow(follow);
+			NotificationVo notification = new NotificationVo();
+			notification.setUser_id(follow.getFollower_id());
+			notification.setTarget_user_id(follow.getFollow_id());
+			notification.setCategory("follow");
 			boolean delete = nSer.deleteFollow(follow.getFollower_id(), follow.getFollow_id());
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (followres && delete)
+			if (followres && delete){
 				map.put("resmsg", "팔로우취소성공");
+				map.put("resValue", notification);
+			}
 			else
 				map.put("resmsg", "1팔로우취소실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);

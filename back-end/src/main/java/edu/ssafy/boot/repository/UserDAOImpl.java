@@ -128,4 +128,24 @@ public class UserDAOImpl implements IUserDAO {
 		
 		return session.selectOne("ssafy.user.totalcontents", month);
 	}
+
+	@Override
+	public String myInterest(String user_id) {
+		String myInterest = session.selectOne("ssafy.user.myInterest", user_id);
+		return myInterest;
+	}
+	@Override
+	public int moncontents(int currentdate) {
+		if(session.selectOne("ssafy.user.moncontents", currentdate)==null) {
+			return 0;
+		}else {
+			return session.selectOne("ssafy.user.moncontents", currentdate);
+			
+		}
+	}
+	
+	@Override
+	public int currentdate() {
+		return session.selectOne("ssafy.user.currentdate");
+	}
 }

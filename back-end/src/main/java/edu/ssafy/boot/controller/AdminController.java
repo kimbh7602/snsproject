@@ -1,8 +1,12 @@
 package edu.ssafy.boot.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,4 +117,124 @@ public class AdminController {
 		resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		return resEntity;
 	}
+	
+	@GetMapping("/moncontents")
+	@ApiOperation(value = "주별게시글수")
+	private  @ResponseBody ResponseEntity<Map<String, Object>> moncontents() {
+		int currentdate = ser.currentdate();
+		
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		int result [] = new int [5];
+		for (int i = 1; i < 6; i++) {
+			result[5-i]= ser.moncontents(currentdate+1-i);
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (result.equals(null)) {
+			map.put("resmsg", "조회실패");
+		} else {
+			map.put("resmsg", "조회성공");
+			map.put("resvalue", result);
+		}
+		resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		return resEntity;
+	}
+	
+	@GetMapping("/totaluser")
+	@ApiOperation(value = "월별회원가입자수")
+	private  @ResponseBody ResponseEntity<Map<String, Object>> totlauser() throws ParseException {
+		SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy.MM.dd", Locale.KOREA );
+		Date currentTime = new Date();
+		String dTime = formatter.format ( currentTime );
+		List<BlockVo> chain = serbc.getChain();
+		List<BlockVo> result1 = new ArrayList<BlockVo>();
+		for (int i = 1; i < chain.size(); i++) {
+			if(chain.get(i).getData().getUser_status().equals("회원가입"))
+				result1.add(chain.get(i));
+		}
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		int result [] = new int [13];
+		for (int i = 1; i < 13; i++) {
+			for (int j = 1; j < chain.size(); j++) {
+				Date blocktime = formatter.parse(chain.get(j).getTimestamp());
+				if(blocktime.getMonth()==i-1  && chain.get(j).getData().getUser_status().equals("회원가입")) {
+					result[i-1]++;
+				}	
+			}
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (result.equals(null)) {
+			map.put("resmsg", "조회실패");
+		} else {
+			map.put("resmsg", "조회성공");
+			map.put("resvalue", result);
+		}
+		resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		return resEntity;
+	}
+	
+	@GetMapping("/monuser")
+	@ApiOperation(value = "최근한달회원가입수자")
+	private  @ResponseBody ResponseEntity<Map<String, Object>> monuser() throws ParseException {
+		SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy.MM.dd", Locale.KOREA );
+		List<BlockVo> chain = serbc.getChain();
+		List<BlockVo> result1 = new ArrayList<BlockVo>();
+		for (int i = 1; i < chain.size(); i++) {
+			if(chain.get(i).getData().getUser_status().equals("회원가입"))
+				result1.add(chain.get(i));
+		}
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		int result [] = new int [13];
+		for (int i = 1; i < 13; i++) {
+			for (int j = 1; j < result1.size(); j++) {
+				Date blocktime = formatter.parse(result1.get(j).getTimestamp());
+				if(blocktime.getMonth()==i-1) {
+					result[i-1]++;
+				}	
+			}
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (result.equals(null)) {
+			map.put("resmsg", "조회실패");
+		} else {
+			map.put("resmsg", "조회성공");
+			map.put("resvalue", result);
+		}
+		resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		return resEntity;
+	}
+	
+	@GetMapping("/dayuser")
+	@ApiOperation(value = "최근한달회원가입수자")
+	private  @ResponseBody ResponseEntity<Map<String, Object>> dayuser() throws ParseException {
+		SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy.MM.dd", Locale.KOREA );
+		Date currentTime = new Date();
+		String dTime = formatter.format ( currentTime );
+		List<BlockVo> chain = serbc.getChain();
+		List<BlockVo> result1 = new ArrayList<BlockVo>();
+		for (int i = 1; i < chain.size(); i++) {
+			if(chain.get(i).getData().getUser_status().equals("회원가입"))
+				result1.add(chain.get(i));
+		}
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		int result [] = new int [30];
+		for (int i = 29; i > -1; i--) {
+			for (int j = 0; j < result1.size(); j++) {
+				Date blocktime = formatter.parse(result1.get(j).getTimestamp());
+				if(blocktime.getDate()==currentTime.getDate()-i) {
+					result[29-i]++;
+				}	
+			}
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (result.equals(null)) {
+			map.put("resmsg", "조회실패");
+		} else {
+			map.put("resmsg", "조회성공");
+			map.put("resvalue", result);
+		}
+		resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		return resEntity;
+	}
+	
 }

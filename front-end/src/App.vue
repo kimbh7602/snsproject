@@ -121,14 +121,14 @@ export default {
     //modal 뜰 때 body에 padding 붙는거 없애주는거
     document.body.style.paddingRight = 0;
     
-      let recaptchaScripta = document.createElement('script')
-      recaptchaScripta.setAttribute('type',"text/javascript")
-      recaptchaScripta.setAttribute('src', "./theme/js/script.js")
-      document.body.appendChild(recaptchaScripta)
       let recaptchaScript = document.createElement('script')
       recaptchaScript.setAttribute('type',"text/javascript")
       recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
       document.body.appendChild(recaptchaScript)
+      let recaptchaScripta = document.createElement('script')
+      recaptchaScripta.setAttribute('type',"text/javascript")
+      recaptchaScripta.setAttribute('src', "./theme/js/script.js")
+      document.body.appendChild(recaptchaScripta)
   }
 }
 </script>

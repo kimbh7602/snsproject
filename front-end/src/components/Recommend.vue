@@ -1,6 +1,12 @@
 <template>
     <div class="container-fluid photos">
-      <div class="row align-items-stretch">
+      <div v-if="!isLoading&&(Items == null || Items.length == 0)" style="text-align:center;">
+                    검색 결과가 없습니다.
+                </div>
+                <div style="text-align:center;" v-if="isLoading&&(Items == null || Items.length == 0)">
+                    <img class="col-md-12" src="/theme/images/loading10.gif" />
+                </div>
+      <div v-else class="row align-items-stretch">
         <div class="col-6 col-md-6 col-lg-4" style="padding: 10px 10px" v-for="item in Items" :key="item.id">
           <div class="d-block photo-item">
             <div class="polaroid">
@@ -31,7 +37,7 @@
                           <img src="../../public/theme/images/stamp1.png" style="width:45px;height:45px;" alt="Postage mark" class="postmark">
                           <!-- 끝 -->
                           <div class="mail-title offset-1 col-9" style="text-align:left;"><p style="color:black; font-size:2em; font-family: loveson;">Dear {{uid}}</p></div>
-                          <div class="mail-message offset-2 col-8 ellipsis" style="color:black; font-family: loveson; text-align:left; white-space:pre;">{{item.content_val}}</div>
+                          <div class="mail-message offset-2 col-8 ellipsis" style="color:black; font-family: loveson; word-break:break-all;text-align:left;">{{item.content_val}}</div>
                           <div class="col-11 col-offset-1" style="color:black; font-family: loveson; word-break:break-all;text-align:right;">from {{item.user_id}}</div>
                         </div>
                         <div class="mb-3 my-3 d-flex justify-content-around size content-button">
@@ -66,10 +72,14 @@
 import $ from "jquery"
 import http from '../http-common';
 import store from '../store'
+import axios from 'axios'
 export default {
-  props:["userId", "myPage"],
+  // props:["userId"],
   data() {
     return {
+      userId:"",
+      myInterest:[],
+      Interests:[],
       follow: false,
       bell: false,
       errored: false,
@@ -77,6 +87,7 @@ export default {
       contentIds: [],
       contentErrorMsg: "",
       Items:[],
+      isLoading:false
     }
   },
   watch: {
@@ -104,33 +115,105 @@ export default {
         })
     },
     getData() {
+      this.isLoading = true;
       http
-      .get('content/contentUserList/'+this.uid)
-      .then((res)=>{
-        if (res.data.resValue.length > 0) {
-          this.contentErrorMsg = ""
-          if (res.data.resmsg == "개인 게시물 리스트 출력 성공") {
-            for (var i = 0; i < res.data.resValue.length; i++) {
-              for (var j = 0; j < this.contentIds.length; j++) {
-                if (res.data.resValue[i].content_id == this.contentIds[j].con_id) {
-                  res.data.resValue[i].user_like = true
-                }
-              }
-            }
-            this.Items = res.data.resValue;
-          }
-        } else {
-          this.contentErrorMsg = "게시물이 없습니다."
-        }
-      })
-      .catch(()=>{
-        this.errored = true;
-      })
+        .get(`/user/myInterest/${this.userId}`)
+        .then((res) => {
+          window.console.log(res.data.resValue);
+          res.data.resValue.forEach(element => {
+            this.myInterest.push(element);
+            this.Interests.push(element);
+          })
+          axios.post("https://translation.googleapis.com/language/translate/v2?key=AIzaSyAcnkt6IBUt-bGIMw4u-VEIYpesgw4-2Lk",{
+                  "q": this.myInterest,
+                  "target": "en"
+                })
+                .then((res) => {
+                  res.data.data.translations.forEach(element => {
+                    const keyword = element.translatedText;
+                    axios
+                      .get("http://192.168.100.41:5000/searchByKeyword/" + keyword)
+                      .then((res) => {
+                        axios.post("https://translation.googleapis.com/language/translate/v2?key=AIzaSyAcnkt6IBUt-bGIMw4u-VEIYpesgw4-2Lk",{
+                                "q": res.data,
+                                "target": "ko"
+                              })
+                              .then((res) => {
+                                let num = 0;
+                                res.data.data.translations.some( element => {
+                                  if(element.translatedText!=""&&!element.translatedText.includes(" ")&&!this.Interests.includes(element.translatedText)){
+                                    this.Interests.push(element.translatedText);
+                                    num++;
+                                  }
+                                  return(num>=3);
+                                });
+
+                                http
+                                .get(`/user/allInterestList`)
+                                .then((res) => {
+                                  res.data.resValue.forEach( element => {
+                                    if(element != "" && !this.Interests.includes(element)){
+                                      this.Interests.push(element);
+                                    }
+                                  })
+
+                                  http
+                                    .post(`/content/contentListHashtagList`, this.Interests)
+                                    .then((res) => {
+                                      this.isLoading = false;
+                                      this.Items = res.data.resValue;
+                                      this.Items.forEach(element => {
+                                        element.value = 0;
+                                        this.myInterest.forEach(interest => {
+                                          if(element.hashtag.includes(interest)){
+                                            element.value++;
+                                          }
+                                        })
+                                      });
+                                      this.Items.sort(function(a, b){
+                                        return a.value > b.value ? -1 : a.value < b.value ? 1 : 0;
+                                      });
+                                    })
+                                })
+                              })
+                      })
+                  });
+
+                  
+                })
+
+                
+        })
+        .finally(() => {
+          
+        })
+      // http
+      // .get('content/contentUserList/'+this.uid)
+      // .then((res)=>{
+      //   if (res.data.resValue.length > 0) {
+      //     this.contentErrorMsg = ""
+      //     if (res.data.resmsg == "개인 게시물 리스트 출력 성공") {
+      //       for (var i = 0; i < res.data.resValue.length; i++) {
+      //         for (var j = 0; j < this.contentIds.length; j++) {
+      //           if (res.data.resValue[i].content_id == this.contentIds[j].con_id) {
+      //             res.data.resValue[i].user_like = true
+      //           }
+      //         }
+      //       }
+      //       this.Items = res.data.resValue;
+      //     }
+      //   } else {
+      //     this.contentErrorMsg = "게시물이 없습니다."
+      //   }
+      // })
+      // .catch(()=>{
+      //   this.errored = true;
+      // })
       // .then(response => {
       //   // console.log(response.data)
       //   this.Items = response.data.resValue;
       // })
-      .catch(e => console.log(e))
+      // .catch(e => console.log(e))
     },
 
     getMypage() {
@@ -264,22 +347,17 @@ export default {
         document.getElementById('modalBtn').click();
       }
     },
-    fetchData() {
-      if(this.myPage == undefined){
-        this.getData()
-      }else if(this.myPage == true){
-        this.getMypage();
-      }else if(this.myPage == false){
-        this.getScrap();
-      }
-    }
   },
   created() {
+    this.userId = this.$store.state.user_id;
     this.getLike();
-    this.fetchData();
+    this.getData();
   },
   mounted() {
     $('html').scrollTop(0);
+    this.$nextTick(() => {
+      
+    })
   },
   updated(){
     let recaptchaScripta = document.createElement('script')

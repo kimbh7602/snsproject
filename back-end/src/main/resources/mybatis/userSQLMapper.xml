@@ -110,5 +110,24 @@
 		from contents 
 		where month(timestamp)=#{month}
 	</select>
+
+	<select id="myInterest" parameterType="string" resultType="string">
+		select interest from users
+		where user_id = #{user_id}
+	</select>
+	
+	<select id="currentdate" resultType="int">
+		 select DATE_FORMAT(now(), '%Y%U') as currentdate;
+	</select>
+	
+	<select id="moncontents" resultType="int" parameterType="Integer">
+ 	select count(*) as total
+	FROM contents 
+	where DATE_FORMAT(`timestamp`, '%Y%U')=#{currentdate}
+	GROUP BY DATE_FORMAT(`timestamp`, '%Y%U')
+	;
+
+	</select>
+	
 	
 </mapper>

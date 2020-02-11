@@ -37,6 +37,9 @@
            <div v-else-if="prevpage=='useredit'" class="offset-4 col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:right;">
             <input type="button" value="다음" @click="goNextEdit" class="btn btn-success btn-md text-white">
           </div>
+           <div v-else-if="prevpage=='contentupdate'" class="offset-4 col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:right;">
+            <input type="button" value="다음" @click="goNextUpdate" class="btn btn-success btn-md text-white">
+          </div>
           <div v-else class="offset-4 col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:right;">
             <input type="button" value="다음" @click="goNextReg" class="btn btn-success btn-md text-white">
           </div>
@@ -51,7 +54,7 @@
 import $ from "jquery"
 export default {
   name: "ImageFilter",
-  props: ["imgs","prevpage","oldpw"],
+  props: ["imgs","prevpage","oldpw","items"],
   data(){
       return{
         filters:[{ name: "normal" },
@@ -112,6 +115,18 @@ export default {
         }
       });
     },
+    goNextUpdate() {
+      window.console.log(this.prevpage)
+      this.imgs[this.imgs.length-1].filter = this.filterType;
+      this.$router.push({
+        name: 'updatecontent', 
+        params: {
+          uimgs: this.imgs, 
+          items: this.items,
+          prevpage: this.prevpage,
+        }
+      });
+    },
     goNextReg() {
       this.imgs[this.imgs.length-1].filter = this.filterType;
       this.$router.push({
@@ -137,6 +152,7 @@ export default {
     },
   },
   mounted() {
+            console.log(this.items)
       $('html').scrollTop(0);
       let recaptchaScripta = document.createElement('script')
       recaptchaScripta.setAttribute('type',"text/javascript")

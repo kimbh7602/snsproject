@@ -35,7 +35,7 @@
     import Cropper from "cropperjs";
     export default {
         name: "editing",
-        props: ["imgs","prevpage","oldpw"],
+        props: ["imgs","prevpage","oldpw","items"],
         data() {
             return {
                 cropper: {},
@@ -44,7 +44,7 @@
                 src:"../../public/theme/images/ai.jpg",
                 scale_vertical:false,
                 scale_horizontal:false,
-                ratio:4/3,
+                ratio:1,
             }
         },
         methods:{
@@ -62,12 +62,14 @@
             goNext() {
                 // this.imgs[this.imgs.length-1].filter = this.filterType;
                 this.imgs[this.imgs.length-1].base64 = this.destination;
+                console.log(this.items)
                 this.$router.push({
                     name: 'imagefilter', 
                     params: {
                     imgs: this.imgs,
                     prevpage: this.prevpage,
                     oldpw: this.oldpw,
+                    items: this.items,
                     }
                 });
             },
@@ -105,9 +107,13 @@
             },
         },
         mounted() {
+                    console.log(this.items)
+
             this.image = this.$refs.image;
-            if(this.prevpage!="addimage"){
-                this.ratio = 1;
+            if(this.prevpage=="addimage"){
+                this.ratio = 4/3;
+            }else if(this.prevpage=="contentupdate"){
+                this.ratio = 4/3;
             }
             this.cropper = new Cropper(this.image, {
                 aspectRatio: this.ratio,

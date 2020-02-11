@@ -17,4 +17,5 @@ public interface IContentService {
 	public List<ContentVo> contentUserList(String user_id);
 	public List<String> deleteReportedContents();
 	public List<ContentVo> contentListHashtag(String tag);
+	public List<ContentVo> contentListHashtagList(List<String> tagList);
 }

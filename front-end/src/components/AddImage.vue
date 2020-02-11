@@ -28,7 +28,7 @@
 import $ from "jquery"
 export default {
   name: "App",
-  props:["fimgs"],
+  props:["fimgs","prevpage","items"],
   data() {
     return {
       step: 1,
@@ -42,6 +42,7 @@ export default {
       caption: "",
       first:true,
       defaultImag:{base64:"",filter:"normal"},
+      prev:"",
     };
   },
   created() {
@@ -71,14 +72,29 @@ export default {
         this.imgs.push(this.imginfo);
         this.step = 2;
         // EventBus.$emit("imglink", { image: this.image });
-        this.$router.push({
-          name: 'editing',
-          params:{
-            imgs: this.imgs,
-            step: this.step+1,
-            prevpage: "addimage",
-          }
-        })
+        window.console.log(this.prevpage)
+        if(this.prevpage==undefined){
+          this.prev = "addimage";
+          this.$router.push({
+            name: 'editing',
+            params:{
+              imgs: this.imgs,
+              step: this.step+1,
+              prevpage: this.prev,
+            }
+          })
+        }else{
+          this.prev = this.prevpage;
+          this.$router.push({
+            name: 'editing',
+            params:{
+              imgs: this.imgs,
+              step: this.step+1,
+              prevpage: this.prev,
+              items: this.items,
+            }
+          })
+        }
         // this.$router.push({
         //   name: 'imagefilter', 
         //   params: {
@@ -111,6 +127,8 @@ export default {
     },
   },
   mounted(){
+            console.log(this.items)
+
     // console.log(this.fimgs);
     if(this.fimgs!=undefined){
       this.imgs = this.fimgs;

@@ -27,7 +27,7 @@
                   </div>
                   <div class="detail-mail-message mail-message offset-2 col-8"
                     style="color:black; font-family: loveson; word-break:break-all;text-align:left;"
-                    v-html="items.content_val">
+                    v-html="change_content_val">
                   </div>
                   <div class="col-11 col-offset-1"
                     style="color:black; font-family: loveson; word-break:break-all; vertical-align:bottom; text-align:right;">
@@ -248,6 +248,7 @@
         comments: {},
         tempComments: [],
         editflg: false,
+        change_content_val:"",
       }
     },
     methods: {
@@ -351,13 +352,11 @@
           .then((res) => {
             if (res.data.resmsg == "게시물 출력 성공") {
               this.items = res.data.resValue;
-              window.console.log(this.items);
               if (this.items.profile_filter == null) {
                 this.items.profile_filter = "normal";
               }
               // this.items['content_val'] = this.items['content_val'].replace(/\r/g, "<br />");
-              this.items['content_val'] = this.items['content_val'].replace(/\n/g, "<br />");
-              window.console.log(this.items['location_name']);
+              this.change_content_val = this.items['content_val'].replace(/\n/g, "<br />");
             }
           });
         // 댓글출력
@@ -473,7 +472,6 @@
       },
 
       findLocation() {
-        window.console.log(this.items['lat']);
         this.$router.push({
           name: "findcontent",
           params: {
@@ -517,7 +515,7 @@
           name: 'updatecontent',
           params:{
             items: this.items,
-            prevpage: "bio",
+            prevpage: "contentupdate",
           }
         })
       }

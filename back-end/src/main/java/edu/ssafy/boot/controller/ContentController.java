@@ -1,6 +1,8 @@
 package edu.ssafy.boot.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -73,10 +75,42 @@ public class ContentController {
 	
 	@GetMapping("/detail/{content_id}")
 	@ApiOperation(value = "게시물 출력", response = ContentVo.class)
-	private @ResponseBody ResponseEntity<Map<String, Object>> detail(@PathVariable("content_id") int content_id) throws ServletException, IOException {
+	private @ResponseBody ResponseEntity<Map<String, Object>> detail(@PathVariable("content_id") int content_id, HttpServletRequest request) throws ServletException, IOException {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		Map<String, Object> msg = new HashMap<String, Object>();
 		ContentVo content = ser.detail(content_id);
+		
+		String path = "/upload";
+		String realPath = request.getServletContext().getRealPath(path);
+		FileInputStream fis = null;
+		ByteArrayOutputStream bos = null;
+		List<ImageVo> imageList = content.getImageList();
+		for (ImageVo imageVo : imageList) {
+			String imageName = imageVo.getImage_name();
+			if(imageName.equals("default.png")){
+				imageVo.setBase64("default");
+			}else{
+				String ext = imageName.substring(imageName.lastIndexOf(".")+1);
+				File file = new File(realPath + File.separator + imageName);
+	
+				if (file.exists()) {
+	
+					fis = new FileInputStream(file);
+					bos = new ByteArrayOutputStream();
+	
+					int len = 0;
+					byte[] buf = new byte[1024];
+					while((len = fis.read(buf)) != -1){
+						bos.write(buf, 0, len);
+					}
+					byte[] fileArray = bos.toByteArray();
+					String imageString = new String(Base64.encodeBase64(fileArray));
+					String changeString = "data:image/"+ext+";base64, "+imageString;
+					imageVo.setBase64(changeString);
+				}
+			}
+		}
+
 		msg.put("resmsg", "게시물 출력 성공");
 		msg.put("resValue", content);
 		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
@@ -240,6 +274,18 @@ public class ContentController {
 		List<ContentVo> list = ser.contentListHashtag(tag);
 		System.out.println(list);
 		msg.put("resmsg", "해시태그 포함 게시물 리스트 출력 성공");
+		msg.put("resValue", list);
+		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
+		return resEntity;
+	}
+
+	@PostMapping("/contentListHashtagList")
+	@ApiOperation(value = " 추천 게시물 리스트", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> contentListHashtagList(@RequestBody List<String> tagList) throws ServletException, IOException {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		Map<String, Object> msg = new HashMap<String, Object>();
+		List<ContentVo> list = ser.contentListHashtagList(tagList);
+		msg.put("resmsg", "추천 게시물 리스트 출력 성공");
 		msg.put("resValue", list);
 		resEntity = new ResponseEntity<Map<String,Object>>(msg, HttpStatus.OK);
 		return resEntity;

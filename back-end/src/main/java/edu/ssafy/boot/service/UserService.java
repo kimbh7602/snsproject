@@ -1,6 +1,7 @@
 package edu.ssafy.boot.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -180,11 +181,39 @@ public class UserService implements IUserService {
 			wordList.add(word);
 		}
 
+		wordList.sort(new Comparator<WordCloudVo>() {
+
+			@Override
+			public int compare(WordCloudVo o1, WordCloudVo o2) {
+				return o2.getValue() - o1.getValue();
+			}
+		});
+
 		return wordList;
 	}
 	
 	@Override
 	public int totalcontents(int month) {
 		return dao.totalcontents(month);
+	}
+
+	@Override
+	public List<String> myInterest(String user_id) {
+		String myInterest = dao.myInterest(user_id);
+		String[] arr = myInterest.split(" ");
+		List<String> myInterestList = new ArrayList<String>();
+		for (String string : arr) {
+			myInterestList.add(string);
+		}
+		return myInterestList;
+	}
+	
+	public int moncontents(int currentdate) {
+		return dao.moncontents(currentdate);
+	}
+	
+	@Override
+	public int currentdate() {
+		return dao.currentdate();
 	}
 }

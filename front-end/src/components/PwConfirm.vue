@@ -21,7 +21,7 @@
                   <div class="row form-group">
                     <div class="col-md-12">
                       <label class="text-white" for="upw">현재 패스워드</label>
-                      <input type="password" v-model="upw" id="upw" class="form-control">
+                      <input type="password" v-model="upw" id="upw" class="form-control" v-on:keyup.enter="submit()">
                     </div>
                   </div>
 

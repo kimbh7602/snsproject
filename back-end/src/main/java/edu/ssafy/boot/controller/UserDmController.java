@@ -54,9 +54,9 @@ public class UserDmController {
         return resEntity;
     }
 
-    @DeleteMapping("/deleteUserDm")
+    @DeleteMapping("/deleteUserDm/{dm_id}")
     @ApiOperation(value = "DM목록삭제")
-    private @ResponseBody ResponseEntity<Map<String, Object>> deleteUserDm(@RequestBody int dm_id) {
+    private @ResponseBody ResponseEntity<Map<String, Object>> deleteUserDm(@PathVariable("dm_id") int dm_id) {
         ResponseEntity<Map<String, Object>> resEntity = null;
         try {
             boolean delete = ser.deleteUserDm(dm_id);

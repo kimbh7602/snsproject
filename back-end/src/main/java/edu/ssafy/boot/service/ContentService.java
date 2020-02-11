@@ -124,5 +124,10 @@ public class ContentService implements IContentService {
 
 		return contentList;
 	}
+
+	@Override
+	public List<ContentVo> contentListHashtagList(List<String> tagList) {
+		return dao.contentListHashtagList(tagList);
+	}
 	
 }

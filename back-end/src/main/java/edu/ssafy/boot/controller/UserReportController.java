@@ -79,10 +79,18 @@ public class UserReportController {
         ResponseEntity<Map<String, Object>> resEntity = null;
         try {
             boolean dislike = ser.deleteReport(report);
+            NotificationVo notification = new NotificationVo();
+            notification.setUser_id(report.getUser_id());
+            notification.setTarget_event_id(report.getContent_id());
+            notification.setCategory("report");
+            ContentVo content = cSer.detail(report.getContent_id());
+            notification.setTarget_user_id(content.getUser_id());
             boolean delete = nSer.deleteLike(report.getUser_id(), report.getContent_id());
             Map<String, Object> map = new HashMap<String, Object>();
-            if (dislike && delete)
+            if (dislike && delete){
                 map.put("resmsg", "신고취소성공");
+                map.put("resValue", notification);
+            }
             else
                 map.put("resmsg", "1신고취소실패");
             resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);

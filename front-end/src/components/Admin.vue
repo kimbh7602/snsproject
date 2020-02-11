@@ -11,7 +11,7 @@
                         <div class="col-md-12">
                         <v-tabs fixed-tabs background-color="indigo" dark>
                             <v-tab v-on:click="tabclick('calendar')">
-                                캘린더
+                                일정
                             </v-tab>
                             <v-tab v-on:click="tabclick('wordcloud')">
                                 관심사
@@ -21,6 +21,9 @@
                             </v-tab>
                             <v-tab v-on:click="tabclick('total')">
                                 게시물 통계
+                            </v-tab>
+                            <v-tab v-on:click="tabclick('report')">
+                                신고 게시물
                             </v-tab>
                             <v-tab v-on:click="tabclick('log')">
                                 로그
@@ -103,6 +106,8 @@
                     display: '',
                 },
                 total: {
+                    display: 'none',
+                },report: {
                     display: 'none',
                 },log: {
                     display: 'none',
@@ -374,30 +379,42 @@
                     this.wordcloud.display = "none";
                     this.calendar.display = "none";
                     this.total.display = "none";
+                    this.report.display ="none";
                     this.log.display="none"
                 } else if (e === "wordcloud") {
                     this.register.display = "none";
                     this.wordcloud.display = "";
                     this.calendar.display = "none";
                     this.total.display = "none";
+                    this.report.display ="none";
                     this.log.display="none"
                 } else if (e === "calendar") {
                     this.register.display = "none";
                     this.wordcloud.display = "none";
                     this.calendar.display = "";
                     this.total.display = "none";
+                    this.report.display ="none";
                     this.log.display="none"
                 } else if (e === "total") {
                     this.register.display = "none";
                     this.wordcloud.display = "none";
                     this.calendar.display = "none";
                     this.total.display = "";
+                    this.report.display ="none";
                     this.log.display="none"
+                }else if (e === "report") {
+                    this.register.display = "none";
+                    this.wordcloud.display = "none";
+                    this.calendar.display = "none";
+                    this.total.display = "none";
+                    this.report.display ="";
+                    this.log.display="none";
                 }else if (e === "log") {
                     this.register.display = "none";
                     this.wordcloud.display = "none";
                     this.calendar.display = "none";
                     this.total.display = "none";
+                    this.report.display ="none";
                     this.log.display=""
                 }
 

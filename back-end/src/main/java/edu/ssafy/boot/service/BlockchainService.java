@@ -1,5 +1,6 @@
 package edu.ssafy.boot.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class BlockchainService implements IBlockchainService {
 
 	//첫 블록생성
 	private BlockVo generateGenesis() {
-		BlockVo genesis = new BlockVo(null, new java.util.Date().toString());
+		BlockVo genesis = new BlockVo(null);
 		genesis.setPrehash(null);
 		genesis.computeHash();
 		return genesis;

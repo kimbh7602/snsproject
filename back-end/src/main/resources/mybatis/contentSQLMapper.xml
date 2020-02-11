@@ -45,7 +45,10 @@
 		update contents
 		set
 			content_val = #{content_val},
-			hashtag = #{hashtag}
+			hashtag = #{hashtag},
+			location_name = #{location_name},
+			lat = #{lat},
+			lng = #{lng}
 		where content_id = #{content_id}
 	</update>
 

@@ -14,7 +14,7 @@
                     <div class="row">
                         <!-- chatinglist -->
                         <div class="col-md-4 p-0 pr-3">
-                            <div class="bg-danger d-flex justify-content-between align-items-center text-light">
+                            <div class="bg-danger d-flex justify-content-between align-items-center text-light rounded mb-1">
                                 <h5 class="text-white p-3">List</h5>
                                 <i v-if="check" @click="add" class="icon-plus m-3" style="font-size:1.5em;"></i>
                                 <i v-else @click="add" class="icon-minus m-3" style="font-size:1.5em;"></i>
@@ -22,7 +22,7 @@
                             
                             <div class="list-group">
                               <virtual-list :size="80" :remain="8" v-if="check">
-                                  <a v-for="(userDm, index) in fetchedUserDmList" :key="`userDm${index}`" :value="`userDm${index}`" @click="selectUserDm(userDm);" class="m-0 list-group-item list-group-item-action">
+                                  <a v-for="(userDm, index) in fetchedUserDmList" :key="`userDm${index}`" :value="`userDm${index}`" @click="selectUserDm(userDm);" class="m-0 list-group-item list-group-item-action py-0">
                                       <div class="row pl-2">
                                           <div class="col-2 d-flex justify-content-center align-self-center">
                                             <img class="rounded-circle ml-2" width="50px" height="50px" style="object-fit: cover;" :src="userDm.user.profile_url || 'https://t1.daumcdn.net/qna/image/1542632018000000528'" alt="">
@@ -38,7 +38,9 @@
                                                   <span class="badge badge-primary badge-pill align-self-center" v-if="fetchedUnReadCnt.cnt > 0"> {{ userDm.cnt }}</span>
                                               </div>
                                           </div>
-                                          <div class="col-1"><span @click="deleteUserDm(userDm.dm_id)"><i class="icon-trash-o"></i></span></div>
+                                          <div class="col-1">
+                                            <span id="deleteBtn" @click="targetDeleteDm = userDm" data-toggle="modal" data-target="#deleteUserDmModal"><i class="icon-delete" style="font-size: 1.2em;"></i></span>
+                                          </div>
                                       </div>
                                   </a>
                               </virtual-list>
@@ -75,6 +77,19 @@
         </div>
         
       </div>
+      <div class="modal" id="deleteUserDmModal" tabindex="-1" role="dialog">
+          <div class="modal-dialog col-12" role="document">
+              <div class="modal-content">
+              <div class="modal-body">
+                  <p>정말 나가시겠습니까?</p>
+              </div>
+              <div class="modal-footer p-2">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">취소</button>
+                  <button type="button" class="btn btn-primary btn-sm" @click="deleteUserDm(targetDeleteDm)" data-dismiss="modal">확인</button>
+              </div>
+              </div>
+          </div>
+      </div>
   </div>
 </template>
 
@@ -101,7 +116,8 @@ export default {
         check2: false,
         userDm: {},
         socket: null,
-        targetDm: this.$store.state.targetDm
+        targetDm: this.$store.state.targetDm,
+        targetDeleteDm: {}
     }
   },
   computed: {
@@ -123,18 +139,21 @@ export default {
             dm_id: userDm.dm_id,
             user_id: userDm.other_id,
             other_id: userDm.user_id,
-            recent_message: userDm.recent_message
+            recent_message: userDm.recent_message,
+            user: userDm.user
         }
       }
       this.$store.dispatch('FETCH_DIRECTMESSAGELIST', this.userDm);
       // this.$joinRoom(this.userDm);
       this.check2 = true;
+
+      http
+        .put('/directMessage/readCheck', this.userDm)
+        .then(response => {
+          return response
+        })
+        .catch(e => console.log(e))
       return false;
-      // this.computedChatings.forEach(chat => {
-      //   if (chat.dm_id === chating.dm_id) {
-      //     chat.cnt = 0;
-      //   }
-      // });
     },
     add() {
         this.check = !this.check;
@@ -145,11 +164,15 @@ export default {
     insertUserDm(follow) {
       const userDm = {
         user_id: this.userId,
-        other_id: follow,
+        other_id: follow.user_id,
+        recent_message: '',
+        user: follow
       };
       this.fetchedUserDmList.push(userDm);
       // console.log(this.fetchedUserDmList, userDm);
       this.$store.dispatch('INSERT_USERDM', userDm);
+      this.check = true;
+      this.selectUserDm(userDm);
     },
     insertDirectMessage(message) {
       // 소켓으로 메시지 전송
@@ -169,14 +192,16 @@ export default {
       //   category: 'like'
       // });
     },
-    deleteUserDm(id) {
-      // console.log(id)
+    deleteUserDm(userDm) {
       http
-        .delete(`/userDm/deleteUserDm/${id}`)
+        .delete(`/userDm/deleteUserDm/${userDm.dm_id}`)
         .then(response => {
           return response
         })
         .catch(e => console.log(e))
+
+      const idx = this.fetchedUserDmList.indexOf(userDm);
+      if (idx > -1) this.fetchedUserDmList.splice(idx, 1);
     }
   },
 
@@ -218,6 +243,14 @@ export default {
       if((this.userDm.user_id == data.send_id && this.userDm.other_id == data.receive_id) || (this.userDm.user_id == data.receive_id && this.userDm.other_id == data.send_id)){
         this.PUSH_MSG_DATA(data);
         window.console.log(data);
+        if(data.receive_id == this.$store.state.user_id){
+           http
+            .put('/directMessage/readCheck', this.userDm)
+            .then(response => {
+              return response
+            })
+            .catch(e => console.log(e))
+        }
       }
       // $ths.datas.push(data);
       this.$store.commit('SET_RECENTMESSAGE', data);
@@ -247,7 +280,7 @@ export default {
     // 선택한 유저가 있을 때
     if (this.targetDm) {
       this.selectUserDm(this.targetDm);
-      console.log(this.targetDm)
+      // console.log(this.targetDm)
     }
   },
   beforeDestroy(){
@@ -267,7 +300,19 @@ export default {
 </script>
 
 <style scoped>
-    #container::-webkit-scrollbar {
-        display: none !important;
-    }
+#container::-webkit-scrollbar {
+    display: none !important;
+}
+#deleteUserDmModal .modal-dialog {
+    margin-top: 130px;
+    width: 25%;
+    height: 50%;
+}
+#deleteUserDmModal .modal-content{
+    height: auto;
+    min-height: 30%;
+}
+#deleteBtn:hover {
+    color: #F15F5F;
+}
 </style>

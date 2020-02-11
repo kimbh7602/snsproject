@@ -1,8 +1,7 @@
 <template v-slot:default>
     <div class="container-fluid photos">
         <div class="row justify-content-center">
-
-            <div class="col-md-6" >
+            <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="row">
@@ -12,7 +11,6 @@
                                         <input type="submit" onclick="return false;" />
                                         <input type="text" />
                                     </div>
-
                                     <!-- Log -->
                                     <div class="row form-group">
                                         <div class="col-md-12">
@@ -28,7 +26,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="item in chain" :key="item.data.user_id">
+                                                        <tr v-for="item in computedUsers" :key="item.data.user_id">
                                                             <td class="text-center"> {{ item.data.user_id }}</td>
                                                             <td class="text-center">{{ item.data.user_ip }}</td>
                                                             <td class="text-center">{{ item.data.user_status }}</td>
@@ -39,26 +37,27 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </form>
-                                <div v-if='this.trust===true' style="height: 2px; background-color:green" >
-                                    
+                                <div v-if='this.trust===true' style="height: 2px; background-color:green">
                                 </div>
-                                <div v-else  style="height: 2px; background-color:red">
+                                <div v-else style="height: 2px; background-color:red">
                                     블록 문제발생
                                 </div>
                             </div>
-
+                            <input type="text" v-model="n" /><div @click.prevent="setPage(n)">가자</div>
+                            <div v-for="n in numOfPages" :key="n" @click.prevent="setPage(n)" class="btn btn-default">
+                                <div>{{n}}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+    
 </template>
 <style>
-/* #log{
+    /* #log{
     width:100%;
 } */
 </style>
@@ -66,12 +65,15 @@
 
 <script>
     import http from "../http-common"
-    
+
     export default {
         data() {
             return {
                 chain: [],
-                trust:false,
+                trust: false,
+                currentPage: 1,
+                perPage: 10,
+                perPageOptions: [3, 6],
             }
         },
         mounted() {
@@ -90,9 +92,34 @@
                 .get("admin/trust")
                 .then(response => {
                     if (response.data['resmsg'] == "신뢰") {
-                        this.trust=true;
+                        this.trust = true;
                     }
                 })
+        },
+        methods: {
+            setPage(n) {
+                this.currentPage = n;
+            },
+        },
+        computed: {
+            offset() {
+                return ((this.currentPage - 1) * this.perPage);
+            },
+            limit() {
+                return (this.offset + this.perPage);
+            },
+            numOfPages() {
+                return Math.ceil(this.chain.length / this.perPage);
+            },
+            computedUsers() {
+                if (this.offset > this.chain.length) {
+                    // this.currentPage = this.numOfPages;
+                }
+                return this.chain.slice(this.offset, this.limit);
+            },
+            rows() {
+                return this.chain.length;
+            }
         }
     }
 </script>

@@ -81,10 +81,18 @@ public class ScrapController {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
 			boolean delete = ser.deleteScrap(scrap);
+			NotificationVo notification = new NotificationVo();
+			notification.setUser_id(scrap.getUser_id());
+			notification.setTarget_event_id(scrap.getContent_id());
+			notification.setCategory("scrap");
+			ContentVo content = cSer.detail(scrap.getContent_id());
+            notification.setTarget_user_id(content.getUser_id());
 			boolean deleteNotification = nSer.deleteScrap(scrap.getUser_id(), scrap.getContent_id());
 			Map<String, Object> map = new HashMap<String, Object>();
-			if (delete && deleteNotification)
+			if (delete && deleteNotification){
 				map.put("resmsg", "스크랩취소성공");
+				map.put("resValue", notification);
+			}
 			else
 				map.put("resmsg", "1스크랩취소실패");
 			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);

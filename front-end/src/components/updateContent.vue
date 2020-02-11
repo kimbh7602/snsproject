@@ -10,14 +10,22 @@
                                     data-swiper-breakpoints="true" data-scrollbar="true" data-swiper-loop="false"
                                     data-swpr-responsive="[1, 2, 1, 2]">
                 <div class="swiper-wrapper">
-                    <div :class="img.filter" class="img-fluid swiper-slide" v-for="img in items.imageList" :key="img.filter">
-                        <img :src = img.image_url class="img-fluid">
+                    <div class="img-fluid swiper-slide" v-for="(img, index) in imgs" :key="index">
+                        <div style="text-align:right; background-color:black;">
+                            <i @click="deleteImage($event, img, index)" class="icon-close text-white"></i>
+                        </div>
+                        <div :class="img.filter">
+                            <img :src = img.base64 class="img-fluid">
+                        </div>
                     </div>
                 </div>
-                <div v-if="exist" class="swiper-pagination"  slot="pagination"></div>
-                <div v-if="exist" class="swiper-button-prev" slot="button-prev"></div>
-                <div v-if="exist" class="swiper-button-next" slot="button-next"></div>
+                <div class="swiper-pagination"  slot="pagination"></div>
+                <div class="swiper-button-prev" slot="button-prev"></div>
+                <div class="swiper-button-next" slot="button-next"></div>
             </div>
+        </div>
+        <div class="offset-4 col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:center;">
+            <input type="button" value="추가" @click="goAddImage" class="btn btn-info btn-md text-white">
         </div>
         <div class="row form-group">                    
             <div class="col-md-12" id="parentItrl">
@@ -107,10 +115,10 @@
 import http from "../http-common"
 import axios from 'axios'
 import $ from "jquery"
-import store from "../store"
+// import store from "../store"
 export default {
     name:"updatecontent",
-    props:["items"],
+    props:["uimgs","items","prevpage"],
     data(){
         return{
             intro:"",
@@ -119,7 +127,6 @@ export default {
             imgs:[],
             errored:false,
             loading:true,
-            exist:false,
             isLocation:false,
             isLocationSelect:false,
             isSearching:false,
@@ -144,10 +151,36 @@ export default {
                 height: -35
                 }
             },
-            selectedLocation: null
+            selectedLocation: null,
         }
     },
     methods:{
+        deleteImage(event, img, index){
+            window.console.log(event.target.parentNode.parentNode)
+            event.target.parentNode.parentNode.remove();
+            window.console.log(img)
+            window.console.log(index)
+            this.items.imageList.splice(index, 1);
+            window.console.log(this.items.imageList);
+                    let recaptchaScripta = document.createElement('script')
+        recaptchaScripta.setAttribute('type',"text/javascript")
+        recaptchaScripta.setAttribute('src', "./theme/js/script.js")
+        document.body.appendChild(recaptchaScripta)
+        let recaptchaScript = document.createElement('script')
+        recaptchaScript.setAttribute('type',"text/javascript")
+        recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
+        document.body.appendChild(recaptchaScript)
+        },
+        goAddImage() {
+            this.$router.push({
+                name: 'addimage', 
+                params: {
+                fimgs:this.items.imageList,
+                prevpage: this.prevpage,
+                items: this.items,
+                }
+            });
+        },
         appendDiv() {
             var colorCode  = "#" + Math.round(Math.random() * 0xffffff).toString(16);
             var div = document.createElement('div');
@@ -196,71 +229,48 @@ export default {
             for(var i=0; i<itrltemp.length; i++){
                 this.itrlist[i] = itrltemp[i].innerText;
             }
-
-            if(this.isLocationSelect){
-                http
-                  .post("/content/insertContent",{
-                    content_val:this.intro,
-                    user_id:store.state.user_id,
-                    hashtagList:this.itrlist,
-                    imageList:this.imgs,
-                    location_name:this.selectedLocation.name,
-                    lat:this.selectedLocation.position.lat,
-                    lng:this.selectedLocation.position.lng
-                  })
-                  .then(response => {
-                    if (response.data['resmsg'] == "게시물 수정 성공"){
-                        this.$store.commit('setModalText', "수정 성공!");
-                        document.getElementById('modalBtn').click();
-                    }
-                    else{
-                        this.$store.commit('setModalText', "수정 실패!");
-                        document.getElementById('modalBtn').click();
-                    }
-                    this.$router.push("/");
-                  })
-                  .catch((error) => {
-                      this.errored = true;
-                      alert(error);
-                  })
-                  .finally(() => (this.loading = false));
-            }else if(this.imgs[0].base64==""&&this.intro==""){
+            if(this.imgs[0].base64==""&&this.intro==""){
                 this.$store.commit('setModalText', "내용을 입력해주세요.");
                 document.getElementById('modalBtn').click();
             }
-            else{
-                http
-                  .put("/content/updateContent",{
-                    content_val:this.intro,
-                    user_id:store.state.user_id,
-                    hashtagList:this.itrlist,
-                    imageList:this.imgs
-                  })
-                  .then(response => {
-                    if (response.data['resmsg'] == "게시물 수정 성공"){
-                        this.$store.commit('setModalText', "수정 성공!");
-                        document.getElementById('modalBtn').click();
+            window.console.log(this.items.content_id);
+            window.console.log(this.intro);
+            window.console.log(this.itrlist);
+            window.console.log(this.items.imageList);
+            window.console.log(this.selectedLocation.position.lat);
+            window.console.log(this.selectedLocation.position.lng);
+            window.console.log(this.selectedLocation.name);
+            http
+                .put("/content/updateContent",{
+                content_id:this.items.content_id,
+                content_val:this.intro,
+                hashtagList:this.itrlist,
+                imageList:this.items.imageList,
+                lat:this.selectedLocation.position.lat,
+                lng:this.selectedLocation.position.lng,
+                location_name:this.selectedLocation.name,
+                })
+                .then(response => {
+                if (response.data['resmsg'] == "게시물 수정 성공"){
+                    this.$store.commit('setModalText', "수정 성공!");
+                    document.getElementById('modalBtn').click();
+                }
+                else{
+                    this.$store.commit('setModalText', "수정 실패!");
+                    document.getElementById('modalBtn').click();
+                }
+                this.$router.push({
+                    name: 'bio',
+                    params: {
+                    cid: this.items.content_id,
                     }
-                    else{
-                        this.$store.commit('setModalText', "수정 실패!");
-                        document.getElementById('modalBtn').click();
-                    }
-                  })
-                  .catch((error) => {
-                      this.errored = true;
-                      alert(error);
-                  })
-                  .finally(() => {
-                    this.loading = false
-                    this.$router.push({
-                        name: 'bio',
-                        params: {
-                        cid: this.items.content_id,
-                        }
-                    })
-                  });
-
-            }
+                })
+                })
+                .catch((error) => {
+                    this.errored = true;
+                    alert(error);
+                })
+                .finally(() => (this.loading = false));
         },
 
         searchLocation(){
@@ -335,16 +345,31 @@ export default {
 
     },
     created(){
-        this.intro = this.items.content_val;
-        this.itrlist = this.items.hashtagList;
-        this.imgs = this.items.imageList;
-        this.selectedLocation.name = this.items.location_name;
-        this.selectedLocation.position.lat = this.items.lat;
-        this.selectedLocation.position.lng = this.items.lng;
+
     },
     mounted(){
+        console.log(this.items)
+        this.intro = this.items.content_val;
+        this.itrlist = this.items.hashtagList;
+        if(this.uimgs===undefined){
+            this.imgs = this.items.imageList;
+        }
+        else if(this.uimgs.length>0){
+            this.imgs = this.uimgs;
+        }
+        if(this.items.location_name!=null){
+            // this.selectedLocation.name = this.items.location_name;
+            this.selectedLocation = {
+                  position: {lat:this.items.lat, lng:this.items.lng},
+                  name: this.items.location_name,
+                //   addr: marker.info.text
+            };
+            // this.selectedLocation.position.lat = this.items.lat;
+            // this.selectedLocation.position.lng = this.items.lng;
+            this.isLocation = true;
+            this.isLocationSelect = true;
+        }
         $('html').scrollTop(0);
-        console.log(this.items);
         let recaptchaScripta = document.createElement('script')
         recaptchaScripta.setAttribute('type',"text/javascript")
         recaptchaScripta.setAttribute('src', "./theme/js/script.js")
@@ -353,8 +378,7 @@ export default {
         recaptchaScript.setAttribute('type',"text/javascript")
         recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
         document.body.appendChild(recaptchaScript)
-        this.items.content_val = this.items.content_val.replace("<br />",/\n/g);
-        console.log(this.itrlist);
+        // this.items.content_val = this.items.content_val.replace("<br />","\n");
         for(var a=0; a<this.itrlist.length; a++){
             var colorCode  = "#" + Math.round(Math.random() * 0xffffff).toString(16);
             var div = document.createElement('div');

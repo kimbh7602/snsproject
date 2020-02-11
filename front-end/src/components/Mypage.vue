@@ -9,8 +9,8 @@
 
                 <h4 class="text-white">{{userId}}</h4>
                 <div v-if="userId != myId">
-                    <span v-if="myId != userId && myFollowList.includes(userId)" @click="targetUser = userInfo" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary">팔로잉</span>
-                    <span v-if="myId != userId && !myFollowList.includes(userId)" @click="insertFollow(userInfo)" class="btn btn-primary">팔로우</span>
+                    <span v-show="myFollowList.includes(userId)" @click="targetUser = userInfo" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary">팔로잉</span>
+                    <span v-show="!myFollowList.includes(userId)" @click="insertFollow(userInfo)" class="btn btn-primary">팔로우</span>
                     <span @click="goChating()" v-if="myId != userId" class="btn btn-outline-light ml-2" style="width: 72px;"><i class="icon-send"></i></span>
                 </div>
                 <div v-else>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
 
-                <div class="rounded mx-4" style="position: relative; height:100px; border: 1px dotted gray; overflow: auto;">
+                <div class="rounded" style="position: relative; height:100px; border: 1px dotted gray; overflow: auto;">
                     <div class="text-left p-2" style="position: absolute; word-break:break-all;">
                         <span v-for="(item, index) in userInfo.interestList" :key="`item${index}`">
                             <span class="text-success" v-if="item!=''">#{{item}} </span>
@@ -99,9 +99,8 @@
                                 <img class="rounded-circle mr-3" width="40px" height="40px" style="object-fit: cover;" :src="follow.profile_url || 'https://t1.daumcdn.net/qna/image/1542632018000000528'">
                                 {{follow.user_id}}
                             </a>
-                            <!-- <router-link :to="'/mypage/'+follow" class="d-flex text-dark" @click="fetchUserInfo(follow)"><i class="icon-user-circle mr-2" style="font-size:1.9em;"></i> {{follow}}</router-link> -->
-                            <span v-if="myId != follow.user_id && myFollowList.includes(follow.user_id)" @click="targetUser = follow" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary btn-sm">팔로잉</span> 
-                            <span v-if="myId != follow.user_id && !myFollowList.includes(follow.user_id)" class="ml-3 btn btn-primary btn-sm" @click="insertFollow(follow)">팔로우</span>
+                            <span v-show="myId != follow.user_id && myFollowList.includes(follow.user_id)" @click="targetUser = follow" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary btn-sm">팔로잉</span> 
+                            <span v-show="myId != follow.user_id && !myFollowList.includes(follow.user_id)" class="ml-3 btn btn-primary btn-sm" @click="insertFollow(follow)">팔로우</span>
                         </div>
                     </div>
                 </div>
@@ -170,7 +169,7 @@ export default {
                         flag: true
                     });
                 })
-                .catch(e => console.log(e))
+                .catch(e => console.log(e));
             this.myFollowList.push(user.user_id);
 
             if (this.myId == this.userId) {

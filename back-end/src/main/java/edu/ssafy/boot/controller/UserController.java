@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,7 +75,7 @@ public class UserController {
 				// run configurations 에서 arguments-> vm arguments
 				// ->"-Djava.net.preferIPv4Stack=true" 입력
 				LogVo log = new LogVo(user.getUser_id(), request.getRemoteAddr(), "로그인");
-				BlockVo block = new BlockVo(log, new java.util.Date().toString());
+				BlockVo block = new BlockVo(log);
 				serbc.addBlock(block);
 				map.put("resmsg", "로그인");
 				map.put("resValue", result.getUser_id());
@@ -103,7 +106,7 @@ public class UserController {
 				// run configurations 에서 arguments-> vm arguments
 				// ->"-Djava.net.preferIPv4Stack=true" 입력
 				LogVo log = new LogVo(user.getUser_id(), request.getRemoteAddr(), "회원정보수정");
-				BlockVo block = new BlockVo(log, new java.util.Date().toString());
+				BlockVo block = new BlockVo(log);
 				serbc.addBlock(block);
 				map.put("resmsg", "수정성공");
 				map.put("resvalue", res);
@@ -130,7 +133,7 @@ public class UserController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (res) {
 				LogVo log = new LogVo(user_id, request.getRemoteAddr(), "회원삭제");
-				BlockVo block = new BlockVo(log, new java.util.Date().toString());
+				BlockVo block = new BlockVo(log);
 				serbc.addBlock(block);
 				map.put("resmsg", "삭제성공");
 				map.put("resvalue", res);
@@ -227,7 +230,7 @@ public class UserController {
 					}
 				}
 				LogVo log = new LogVo(user_id, request.getRemoteAddr(), "회원정보조회");
-				BlockVo block = new BlockVo(log, new java.util.Date().toString());
+				BlockVo block = new BlockVo(log);
 				serbc.addBlock(block);
 				map.put("resmsg", "조회성공");
 				map.put("resvalue", user);
@@ -262,8 +265,8 @@ public class UserController {
 			boolean signup = ser.signup(user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			if (signup) {
-				LogVo log = new LogVo(user.getUser_id(), req.getRemoteAddr(), "회원정보조회");
-				BlockVo block = new BlockVo(log, new java.util.Date().toString());
+				LogVo log = new LogVo(user.getUser_id(),req.getRemoteAddr(),"회원가입");
+				BlockVo block = new BlockVo(log);
 				serbc.addBlock(block);
 				map.put("resmsg", "등록성공");
 			}
@@ -461,6 +464,65 @@ public class UserController {
 		return isDelete;
 	}
 	
+	@GetMapping("/myInterest/{user_id}")
+	@ApiOperation(value = "관심사 출력", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> interestList(@PathVariable("user_id") String user_id) {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		try {
+			List<String> myInterestList = ser.myInterest(user_id);
+			Map<String, Object> map = new HashMap<String, Object>();
+			Set<Integer> set = new HashSet<Integer>();
+			List<String> list = new ArrayList<String>();
+			if(myInterestList != null && myInterestList.size() > 0){
+				if(myInterestList.size() > 3) {
+					while(list.size() < 3){
+						int index = (int)(Math.random()*myInterestList.size());
+						if(!set.contains(index)){
+							set.add(index);
+							list.add(myInterestList.get(index));
+						}
+					}
+				}else{
+					list = myInterestList;
+				}
+				map.put("resmsg", "조회성공");
+				map.put("resValue", list);
+			}else{
+				map.put("resmsg", "조회실패");
+			}
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "조회실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
 	
-	
+	@GetMapping("/allInterestList")
+	@ApiOperation(value = "관심사 빈도 출력", response = List.class)
+	private @ResponseBody ResponseEntity<Map<String, Object>> allInterestList() {
+		ResponseEntity<Map<String, Object>> resEntity = null;
+		List<WordCloudVo> wordList = null;
+		try {
+			wordList = ser.wordList();
+			List<String> list = new ArrayList<String>();
+			for (int i = 0; i < 3; i++) {
+				list.add(wordList.get(i).getName());
+			}
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(wordList != null && wordList.size() > 0){
+				map.put("resmsg", "조회성공");
+				map.put("resValue", list);
+			}else{
+				map.put("resmsg", "조회실패");
+			}
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} catch (RuntimeException e) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("resmsg", "조회실패");
+			resEntity = new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		return resEntity;
+	}
 }
