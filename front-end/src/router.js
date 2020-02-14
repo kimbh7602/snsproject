@@ -31,6 +31,7 @@ import Editing from "./components/Editing.vue"
 import ContentListHashtag from "./components/ContentListHashtag.vue"
 import updateContent from "./components/updateContent.vue"
 import Recommend from "./components/Recommend.vue"
+import AdminReportContents from "./components/AdminReportContents.vue"
 
 Vue.use(Router);
 // const modal = { template: '<p id="modalBtn" style="display:none;" data-toggle="modal" data-target="#myModal"></p><div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-body" style="text-align:center;">{{$store.state.modalText}}</div><div class="modal-footer"><button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button></div></div></div></div>'}
@@ -309,6 +310,11 @@ export const router = new Router({
             name: "adminuserlist",
             alias: "/AdminUserList",
             component: AdminUserList,
+        }, {
+            path: "/adminreportcontents",
+            name: "adminreportcontents",
+            alias: "/AdminReportContents",
+            component: AdminReportContents,
         },
         {
             path: "/mypage/:userId",
@@ -355,7 +361,7 @@ export const router = new Router({
         {
             path: "/updatecontent",
             name: "updatecontent",
-            alias: "/updatecontent",
+            alias: "/Updatecontent",
             component: updateContent,
             props: true,
         },

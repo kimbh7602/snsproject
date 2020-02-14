@@ -35,10 +35,14 @@
                             <!-- <span>이미지를 drag&drop하거나 +를 클릭하여 추가해주세요.</span> -->
                           </div>
 
-                          <div v-else @click="$refs.fileInput.click()" v-on:change="fileUpload" :class="imginfo.filter" class="selected-image" id="img-select">
-                            <img :src=imginfo.base64 class="img-fluid" style="height:30vw;">
+                          <div v-else>
+                            <div style="text-align:right; background-color:black;">
+                              <i @click="imgdel" class="icon-close text-white"></i>
+                            </div>
+                            <div @click="$refs.fileInput.click()" v-on:change="fileUpload" :class="imginfo.filter" class="selected-image" id="img-select">
+                              <img :src=imginfo.base64 class="img-fluid" style="height:30vw;">
+                            </div>
                           </div>
-                          <input type="button" @click="imgdel" value="x"/>
 
                         </div>
                       </div>
@@ -130,16 +134,43 @@
                     </div>
                   </div>
                   <!-- register/reset button -->
-                  <div class="row form-group">
+                  <div class="container col-md-12 px-0">
+                    <div class="btn-group col-12 px-0" role="group" aria-label="Basic example">
+                      <input type="submit" class="btn btn-outline-light col-sm btnprev p-2" value="수정">
+                      <input type="button" class="btn btn-outline-light col-sm btnprev p-2" value="회원 탈퇴" data-toggle="modal" data-target="#exampleModal">
+                    </div>
+                  </div>
+                  <!-- <div class="row form-group">
                     <div class="col-md-12">
                       <input type="submit" value="수정" class="col-md-3 btn btn-primary btn-md text-white">
                       <input type="button" value="삭제" @click="del"
                         class="offset-md-6 col-md-3 btn btn-danger btn-md text-white">
                     </div>
-                  </div>
+                  </div> -->
                 </form>
               </div>
-
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 회원 탈퇴 모달 -->
+      <div class="modal fade mt-5" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 99999;">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">알림</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p class="m-2"> 탈퇴하시겠습니까? </p>
+            </div>
+            <div class="modal-footer d-flex justify-content-end">
+              <div class="d-block">
+                <button type="button" class="btn btn-danger mr-2" data-dismiss="modal" @click="del">확인</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+              </div>
             </div>
           </div>
         </div>
@@ -222,7 +253,8 @@
 
 
     mounted() {
-      if(this.prevpage!="confirm"){
+
+      if(this.oldpw==undefined){
         this.$router.push("/pwconfirm");
       }
       var tmp;

@@ -17,12 +17,13 @@ public class UserDmDAOImpl implements IUserDmDAO {
     SqlSession session;
 
     @Override
-    public boolean insertUserDm(UserDmVo userDm) {
+    public UserDmVo insertUserDm(UserDmVo userDm) {
         int insert = session.insert("ssafy.userDm.insert", userDm);
         if (insert > 0) {
-            return true;
+            UserDmVo resultDm = session.selectOne("ssafy.userDm.selectInsertDm", userDm);
+            return resultDm;
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -30,6 +31,7 @@ public class UserDmDAOImpl implements IUserDmDAO {
     public boolean deleteUserDm(int dm_id) {
         int delete = session.delete("ssafy.userDm.delete", dm_id);
         if (delete > 0) {
+            session.delete("ssafy.directMessage.deleteAll", dm_id);
             return true;
         } else {
             return false;

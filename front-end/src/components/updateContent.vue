@@ -1,7 +1,6 @@
 <template>
   <div class="offset-md-2 col-md-8" data-aos="fade-up">
     <div class="offset-md-1 col-md-10">
-        <div style="height:10px;"></div>
         <div class="all-scroll pos-relative mt-50">
             <h5 class="mb-50"><b>Image</b></h5>                                            
             <div class="swiper-scrollbar"></div>
@@ -12,7 +11,7 @@
                 <div class="swiper-wrapper">
                     <div class="img-fluid swiper-slide" v-for="(img, index) in imgs" :key="index">
                         <div style="text-align:right; background-color:black;">
-                            <i @click="deleteImage($event, img, index)" class="icon-close text-white"></i>
+                            <i @click="deleteImage($event, index)" class="icon-close text-white"></i>
                         </div>
                         <div :class="img.filter">
                             <img :src = img.base64 class="img-fluid">
@@ -45,7 +44,7 @@
         <div v-if="isLocation&&!isLocationSelect" class="row form-group mb-5">
             <div class="col-md-12">
             <label class="text-white">Location Search</label> 
-            <input v-model="searchKeyword" type="text" class="form-control">
+            <input v-model="searchKeyword"  @keyup.enter="searchLocation" type="text" id="search-location-input" class="form-control">
             <br>
             <input @click="searchLocation" type="button" value="Search" class="btn btn-outline-light btn-block text-white">
             </div>
@@ -54,7 +53,7 @@
             <input @click="isLocation=!isLocation" type="button" value="위치정보 등록" class="btn btn-outline-light btn-block">
             <br/><br/><br/>
         </div>
-        <div v-if="isSearching" class="modal-content">
+        <div v-if="isSearching" class="modal-content search-location-googlemap">
                     <div class="modal-body" style="text-align:center;">
                         <gmap-map
                         :center="center"
@@ -152,30 +151,60 @@ export default {
                 }
             },
             selectedLocation: null,
+            swiper_html:"",
         }
     },
     methods:{
-        deleteImage(event, img, index){
-            window.console.log(event.target.parentNode.parentNode)
-            event.target.parentNode.parentNode.remove();
-            window.console.log(img)
-            window.console.log(index)
-            this.items.imageList.splice(index, 1);
-            window.console.log(this.items.imageList);
-                    let recaptchaScripta = document.createElement('script')
-        recaptchaScripta.setAttribute('type',"text/javascript")
-        recaptchaScripta.setAttribute('src', "./theme/js/script.js")
-        document.body.appendChild(recaptchaScripta)
-        let recaptchaScript = document.createElement('script')
-        recaptchaScript.setAttribute('type',"text/javascript")
-        recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
-        document.body.appendChild(recaptchaScript)
+        deleteImage(event, index){
+        // deleteImage(event, img, index){
+            this.imgs.splice(index, 1);
+            var swiper_wrapper = document.createElement('div');
+            swiper_wrapper.classList.add('swiper-wrapper');
+            for(var i = 0; i<this.imgs.length; i++){
+                var swiper_slide = document.createElement('div');
+                swiper_slide.classList.add('img-fluid');
+                swiper_slide.classList.add('swiper-slide');
+
+                var xdiv = document.createElement('div');
+                xdiv.setAttribute('style', 'text-align:right; background-color:black;');
+                var xicon = document.createElement('i');
+                xicon.classList.add('icon-close');
+                xicon.classList.add('text-white');
+                xicon.addEventListener("click", function(e){
+                    this.deleteImage(e, i);
+                });
+                xdiv.appendChild(xicon);
+
+                var div = document.createElement('div');
+                div.classList.add(this.imgs[i].filter);
+                var simg = document.createElement('img');
+                simg.classList.add('img-fluid');
+                simg.setAttribute('src',this.imgs[i].base64);
+                div.appendChild(simg);
+                swiper_slide.appendChild(xdiv);
+                swiper_slide.appendChild(div);
+                swiper_wrapper.append(swiper_slide);
+            }
+            var tt = event.target.parentNode.parentNode.parentNode.parentNode;
+            event.target.parentNode.parentNode.parentNode.remove();
+            tt.appendChild(swiper_wrapper);
+
+            document.querySelector('script[src$="script.js"]').remove()
+            document.querySelector('script[src$="swiper.js"]').remove()
+            let recaptchaScripta = document.createElement('script')
+            recaptchaScripta.setAttribute('type',"text/javascript")
+            recaptchaScripta.setAttribute('src', "./theme/js/script.js")
+            document.body.appendChild(recaptchaScripta)
+            let recaptchaScript = document.createElement('script')
+            recaptchaScript.setAttribute('type',"text/javascript")
+            recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
+            document.body.appendChild(recaptchaScript)
         },
         goAddImage() {
             this.$router.push({
                 name: 'addimage', 
                 params: {
-                fimgs:this.items.imageList,
+                fimgs:this.imgs,
                 prevpage: this.prevpage,
                 items: this.items,
                 }
@@ -224,6 +253,7 @@ export default {
             this.$router.push("/addimage");
         },
         goNext() {
+            console.log(this.selectedLocation.position.lat)
             // this.imgs[this.imgs.length-1].filter = this.filterType;
             var itrltemp = document.getElementsByClassName('itrlone');
             for(var i=0; i<itrltemp.length; i++){
@@ -233,44 +263,77 @@ export default {
                 this.$store.commit('setModalText', "내용을 입력해주세요.");
                 document.getElementById('modalBtn').click();
             }
-            window.console.log(this.items.content_id);
-            window.console.log(this.intro);
-            window.console.log(this.itrlist);
-            window.console.log(this.items.imageList);
-            window.console.log(this.selectedLocation.position.lat);
-            window.console.log(this.selectedLocation.position.lng);
-            window.console.log(this.selectedLocation.name);
-            http
-                .put("/content/updateContent",{
-                content_id:this.items.content_id,
-                content_val:this.intro,
-                hashtagList:this.itrlist,
-                imageList:this.items.imageList,
-                lat:this.selectedLocation.position.lat,
-                lng:this.selectedLocation.position.lng,
-                location_name:this.selectedLocation.name,
-                })
-                .then(response => {
-                if (response.data['resmsg'] == "게시물 수정 성공"){
-                    this.$store.commit('setModalText', "수정 성공!");
-                    document.getElementById('modalBtn').click();
-                }
-                else{
-                    this.$store.commit('setModalText', "수정 실패!");
-                    document.getElementById('modalBtn').click();
-                }
-                this.$router.push({
-                    name: 'bio',
-                    params: {
-                    cid: this.items.content_id,
+            window.console.log(this.imgs)
+            if(this.isLocationSelect){
+                http
+                    .put("/content/updateContent",{
+                    content_id:this.items.content_id,
+                    content_val:this.intro,
+                    hashtagList:this.itrlist,
+                    imageList:this.imgs,
+                    lat:this.selectedLocation.position.lat,
+                    lng:this.selectedLocation.position.lng,
+                    location_name:this.selectedLocation.name,
+                    })
+                    .then(response => {
+                    if (response.data['resmsg'] == "게시물 수정 성공"){
+                        this.$store.commit('setModalText', "수정 성공!");
+                        document.getElementById('modalBtn').click();
                     }
-                })
-                })
-                .catch((error) => {
-                    this.errored = true;
-                    alert(error);
-                })
-                .finally(() => (this.loading = false));
+                    else{
+                        this.$store.commit('setModalText', "수정 실패!");
+                        document.getElementById('modalBtn').click();
+                    }
+                    })
+                    .catch((error) => {
+                        this.errored = true;
+                        alert(error);
+                    })
+                    .finally(() => {
+                        this.loading = false
+                        this.$router.push({
+                            name: 'bio',
+                            params: {
+                            cid: this.items.content_id,
+                            }
+                        })
+                    
+                    });
+            }
+            else{
+                http
+                  .put("/content/updateContent",{
+                    content_id:this.items.content_id,
+                    content_val:this.intro,
+                    hashtagList:this.itrlist,
+                    imageList:this.imgs,
+                  })
+                  .then(response => {
+                    if (response.data['resmsg'] == "게시물 수정 성공"){
+                        this.$store.commit('setModalText', "수정 성공!");
+                        document.getElementById('modalBtn').click();
+                    }
+                    else{
+                        this.$store.commit('setModalText', "수정 실패!");
+                        document.getElementById('modalBtn').click();
+                    }
+                  })
+                  .catch((error) => {
+                      this.errored = true;
+                      alert(error);
+                  })
+                  .finally(() => {
+                      this.loading = false
+                        this.$router.push({
+                            name: 'bio',
+                            params: {
+                            cid: this.items.content_id,
+                            }
+                        })
+                    
+                    });
+
+            }
         },
 
         searchLocation(){
@@ -289,6 +352,7 @@ export default {
 
                     this.locationList.forEach(element => {
                         let addr = "";
+                        document.querySelector(".search-location-googlemap").scrollIntoView(false);
                         axios.post("https://translation.googleapis.com/language/translate/v2?key=AIzaSyAcnkt6IBUt-bGIMw4u-VEIYpesgw4-2Lk",{
                           "q": [element.formatted_address],
                           "target": "ko"
@@ -345,10 +409,12 @@ export default {
 
     },
     created(){
-
+        // console.log(document.getElementsByClassName("all-scroll")[1]);
+        // this.swiper_html = document.getElementsByClassName("all-scroll")[1];
     },
     mounted(){
-        console.log(this.items)
+        // console.log(this.items)
+        console.log(this.uimgs);
         this.intro = this.items.content_val;
         this.itrlist = this.items.hashtagList;
         if(this.uimgs===undefined){
@@ -357,6 +423,9 @@ export default {
         else if(this.uimgs.length>0){
             this.imgs = this.uimgs;
         }
+        // console.log(this.uimgs)
+        // console.log(this.imgs)
+        // console.log(this.items.imageList)
         if(this.items.location_name!=null){
             // this.selectedLocation.name = this.items.location_name;
             this.selectedLocation = {
@@ -370,6 +439,8 @@ export default {
             this.isLocationSelect = true;
         }
         $('html').scrollTop(0);
+        document.querySelector('script[src$="script.js"]').remove()
+        document.querySelector('script[src$="swiper.js"]').remove()
         let recaptchaScripta = document.createElement('script')
         recaptchaScripta.setAttribute('type',"text/javascript")
         recaptchaScripta.setAttribute('src', "./theme/js/script.js")

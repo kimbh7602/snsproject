@@ -39,7 +39,6 @@ public class NotificationDAOImpl implements INotificationDAO {
                 notificationVo.setContent(content);
             }
         }
-        // System.out.println("123");
         return notificationList;
     }
 

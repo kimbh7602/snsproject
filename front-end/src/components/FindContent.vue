@@ -197,7 +197,7 @@ export default {
             let keyword = this.searchKeyword;
             keyword.replace(" ", "+");
 
-            const url = "http://192.168.100.41:5000/location/"+keyword;
+            const url = "http://8:5000/location/"+keyword;
             
             axios.get(url)
                 .then((response)=>{

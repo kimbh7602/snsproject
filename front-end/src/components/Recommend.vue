@@ -360,6 +360,8 @@ export default {
     })
   },
   updated(){
+    document.querySelector('script[src$="script.js"]').remove()
+    document.querySelector('script[src$="swiper.js"]').remove()
     let recaptchaScripta = document.createElement('script')
     recaptchaScripta.setAttribute('type',"text/javascript")
     recaptchaScripta.setAttribute('src', "./theme/js/script.js")

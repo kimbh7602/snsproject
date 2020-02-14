@@ -38,8 +38,8 @@ public class DirectMessageService implements IDirectMessageService {
     }
 
     @Override
-    public int directMessageUnReadCnt(int dm_id) {
-        return dao.directMessageUnReadCnt(dm_id);
+    public int directMessageUnReadCnt(UserDmVo userDm) {
+        return dao.directMessageUnReadCnt(userDm);
     }
 
     @Override

@@ -42,6 +42,11 @@ public class ContentDAOImpl implements IContentDAO {
 		ContentVo content = session.selectOne("ssafy.content.selectOne", content_id);
 		List<ImageVo> imageList = session.selectList("ssafy.image.imageList", content_id);
 		content.setImageList(imageList);
+		UserVo user = session.selectOne("ssafy.user.info", content.getUser_id());
+			if(user.getProfile_url() != null && user.getProfile_filter() != null){
+				content.setProfile_url(user.getProfile_url());
+				content.setProfile_filter(user.getProfile_filter());
+			}
 		return content;
 	}
 

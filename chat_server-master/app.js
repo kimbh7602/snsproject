@@ -93,6 +93,18 @@ io.on('connection', function(socket){
     // socket.broadcast.emit('chat', data);
   });
 
+  socket.on('read', function(data){
+    console.log('read');
+    console.log(data.send_id, data.receive_id);
+
+    clients.some(element => {
+      if(element.uid == data.send_id){
+        io.to(element.id).emit('read', data);
+        return(element.uid == data.send_id);
+      }
+    })
+  });
+
   socket.on('notification', function(data) {
     
     // 소켓아이디 저장

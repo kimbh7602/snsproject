@@ -1,7 +1,6 @@
 <template>
   <div class="offset-md-2 col-md-8" data-aos="fade-up">
     <div class="offset-md-1 col-md-10">
-        <div style="height:10px;"></div>
         <div class="all-scroll pos-relative mt-50">
             <h5 class="mb-50"><b>Image</b></h5>                                            
             <div class="swiper-scrollbar"></div>
@@ -10,8 +9,13 @@
                                     data-swiper-breakpoints="true" data-scrollbar="true" data-swiper-loop="false"
                                     data-swpr-responsive="[1, 2, 1, 2]">
                 <div class="swiper-wrapper">
-                    <div :class="img.filter" class="img-fluid swiper-slide" v-for="img in imgs" :key="img.filter">
-                        <img :src = img.base64 class="img-fluid">
+                    <div class="img-fluid swiper-slide" v-for="(img, index) in imgs" :key="index">
+                        <div style="text-align:right; background-color:black;">
+                            <i @click="deleteImage($event, index)" class="icon-close text-white"></i>
+                        </div>
+                        <div :class="img.filter">
+                            <img :src = img.base64 class="img-fluid">
+                        </div>
                     </div>
                 </div>
                 <div v-if="exist" class="swiper-pagination"  slot="pagination"></div>
@@ -19,6 +23,15 @@
                 <div v-if="exist" class="swiper-button-next" slot="button-next"></div>
             </div>
         </div>
+        <!-- <div class="offset-4 col-4 col-md-4 col-lg-4" style="display:inline-block; text-align:center;">
+            <input type="button" value="추가" @click="goAddImage" class="btn btn-info btn-md text-white">
+        </div> -->
+        <div class="container col-md-12 px-0">
+            <div class="btn-group col-12 px-0" role="group" aria-label="Basic example">
+                <input type="button" class="btn btn-outline-light col-sm btnprev p-2" value="추가" @click="goAddImage">
+            </div>
+        </div>
+        
         <div class="row form-group">                    
             <div class="col-md-12" id="parentItrl">
             <label class="text-white" for="itrlist">Hashtag</label>
@@ -37,7 +50,7 @@
         <div v-if="isLocation&&!isLocationSelect" class="row form-group mb-5">
             <div class="col-md-12">
             <label class="text-white">Location Search</label> 
-            <input v-model="searchKeyword" type="text" class="form-control">
+            <input v-model="searchKeyword" @keyup.enter="searchLocation" id="search-location-input" type="text" class="form-control search-location-input">
             <br>
             <input @click="searchLocation" type="button" value="Search" class="btn btn-outline-light btn-block text-white">
             </div>
@@ -46,7 +59,7 @@
             <input @click="isLocation=!isLocation" type="button" value="위치정보 등록" class="btn btn-outline-light btn-block">
             <br/><br/><br/>
         </div>
-        <div v-if="isSearching" class="modal-content">
+        <div v-if="isSearching" class="modal-content search-location-googlemap">
                     <div class="modal-body" style="text-align:center;">
                         <gmap-map
                         :center="center"
@@ -70,6 +83,12 @@
                         </gmap-map>
                     </div>
                     <div class="modal-footer">
+                        <!-- <div class="container col-md-12 px-0">
+                            <div class="btn-group col-12 px-0" role="group" aria-label="Basic example">
+                                <input type="submit" class="btn btn-outline-light col-sm btnprev p-2" value="확인">
+                                <input type="button" class="btn btn-outline-light col-sm btnprev p-2" value="취소" @click="cancle">
+                            </div>
+                        </div> -->
                         <button type="button" class="btn btn-success text-white" @click="selectLocation" data-dismiss="modal">선택</button>
                         <button type="button" class="btn btn-danger text-white" data-dismiss="modal">닫기</button>
                     </div>
@@ -78,20 +97,27 @@
         <div v-if="isLocationSelect" class="row form-group mb-5">
             <div class="col-md-12">
             <label class="text-white">Selected Location</label>
-            <input style="text-align:center;" v-model="selectedLocation.name" type="text" class="form-control"><br>
-            <input @click="isLocationSelect=!isLocationSelect" type="button" value="다시 위치검색" class="btn btn-outline-light btn-block">
+            <input style="text-align:center;" id="searched-location-input" v-model="selectedLocation.name" type="text" class="form-control searched-location-input"><br>
+            <input @click="clickResearch" type="button" value="다시 위치검색" class="btn btn-outline-light btnprev btn-block">
             <br/><br/><br/>
             </div>
         </div>
         
-        <div style="margin-top:1%; margin-left:5%;margin-right:5%; height:50px;">
+        <div class="container col-md-12 px-0">
+            <div class="btn-group col-12 px-0" role="group" aria-label="Basic example">
+                <input type="button" class="btn btn-outline-light col-sm btnprev py-2" value="처음으로" @click="goPrev">
+                <input type="button" class="btn btn-outline-light col-sm btnprev py-2" value="다음" @click="goNext">
+            </div>
+        </div>
+
+        <!-- <div style="margin-top:1%; margin-left:5%;margin-right:5%; height:50px;">
             <div style="display:inline-block; float :left">
             <input type="button" value="처음으로" @click="goPrev" class="btn btn-primary btn-md text-white">
             </div>
             <div style="display:inline-block; float:right">
             <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
             </div>
-        </div>
+        </div> -->
         <p id="mapModalBtn" style="display:none;" data-toggle="modal" data-target="#mapModal"></p>
         <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
@@ -148,6 +174,59 @@ export default {
         }
     },
     methods:{
+        deleteImage(event, index){
+        // deleteImage(event, img, index){
+            this.imgs.splice(index, 1);
+            var swiper_wrapper = document.createElement('div');
+            swiper_wrapper.classList.add('swiper-wrapper');
+            for(var i = 0; i<this.imgs.length; i++){
+                var swiper_slide = document.createElement('div');
+                swiper_slide.classList.add('img-fluid');
+                swiper_slide.classList.add('swiper-slide');
+
+                var xdiv = document.createElement('div');
+                xdiv.setAttribute('style', 'text-align:right; background-color:black;');
+                var xicon = document.createElement('i');
+                xicon.classList.add('icon-close');
+                xicon.classList.add('text-white');
+                xicon.addEventListener("click", function(e){
+                    this.deleteImage(e, i);
+                });
+                xdiv.appendChild(xicon);
+
+                var div = document.createElement('div');
+                div.classList.add(this.imgs[i].filter);
+                var simg = document.createElement('img');
+                simg.classList.add('img-fluid');
+                simg.setAttribute('src',this.imgs[i].base64);
+                div.appendChild(simg);
+                swiper_slide.appendChild(xdiv);
+                swiper_slide.appendChild(div);
+                swiper_wrapper.append(swiper_slide);
+            }
+            var tt = event.target.parentNode.parentNode.parentNode.parentNode;
+            event.target.parentNode.parentNode.parentNode.remove();
+            tt.appendChild(swiper_wrapper);
+
+            document.querySelector('script[src$="script.js"]').remove()
+            document.querySelector('script[src$="swiper.js"]').remove()
+            let recaptchaScripta = document.createElement('script')
+            recaptchaScripta.setAttribute('type',"text/javascript")
+            recaptchaScripta.setAttribute('src', "./theme/js/script.js")
+            document.body.appendChild(recaptchaScripta)
+            let recaptchaScript = document.createElement('script')
+            recaptchaScript.setAttribute('type',"text/javascript")
+            recaptchaScript.setAttribute('src', "./theme/js/swiper.js")
+            document.body.appendChild(recaptchaScript)
+        },
+        goAddImage() {
+            this.$router.push({
+                name: 'addimage', 
+                params: {
+                fimgs:this.imgs,
+                }
+            });
+        },
         appendDiv() {
             var colorCode  = "#" + Math.round(Math.random() * 0xffffff).toString(16);
             var div = document.createElement('div');
@@ -263,7 +342,6 @@ export default {
             keyword.replace(" ", "+");
 
             const url = "http://192.168.100.41:5000/location/"+keyword;
-            
             axios.get(url)
                 .then((response)=>{
                     this.locationList = response.data.results;
@@ -272,6 +350,7 @@ export default {
 
                     this.locationList.forEach(element => {
                         let addr = "";
+                        document.querySelector(".search-location-googlemap").scrollIntoView(false);
                         axios.post("https://translation.googleapis.com/language/translate/v2?key=AIzaSyAcnkt6IBUt-bGIMw4u-VEIYpesgw4-2Lk",{
                           "q": [element.formatted_address],
                           "target": "ko"
@@ -324,6 +403,14 @@ export default {
           }else{
               this.isLocation = false;
           }
+      },
+      clickResearch(){
+          this.isLocationSelect=!this.isLocationSelect;
+          document.getElementById("search-location-input").value = ""
+          document.getElementById("searched-location-input").value = ""
+          window.console.log(document.getElementById("search-location-input"))
+        //   document.querySelector(".search-location-input").value = ""
+        //   document.querySelector(".searched-location-input").value = ""
       }
 
     },
@@ -335,7 +422,18 @@ export default {
         else if(this.imgs.length>0){
             this.filterType = this.imgs[this.imgs.length-1].filter;
             this.exist=true;
+            // this.imgs.forEach(img => {
+            //     window.console.log(img.base64);
+            //     axios.post("http://192.168.100.41:5000/tag", {
+            //         img_url: img.base64
+            //     })
+            //     .then((res) => {
+            //         window.console.log(res.data);
+            //     })
+            // })
         }
+        document.querySelector('script[src$="script.js"]').remove()
+        document.querySelector('script[src$="swiper.js"]').remove()
         let recaptchaScripta = document.createElement('script')
         recaptchaScripta.setAttribute('type',"text/javascript")
         recaptchaScripta.setAttribute('src', "./theme/js/script.js")
@@ -353,4 +451,12 @@ export default {
   width:100%;
   z-index:1;
 }
+</style>
+
+<style scoped>
+.btnprev:hover {
+  background-color: #fff;
+  border-color: #fff;
+  color: #333;
+} 
 </style>

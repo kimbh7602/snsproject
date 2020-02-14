@@ -19,7 +19,7 @@ public class UserDmService implements IUserDmService {
 
     
     @Override
-    public boolean insertUserDm(UserDmVo userDm) {
+    public UserDmVo insertUserDm(UserDmVo userDm) {
         return dao.insertUserDm(userDm);
     }
 

@@ -10,8 +10,8 @@ body {
 .top-noti{
   position: sticky;
   /* display: block; */
-  z-index: 10000;
-  top:0px;
+  z-index: 20;
+  top:0;
 }
 
 .box-noti{
@@ -498,7 +498,7 @@ h1, h2, h3, h4, h5,
         .site-mobile-menu .site-mobile-menu-header .site-mobile-menu-logo a:hover {
           text-decoration: none; }
   .site-mobile-menu .site-mobile-menu-body {
-    overflow-y: scroll;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     position: relative;
     padding: 0 20px 20px 20px;
@@ -1148,13 +1148,75 @@ figure.snip1477.hover img {
     background: #000 url('http://www.letstravelsomewhere.com/wp-content/themes/letstravelsomewhere2013/images/bg-airmail-5.jpg'); 
 }
 
+/*3줄까지 보이게*/
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  line-height: 2;
+  height: 6rem;
+}
+
 .polaroid {
+  height:319px;
   background:#000; /*Change this to a background image or remove*/
   border:solid #fff;
   border-width:8px 11px 11px 8px;
   box-shadow:1px 1px 5px #333; /* Standard blur at 5px. Increase for more depth */
   -webkit-box-shadow:1px 1px 5px #333;
   -moz-box-shadow:1px 1px 5px #333;
+}
+header .site-logo .logo-text{
+  font-family: hand_mail;
+  font-size:2.5em;
+}
+@media(max-width:407px){
+  header .site-logo .logo-text{
+    font-size: 1.4em;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .postcard{
+    height:219px;
+  }
+  .photo-item .postcard .content{
+    height:219px;
+  }
+  .polaroid{
+    height:219px;
+  }
+  .photo-item .postcard .content .ellipsis{
+    -webkit-line-clamp: 3;
+    height:5rem;
+  }
+  .photo-item .postcard .content .mail-title-val{
+    margin-bottom: -10px;
+    font-size:1.5em;
+  }
+  .photo-item .postcard .content .mail-message-val{
+    margin-bottom:-5px;
+    font-size:0.8em;
+  }
+  .photo-item .postcard .content .mail-from-val{
+    margin-top:0px;
+    font-size:0.8em;
+  }
+}
+
+.mail-title-val{
+  color:black; font-size:2em; font-family: loveson;
+}
+
+.mail-message-val{
+  color:black; font-family: loveson; word-break:break-all;text-align:left; margin-bottom: 5px;
+}
+
+.mail-from-val{
+  color:black; font-family: loveson; word-break:break-all;text-align:right; margin-top:15px;
 }
 
 .postcard .content {
@@ -1202,6 +1264,9 @@ img.postmark{
   position: absolute;
   right:20px;
   top:20px;
+  background:black;
+  height:52px;
+  width:52px;
   -webkit-mask-box-image: url(http://www.html5rocks.com/en/tutorials/masking/adobe/stampTiles.svg) 150  repeat;
 }
 
@@ -1223,6 +1288,48 @@ img.postmark{
 .juno img{
   width:100%;
   z-index: 1;
+}
+
+/*스크롤바*/
+body::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #000000;
+  border: 1px solid #ffffff;
+}
+
+.yscroll::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+.yscroll::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+.yscroll::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #D62929;
 }
 
 /* .stamp {

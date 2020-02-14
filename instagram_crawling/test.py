@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from urllib import parse
 from selenium import webdriver
@@ -63,6 +63,22 @@ def search_location(keyword):
     # print(jsonify(html))
 
     return html
+
+@app.route("/tag", methods=['POST'])
+def image_tag():
+    MYAPP_KEY = '78ce80e75e77f2be2f76f1d4b1fbca68'
+    url = 'https://kapi.kakao.com/v1/vision/multitag/generate'
+    # img_url = 'https://lh3.googleusercontent.com/proxy/4fTaRlR3tT_RttErpOOOABVv_S95in9T_R8OpjS2Fhp7MlMMR92JgmmpnEKzGQ4rWA6DMIANDPqGrCUJCWEs5Bh_aLDwIvXoYus3Ab3iYw'
+    img_url = request.get_json()['img_url']
+    print(img_url)
+    headers = {'Authorization': 'KakaoAK {}'.format(MYAPP_KEY)}
+    data = {'image_url': img_url}
+    html = requests.post(url, headers=headers, data=data)
+    html.raise_for_status()
+
+    print(html.json()['result'])
+
+    return html.json()['result']
 
 @app.route("/searchByKeyword/<keyword>")
 def search_by_keyword(keyword):

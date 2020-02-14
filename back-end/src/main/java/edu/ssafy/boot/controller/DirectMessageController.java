@@ -117,12 +117,13 @@ public class DirectMessageController {
 		return resEntity;
 	}
 
-	@GetMapping("/unReadCnt/{dm_id}")
+	@PostMapping("/unReadCnt")
 	@ApiOperation(value = "안읽은메시지")
-	private @ResponseBody ResponseEntity<Map<String, Object>> directMessageUnReadCnt(@PathVariable("dm_id") int dm_id) {
+	private @ResponseBody ResponseEntity<Map<String, Object>> directMessageUnReadCnt(@RequestBody UserDmVo userDm) {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		try {
-            int unreadCnt = ser.directMessageUnReadCnt(dm_id);
+			int unreadCnt = ser.directMessageUnReadCnt(userDm);
+			System.out.println(unreadCnt);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("resmsg", "안읽은메시지성공");
             map.put("resvalue", unreadCnt);

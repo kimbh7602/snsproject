@@ -21,7 +21,8 @@ export default new Vuex.Store({
         followList: [],
         followerList: [],
         unReadCnt: 0,
-        targetDm: {},
+        noticount:0,
+        targetDm: null,
     },
     getters:{
         fetchedUserDmList(state) {
@@ -38,6 +39,10 @@ export default new Vuex.Store({
         },
         fetchedUnReadCnt(state) {
             return state.unReadCnt;
+        },
+        fetchednoticount(state) {
+            state.noticount = sessionStorage.getItem("noticount");
+            return state.noticount;
         },
     },
     mutations:{
@@ -82,7 +87,9 @@ export default new Vuex.Store({
             sessionStorage.removeItem("user_id");
             sessionStorage.removeItem("islogin");
             sessionStorage.removeItem("isadmin");
+            sessionStorage.removeItem("noticount");
             state.user_id='';
+            state.noticount=0;
             state.islogin=false;
             state.isadmin=false;
             state.userDmList = [];
@@ -136,8 +143,12 @@ export default new Vuex.Store({
             state.targetDm = dm;
         },
         REMOVE_TARGETDM(state){
-            state.tagetDM = {};
-        }
+            state.targetDm = null;
+        },
+        SET_NOTI(state, noticount) {
+            sessionStorage.setItem("noticount",noticount)
+            state.noticount = sessionStorage.getItem("noticount");
+        },
     },
     actions:{
         FETCH_USERDMLIST(context, userId) {
@@ -238,6 +249,15 @@ export default new Vuex.Store({
                 .post("/follow/insertFollow", follow)
                 .then(response => {
                     return response
+                })
+                .catch(e => console.log(e))
+        },
+        FETCH_NOTI(context, userid) {
+            http
+                .get(`/notification/uncheckedList/${userid}`)
+                .then(response => {
+                    context.commit('SET_NOTI', response.data.resvalue.length);
+                    return response.data.resvalue.length;
                 })
                 .catch(e => console.log(e))
         },

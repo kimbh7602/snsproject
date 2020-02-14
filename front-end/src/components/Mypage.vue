@@ -1,61 +1,61 @@
 <template>
     <div class="container-fluid photos">
       <div class="row justify-content-center">
+            <div class="col-5 p-4 text-center bg-light" data-aos="fade-up">
+                <img class="rounded-circle mt-3 mb-2" width="150px" height="150px" style="object-fit: cover;" :class="userInfo.profile_filter" :src="userInfo.profile_url">
+                <h4>{{userId}}</h4>
+                <div v-if="userId != myId" class="d-flex justify-content-center row p-2">
+                    <span v-show="myFollowList.includes(userId)" @click="targetUser = userInfo" data-toggle="modal" data-target="#deleteFollowModal" class="site-logo btn btn-outline-primary col-5 m-2" style="width:100%;">팔로잉</span>
+                    <span v-show="!myFollowList.includes(userId)" @click="insertFollow(userInfo)" class="site-logo btn btn-primary col-5 m-2" style="width:100%;">팔로우</span>
+                    <span @click="goChating()" v-if="myId != userId" class="site-logo btn btn-outline-info col-5 m-2" style="width:100%;"><i class="icon-send"></i></span>
 
-        <div class="col-md-8 pt-4 d-flex justify-content-center">
-            <div class="mb-4 text-center" data-aos="fade-up">
-                <h2 class="text-white mb-5">Mypage</h2>
-                <img class="rounded-circle mb-2" width="150px" height="150px" style="object-fit: cover;" :src="userInfo.profile_url">
+                </div>
+                <div v-else class="d-flex justify-content-center row">
+                    <router-link class="px-2 m-0 col-5" to="/pwconfirm"><button class="site-logo btn btn-outline-info" style="width:100%; height:50px;">정보수정</button></router-link>
+                    <router-link class="px-2 m-0 col-5" to="/chart"><button class="site-logo btn btn-outline-primary" style="width:100%; height:50px;">통계</button></router-link>
+                </div>
 
-                <h4 class="text-white">{{userId}}</h4>
-                <div v-if="userId != myId">
-                    <span v-show="myFollowList.includes(userId)" @click="targetUser = userInfo" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary">팔로잉</span>
-                    <span v-show="!myFollowList.includes(userId)" @click="insertFollow(userInfo)" class="btn btn-primary">팔로우</span>
-                    <span @click="goChating()" v-if="myId != userId" class="btn btn-outline-light ml-2" style="width: 72px;"><i class="icon-send"></i></span>
+                <div class="text-left mt-4 mx-5">
+                    <span v-for="(item, index) in userInfo.interestList" :key="`item${index}`">
+                        <span class="mr-2" style="color: #4285f4;" v-if="item!=''">#{{item}}</span>
+                    </span>
                 </div>
-                <div v-else>
-                    <router-link to="/pwconfirm"><button style="width: 90px;" class="btn btn-dark">정보수정</button></router-link>
-                    <router-link to="/chart"><button style="width: 72px;" class="btn btn-dark">통계</button></router-link>
-                </div>
-                
-                <div class="m-3">
-                    <div class="d-flex justify-content-center">
-                        <div class="text-center mx-3">
-                            <a href="javascript:void(0)" @click="content()">게시물</a>
-                            <h2 v-if="userContent">{{userContent.length}}</h2>
-                            <h2 v-else>0</h2>
-                        </div>
-                        <div class="text-center mx-3">
-                            <a href="" data-toggle="modal" data-target="#followerModal">팔로워</a>
-                            <h2 v-if="fetchedFollowerList">{{fetchedFollowerList.length}}</h2>
-                            <h2 v-else>0</h2>
-                        </div>
-                        <div class="text-center mx-3">
-                            <a href="" data-toggle="modal" data-target="#followModal">팔로우</a>
-                            <h2 v-if="fetchedFollowList">{{fetchedFollowList.length}}</h2>
-                            <h2 v-else>0</h2>
-                        </div>
-                        <div v-if="userId==myId" class="text-center mx-3">
-                            <a href="javascript:void(0)" @click="scrap()">스크랩</a>
-                            <h2 v-if="userScrap">{{userScrap.length}}</h2>
-                            <h2 v-else>0</h2>
-                        </div>
+                <div class="rounded my-2 mx-5" style="position: relative; height:100px; border: 1px dotted gray; overflow: auto;">
+                    <div class="text-left p-3" style="position: absolute; white-space:pre-wrap;">
+                        <div>{{userInfo.description}}</div>
                     </div>
                 </div>
-
-                <div class="rounded" style="position: relative; height:100px; border: 1px dotted gray; overflow: auto;">
-                    <div class="text-left p-2" style="position: absolute; word-break:break-all;">
-                        <span v-for="(item, index) in userInfo.interestList" :key="`item${index}`">
-                            <span class="text-success" v-if="item!=''">#{{item}} </span>
-                        </span>
-                        <div class="text-white">{{userInfo.description}}</div>
-                    </div>
+            </div>
+      </div>
+      
+      <div class="row justify-content-center mb-4">
+        <div class="col-5 d-flex justify-content-center">
+            <div class="row">
+                <div class="text-center col">
+                    <a href="javascript:void(0)" class="m-0 p-0" @click="content()">게시물</a>
+                    <h4 v-if="userContent">{{userContent.length}}</h4>
+                    <h4 v-else>0</h4>
                 </div>
-
+                <div class="text-center col">
+                    <a href="" class="m-0 p-0" data-toggle="modal" data-target="#followerModal">팔로워</a>
+                    <h4 v-if="fetchedFollowerList">{{fetchedFollowerList.length}}</h4>
+                    <h4 v-else>0</h4>
+                </div>
+                <div class="text-center col">
+                    <a href="" class="m-0 p-0" data-toggle="modal" data-target="#followModal">팔로우</a>
+                    <h4 v-if="fetchedFollowList">{{fetchedFollowList.length}}</h4>
+                    <h4 v-else>0</h4>
+                </div>
+                <div v-if="userId==myId" class="text-center col">
+                    <a href="javascript:void(0)" class="m-0 p-0" @click="scrap()">스크랩</a>
+                    <h4 v-if="userScrap">{{userScrap.length}}</h4>
+                    <h4  v-else>0</h4>
+                </div>
             </div>
         </div>
       </div>
-
+      
+      <!-- 카테고리 -->
       <category v-if="check=='content'" :userId="userId" :myPage="true"></category>
       <category v-else :userId="userId" :myPage="false"></category>
 
@@ -76,8 +76,8 @@
                                 {{follower.user_id}}
                             </a>
                             <!-- <router-link :to="'/mypage/'+follower" class="d-flex text-dark" @click="fetchUserInfo(follower); "><i class="icon-user-circle mr-2" style="font-size:1.9em;"></i> {{follower}}</router-link> -->
-                            <span v-if="myId != follower.user_id && myFollowList.includes(follower.user_id)" @click="targetUser = follower" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary btn-sm">팔로잉</span> 
-                            <span v-if="myId != follower.user_id && !myFollowList.includes(follower.user_id)" class="ml-3 btn btn-primary btn-sm" @click="insertFollow(follower)">팔로우</span>
+                            <span v-show="myId != follower.user_id && myFollowList.includes(follower.user_id)" @click="targetUser = follower" data-toggle="modal" data-target="#deleteFollowModal" class="btn btn-outline-primary btn-sm">팔로잉</span> 
+                            <span v-show="myId != follower.user_id && !myFollowList.includes(follower.user_id)" class="ml-3 btn btn-primary btn-sm" @click="insertFollow(follower)">팔로우</span>
                         </div>
                     </div>
                 </div>
@@ -145,7 +145,8 @@ export default {
             userScrap: [],
             check: 'content',
             targetUserDm: {},
-            possible: true
+            possible: true,
+            targetUser: {}
         }
     },
     computed: {
@@ -226,6 +227,8 @@ export default {
                 .get(`user/info/${id}`)
                 .then(response => {
                     this.userInfo = response.data.resvalue;
+                    this.userInfo.interestList = this.userInfo.interestList.slice(0, 8);
+                    // console.log(this.userInfo)
                 })
                 .catch(e => console.log(e))
         },
@@ -258,8 +261,6 @@ export default {
                         if (dm.user_id == this.userId || dm.other_id == this.userId) {
                             this.possible = false;
                             this.targetUserDm = dm;
-                            // console.log(this.targetUserDm);
-                            this.$store.commit('SET_TARGETDM', this.targetUserDm);
                         }
                     })
                     return response
@@ -347,5 +348,7 @@ export default {
     height: auto;
     min-height: 30%;
 }
-
+.site-logo {
+    box-shadow: 0px 3px 5px 1px grey;
+}
 </style>

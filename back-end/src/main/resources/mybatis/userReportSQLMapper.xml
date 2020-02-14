@@ -30,4 +30,30 @@
 		delete from user_report
 		where content_id = #{content_id}
 	</select>
+	
+	<select id="adminreportContentList" resultType="ContentVo">
+		select *
+		from contents
+		where dislike>=5;
+	</select>
+	
+	
+	<select id="getreportcategory"  parameterType="string" resultType="String">
+		select distinct report_category
+		from user_report
+		where content_id=#{content_id};		
+	</select>
+	
+	<select id="getreportvalue"  parameterType="map" resultType="Integer">
+		select count(report_category)
+			from user_report
+			where content_id=#{content_id} and report_category=#{key};	
+	</select>
+	
+	<select id="getreportexval"  parameterType="string" resultType="String">
+		select  report_val
+		from user_report
+		where content_id=#{content_id} and report_category='기타';
+	</select>
+	
 </mapper>

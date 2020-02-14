@@ -49,7 +49,6 @@ public class EmailController {
 	private @ResponseBody ResponseEntity<Map<String, Object>> checkEmail(@PathVariable("email") String email) throws ServletException, IOException {
 		ResponseEntity<Map<String, Object>> resEntity = null;
 		Map<String, Object> msg = new HashMap<String, Object>();
-		System.out.println(email);
 		try {
 			String check = ser.checkEmail(email);
 			msg.put("resmsg", "메일 보내기 성공");

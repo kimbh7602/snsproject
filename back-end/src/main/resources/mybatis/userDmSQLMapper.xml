@@ -10,6 +10,12 @@
             (#{user_id}, #{other_id})
     </insert>
 
+    <select id="selectInsertDm" parameterType="UserDmVo" resultType="UserDmVo">
+        select * from user_dm
+        where user_id = #{user_id}
+        and other_id = #{other_id}
+    </select>
+
     <delete id="delete" parameterType="int">
         delete from user_dm
         where dm_id = #{dm_id}

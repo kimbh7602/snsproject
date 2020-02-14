@@ -6,9 +6,18 @@ public class ImageVo {
 	private String image_url;
 	private String base64;
 	private String filter;
+	private String user_id;
 
 	public ImageVo() {
 		super();
+	}
+
+	public String getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
 	}
 
 	public ImageVo(int content_id, String image_name, String image_url, String filter) {
@@ -23,6 +32,13 @@ public class ImageVo {
 		super();
 		this.base64 = base64;
 		this.filter = filter;
+	}
+	
+	public ImageVo(String base64, String filter, String user_id) {
+		super();
+		this.base64 = base64;
+		this.filter = filter;
+		this.user_id = user_id;
 	}
 
 	public int getContent_id() {

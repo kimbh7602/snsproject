@@ -1,5 +1,6 @@
 package edu.ssafy.boot.service;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,32 @@ public class UserReportService implements IUserReportService {
         return dao.reportContent(user_id);
     }
 
+    @Override
+	public List<ContentVo> adminreportContentList() {
+		List<ContentVo> contentList = dao.adminreportContentList();
+
+		contentList.sort(new Comparator<ContentVo>() {
+
+			@Override
+			public int compare(ContentVo o1, ContentVo o2) {
+				return o2.getTimestamp().compareTo(o1.getTimestamp());
+			}
+			
+		});
+		return contentList;
+	}
     
+    @Override
+    public List<String> getreportcategory(String content_id) {
+        return dao.getreportcategory(content_id);
+    }
+    @Override
+    public int getreportvalue(String content_id, String key) {
+        return dao.getreportvalue(content_id, key);
+    }
     
+    @Override
+    public List<String> getreportexval(String content_id) {
+        return dao.getreportexval(content_id);
+    }
 }

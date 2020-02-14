@@ -15,7 +15,7 @@
         <!-- <div class="offset-3 col-6" style="padding-left:4%;">
             <img :src="destination" class="img-preview">
         </div> -->
-        <div style="margin-top:1%; margin-left:5%;margin-right:5%; height:50px;">
+        <!-- <div style="margin-top:1%; margin-left:5%;margin-right:5%; height:50px;">
           <div v-if="prevpage=='addimage'" class="offset-3 col-2" style="display:inline-block;">
             <input type="button" value="이전" @click="goAddImage" class="btn btn-primary btn-md text-white">
           </div>
@@ -25,7 +25,15 @@
           <div class="offset-3 col-2" style="display:inline-block;">
             <input type="button" value="다음" @click="goNext" class="btn btn-success btn-md text-white">
           </div>
+        </div> -->
+        <div class="container col-md-6 px-0">
+            <div class="btn-group col-12 px-0" role="group" aria-label="Basic example">
+                <input type="button" class="btn btn-outline-light col-sm btnprev p-2" value="이전" v-if="prevpage=='addimage'" @click="goAddImage">
+                <input type="button" class="btn btn-outline-light col-sm btnprev p-2" value="이전" v-else @click="goPrev">
+                <input type="button" class="btn btn-outline-light col-sm btnprev p-2" value="다음" @click="goNext">
+            </div>
         </div>
+        
     </div>
 </template>
 
@@ -107,7 +115,7 @@
             },
         },
         mounted() {
-                    console.log(this.items)
+                    console.log(this.imgs)
 
             this.image = this.$refs.image;
             if(this.prevpage=="addimage"){

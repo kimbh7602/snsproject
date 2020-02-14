@@ -1,6 +1,8 @@
 package edu.ssafy.boot.repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +61,46 @@ public class UserReportDAOImpl implements IUserReportDAO {
 		}
         return contentList;
     }
-
+        
+    
+    @Override
+	public List<ContentVo> adminreportContentList() {
+		List<ContentVo> contentList = session.selectList("ssafy.userReport.adminreportContentList");
+//		List<ContentVo> myList = session.selectList("ssafy.content.selectMyList");
+//		for (ContentVo contentVo : myList) {
+//			contentList.add(contentVo);
+//		}
+		for (ContentVo contentVo : contentList) {
+			List<ImageVo> imageList = session.selectList("ssafy.content.imageListByContentId", contentVo.getContent_id());
+			contentVo.setImageList(imageList);
+			UserVo user = session.selectOne("ssafy.user.info", contentVo.getUser_id());
+			if(user.getProfile_url() != null && user.getProfile_filter() != null){
+				contentVo.setProfile_url(user.getProfile_url());
+				contentVo.setProfile_filter(user.getProfile_filter());
+			}
+		}
+		return contentList;
+	}
+    
+    
+    @Override
+    public List<String> getreportcategory(String content_id) {
+        List<String> reportList = session.selectList("ssafy.userReport.getreportcategory", content_id);
+        return reportList;
+    }
+    
+    @Override
+    public int getreportvalue(String content_id, String key) {
+    	Map<String, String> map = new HashMap<String, String>();
+    	map.put("content_id", content_id);
+		map.put("key", key);
+        int reportList = session.selectOne("ssafy.userReport.getreportvalue", map);
+        return reportList;
+    }
+    
+    public List<String> getreportexval(String content_id) {
+    	List<String> reportList = session.selectList("ssafy.userReport.getreportexval", content_id);
+        return reportList;
+    }
+    
 }

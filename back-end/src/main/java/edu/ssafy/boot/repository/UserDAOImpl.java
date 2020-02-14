@@ -90,7 +90,6 @@ public class UserDAOImpl implements IUserDAO {
 	@Override
 	public boolean emailDuplicateCheck(String email) {
 		boolean isOk = session.selectOne("ssafy.user.emailDuplicateCheck", email);
-		System.out.println(isOk);
 		return isOk;
 	}
 

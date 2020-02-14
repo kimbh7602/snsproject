@@ -26,7 +26,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="item in computedUsers" :key="item.data.user_id">
+                                                        <tr v-for="item in computedUsers" :key="item.index">
                                                             <td class="text-center"> {{ item.data.user_id }}</td>
                                                             <td class="text-center">{{ item.data.user_ip }}</td>
                                                             <td class="text-center">{{ item.data.user_status }}</td>
@@ -43,10 +43,28 @@
                                 <div v-else style="height: 2px; background-color:red">
                                     블록 문제발생
                                 </div>
-                            </div>
-                            <input type="text" v-model="n" /><div @click.prevent="setPage(n)">가자</div>
-                            <div v-for="n in numOfPages" :key="n" @click.prevent="setPage(n)" class="btn btn-default">
-                                <div>{{n}}</div>
+                                <div class="row text-center">
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-1  text-center">
+                                        <div class="icon-chevron-left" @click="setPage(n-1)" />
+                                    </div>
+                                    <div class="col-md-1 text-center">
+                                        <input type="text" size="4" v-model="n" v-on:keyup.enter="setPage(n)"
+                                            style="text-align:center" />
+                                    </div>
+                                    <div class="col-md-1  text-center">
+                                        /
+                                    </div>
+                                    <div class="col-md-1 text-center">
+                                        {{numOfPages}}
+                                    </div>
+                                    <div class="col-md-1  text-center">
+                                        <div class="icon-chevron-right" @click="setPage(n+1)" />
+                                    </div>
+
+                                    <div class="col-md-2  text-center" @click.prevent="setPage(n)">이동</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -54,7 +72,7 @@
             </div>
         </div>
     </div>
-    
+
 </template>
 <style>
     /* #log{
@@ -69,11 +87,11 @@
     export default {
         data() {
             return {
+                n: 1,
                 chain: [],
                 trust: false,
                 currentPage: 1,
-                perPage: 10,
-                perPageOptions: [3, 6],
+                perPage: 25,
             }
         },
         mounted() {
@@ -84,8 +102,7 @@
                     if (response.data['resmsg'] == "조회성공") {
                         tmp = response.data['resvalue'];
                         this.chain = tmp;
-                        console.log(this.chain)
-
+                        // console.log(this.chain)
                     }
                 })
             http
@@ -98,7 +115,10 @@
         },
         methods: {
             setPage(n) {
-                this.currentPage = n;
+                if (n > 0 && n <= this.numOfPages) {
+                    this.currentPage = n;
+                    this.n = this.currentPage;
+                }
             },
         },
         computed: {

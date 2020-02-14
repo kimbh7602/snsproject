@@ -6,23 +6,30 @@
             <div class="mb-5" data-aos="fade-up">
               <h2 class="mb-5 text-center text-light">읽지 않은 알림</h2>
               <div class="text-right"><button class="btn btn-outline-success" @click="allRead">모두 읽음</button></div>
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link" :class="{'active': check=='all'}" @click="check='all'">전체 <span class="badge badge-primary">{{allNotilength}}</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" :class="{'active': check=='follow'}" @click="check='follow'">팔로우 <span class="badge badge-dark">{{followNoti}}</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" :class="{'active': check=='like'}" @click="check='like'">좋아요 <span class="badge badge-dark">{{likeNoti}}</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" :class="{'active': check=='scrap'}" @click="check='scrap'">스크랩 <span class="badge badge-dark">{{scrapNoti}}</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" :class="{'active': check=='report'}" @click="check='report'">신고 <span class="badge badge-dark">{{reportNoti}}</span></a>
-                </li>
-              </ul>
+              <nav class="navbar navbar-expand-lg pb-0" style="background-color: black;">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <i class="icon-menu" style="font-size: 1.5em;"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                  <ul class="navbar-nav nav nav-tabs row" id="myTab" role="tablist">
+                    <li class="nav-item col-lg px-1">
+                      <a class="nav-link m-0 px-0 text-center" :class="{'active': check=='all'}" @click="check='all'">전체 <span class="badge badge-primary">{{allNotilength}}</span></a>
+                    </li>
+                    <li class="nav-item col-lg px-1">
+                      <a class="nav-link m-0 px-0 text-center" :class="{'active': check=='follow'}" @click="check='follow'">팔로우 <span class="badge badge-dark">{{followNoti}}</span></a>
+                    </li>
+                    <li class="nav-item col-lg px-1">
+                      <a class="nav-link m-0 px-0 text-center" :class="{'active': check=='like'}" @click="check='like'">좋아요 <span class="badge badge-dark">{{likeNoti}}</span></a>
+                    </li>
+                    <li class="nav-item col-lg px-1">
+                      <a class="nav-link m-0 px-0 text-center" :class="{'active': check=='scrap'}" @click="check='scrap'">스크랩 <span class="badge badge-dark">{{scrapNoti}}</span></a>
+                    </li>
+                    <li class="nav-item col-lg px-1">
+                      <a class="nav-link m-0 px-0 text-center" :class="{'active': check=='report'}" @click="check='report'">신고 <span class="badge badge-dark">{{reportNoti}}</span></a>
+                    </li>
+                  </ul>
+                </div>
+              </nav>
             
               <table class="table text-light">
                 <tbody v-if="check=='all'">
@@ -32,15 +39,15 @@
                         <img class="rounded-circle" width="50px" height="50px" style="object-fit: cover;" :src="item.profile_url || 'https://t1.daumcdn.net/qna/image/1542632018000000528'">
                         <div class="ml-2">
                           <div class="text-left">
-                            <router-link class="m-0" :to="'/mypage/'+item.user_id"><span style="font-weight: 550;">
-                              {{item.user_id}} </span>
+                            <router-link class="m-0" :to="'/mypage/'+item.user_id">
+                              <span style="font-weight: 550;">{{item.user_id}} </span>
                             </router-link>님이 회원님을 팔로우하기 시작했습니다.
                           </div>
                           <div class="text-left ml-1"><small>{{require('moment')(item.timestamp, "YYYY-MM-DD HH:mm:ss").fromNow()}}</small></div>
                         </div>
                       </div>
                       <div class="col-md-2 d-flex align-items-center justify-content-center">
-                        <span v-if="myId != item.user_id && myFollowList.includes(item.user_id)" @click="deleteFollow(item.user_id)"  class="btn btn-outline-primary">팔로잉</span>
+                        <div v-if="myId != item.user_id && myFollowList.includes(item.user_id)" @click="modalToData(item.user_id)" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-primary">팔로잉</div>
                         <span v-if="myId != item.user_id && !myFollowList.includes(item.user_id)" @click="insertFollow(item.user_id)" class="btn btn-primary">팔로우</span>
                       </div>
                     </td>
@@ -115,7 +122,8 @@
                         </div>
                       </div>
                       <div class="col-md-2 d-flex align-items-center justify-content-center">
-                        <span v-if="myId != item.user_id && myFollowList.includes(item.user_id)" @click="deleteFollow(item.user_id)"  class="btn btn-outline-primary">팔로잉</span>
+                        <!-- <span v-if="myId != item.user_id && myFollowList.includes(item.user_id)" @click="deleteFollow(item.user_id)"  class="btn btn-outline-primary">팔로잉</span> -->
+                        <div v-if="myId != item.user_id && myFollowList.includes(item.user_id)" @click="modalToData(item.user_id)" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-primary">팔로잉</div>
                         <span v-if="myId != item.user_id && !myFollowList.includes(item.user_id)" @click="insertFollow(item.user_id)" class="btn btn-primary">팔로우</span>
                       </div>
                     </td>
@@ -190,6 +198,46 @@
               </table>
             </div>
         </div>
+      <!-- Modal -->
+      <div class="modal fade mt-5" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 99999;">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">알림</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p class="m-2"> 팔로우를 취소하시겠습니까? </p>
+            </div>
+            <div class="modal-footer d-flex justify-content-end">
+              <div class="d-block">
+                <button type="button" class="btn btn-danger mr-2" data-dismiss="modal" @click="deleteFollow()">확인</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+        <!-- 팔로우취소 모달
+        <div class="modal" id="deleteFollowModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog col-12" role="document">
+                <div class="modal-content">
+                <div class="modal-body">
+                    <p>팔로우 취소하시겠습니까?</p>
+                </div>
+                <div class="modal-footer p-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary btn-sm" @click="deleteFollow(targetUser)" data-dismiss="modal">확인</button>
+                </div>
+                </div>
+            </div>
+        </div> -->
+
       </div>
     </div>
 
@@ -211,9 +259,14 @@ export default {
         check: 'all',
         myId: this.$store.state.user_id,
         myFollowList: [],
+        targetUser: "",
       }
     },
     methods: {
+      modalToData(id) {
+        this.targetUser = ""
+        this.targetUser = id
+      },
       fetchNoti() {
         http
           .get(`/notification/uncheckedList/${this.$store.state.user_id}`)
@@ -274,19 +327,43 @@ export default {
           this.fetchedFollowerList.push(this.myId);
         }
       },
-      deleteFollow(id) {
-        if (confirm('팔로우취소 하시겠습니까?')) {
+      deleteFollow() {
+        const id = this.targetUser
+        // if (confirm('팔로우취소 하시겠습니까?')) {
+        //   http
+        //         .delete("/follow/deleteFollow", {data: {follower_id: this.myId, follow_id: id}})
+        //         .then(response => {
+        //             this.$socket.emit('notification', {
+        //                 user_id: response.data.resValue.user_id,
+        //                 target_user_id: response.data.resValue.target_user_id,
+        //                 category: response.data.resValue.category,
+        //                 flag: false
+        //             });
+        //         })
+        //         .catch(e => console.log(e))
+        //   const idx = this.myFollowList.indexOf(id);
+        //   if (idx > -1) this.myFollowList.splice(idx, 1);
+
+        //   if (this.myId == this.userId) {
+        //     const idx2 = this.fetchedFollowList.indexOf(id);
+        //     if (idx2 > -1) this.fetchedFollowList.splice(idx2, 1);
+        //   }
+        //   else if (id == this.userId) {
+        //     const idx2 = this.fetchedFollowerList.indexOf(this.myId);
+        //     if (idx > -1) this.fetchedFollowerList.splice(idx2, 1);
+        //   }
+        // }
           http
-                .delete("/follow/deleteFollow", {data: {follower_id: this.myId, follow_id: id}})
-                .then(response => {
-                    this.$socket.emit('notification', {
-                        user_id: response.data.resValue.user_id,
-                        target_user_id: response.data.resValue.target_user_id,
-                        category: response.data.resValue.category,
-                        flag: false
-                    });
-                })
-                .catch(e => console.log(e))
+            .delete("/follow/deleteFollow", {data: {follower_id: this.myId, follow_id: id}})
+            .then(response => {
+                this.$socket.emit('notification', {
+                    user_id: response.data.resValue.user_id,
+                    target_user_id: response.data.resValue.target_user_id,
+                    category: response.data.resValue.category,
+                    flag: false
+                });
+            })
+            .catch(e => console.log(e))
           const idx = this.myFollowList.indexOf(id);
           if (idx > -1) this.myFollowList.splice(idx, 1);
 
@@ -298,13 +375,15 @@ export default {
             const idx2 = this.fetchedFollowerList.indexOf(this.myId);
             if (idx > -1) this.fetchedFollowerList.splice(idx2, 1);
           }
-        }
+
       },
       fetchMyFollowList() {
         http
           .get(`/follow/followList/${this.myId}`)
           .then(response => {
-              this.myFollowList = response.data.resvalue;
+              response.data.resvalue.forEach(user => {
+                        this.myFollowList.push(user.user_id)
+                    })
           })
           .catch(e => console.log(e))
       },
@@ -314,6 +393,7 @@ export default {
             http
               .put(`notification/updateCheck/${this.allNoti[i].notification_id}`)
               .then(response => {
+                this.$store.dispatch('FETCH_NOTI', this.myId);
                 return response
               })
               .catch(e => console.log(e))
@@ -326,6 +406,7 @@ export default {
           .put(`notification/updateCheck/${item.notification_id}`)
           .then(response => {
             // console.log(response.data)
+            this.$store.dispatch('FETCH_NOTI', this.myId);
             return response
           })
           .catch(e => console.log(e))
@@ -364,5 +445,8 @@ small {
   opacity: 0.5;
 }tr:hover{
   background-color: rgba(49, 49, 49, 0.747);
+}
+.nav-link {
+  cursor: pointer;
 }
 </style>

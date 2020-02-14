@@ -21,7 +21,7 @@
             or (dm_id = #{dm_id} and receive_id = #{user_id})
     </select>
 
-    <update id="update" parameterType="userDmVo">
+    <update id="update" parameterType="UserDmVo">
         update direct_message
         set read_check = true
         where
@@ -29,10 +29,11 @@
             receive_id = #{user_id}
     </update>
 
-    <select id="unReadCnt" parameterType="int" resultType="int">
-        select CNT(*) from direct_message
+    <select id="unReadCnt" parameterType="UserDmVo" resultType="int">
+        select count(*) from direct_message
         where
             dm_id = #{dm_id} and
+            receive_id = #{user_id} and
             read_check = false
     </select>
 
@@ -41,5 +42,10 @@
             delete from direct_message
             where datediff(now(), timestamp) > 30
         ]]>
+    </delete>
+
+    <delete id="deleteAll" parameterType="int">
+        delete from direct_message
+        where dm_id = #{dm_id}
     </delete>
 </mapper>

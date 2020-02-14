@@ -26,13 +26,20 @@
                   </div>
 
                   <!-- confirm/reset button -->
-                  <div class="row form-group">
+                  <div class="container col-md-12 px-0">
+                    <div class="btn-group col-12 px-0" role="group" aria-label="Basic example">
+                      <input type="submit" class="btn btn-outline-light col-sm btnprev p-2" value="확인">
+                      <input type="button" class="btn btn-outline-light col-sm btnprev p-2" value="취소" @click="cancle">
+                    </div>
+                  </div>
+
+                  <!-- <div class="row form-group">
                     <div class="col-md-12">
                       <input type="submit" value="확인" class="offset-md-3 col-md-2 btn btn-primary btn-md text-white">
                       <input type="button" value="취소" @click="cancle"
                         class="offset-md-3 col-md-2 btn btn-danger btn-md text-white">
                     </div>
-                  </div>
+                  </div> -->
                 </form>
               </div>
 

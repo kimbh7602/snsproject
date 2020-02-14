@@ -70,6 +70,7 @@ import $ from "jquery"
                     // this.$socket.emit('login', {
                     //   user_id : this.user_id
                     // });
+                    this.$store.dispatch('FETCH_NOTI', this.user_id);
                     document.getElementById('modalBtn').click();
                     this.$router.push("/");
                 }else{
