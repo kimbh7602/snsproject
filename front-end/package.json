@@ -15,7 +15,7 @@
     "chart.js": "^2.9.3",
     "core-js": "^3.4.3",
     "element-ui": "^2.4.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "filepond": "^4.9.3",
     "filepond-plugin-file-validate-type": "^1.2.4",
     "google-translate-api": "^2.3.0",
